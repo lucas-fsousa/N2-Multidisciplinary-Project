@@ -3,9 +3,16 @@
 #include <unistd.h>
 
 int main(void){
+    // Variaveis de loguin
     char login[8];
     char *senha[8];
-    goto iniciar;
+
+    // Variaveis de cadastro e consulta
+
+    char nome[40], endereco[40], sexo[10], cadastro[10];
+    int idade, cpf, ctps;
+
+
     /*
     telalog:
     printf("Digite seu login -> ");
@@ -13,7 +20,6 @@ int main(void){
     printf("\nDigite sua senha -> ");
     scanf("%s", &senha);
     */
-
 // MENU INICIAR
 
     iniciar:
@@ -53,6 +59,39 @@ int main(void){
         scanf("%d", &resp);
 
         if (resp == 1){
+                system("cls");
+                printf("\nNome do funcionario: ");
+                scanf("%s" , &nome);
+                printf("Idade: ");
+                scanf("%d", &idade);
+
+                // VALIDACAO DE IDADE PARA CADASTRO
+
+                if (idade < 18){
+                    char validacao;
+                    printf("Este colaborador ainda nao possui idade superior ou equivalente a 18.\nDeseja prosseguir com o cadastro mesmo assim?[S/N]: ");
+                    scanf("%s", &validacao);
+                    if (validacao == 'N' || validacao == 'n'){
+                        goto iniciar;
+                    }else if (validacao == 'S' || validacao == 's'){
+                        printf("");
+                    }else{
+                        printf("Opcao invalida! Tente novamente.");
+                        goto cadastros;
+                    }
+                }
+                // FIM DA VALIDACAO DE IDADE
+
+                printf("Sexo [Masculino/Feminino]: ");
+                scanf("%s", &sexo);
+                printf("CPF: ");
+                scanf("%d", &cpf);
+                printf("Endereco: ");
+                scanf("%s", &endereco);
+                printf("Numero - Carteira de trabalho: ");
+                scanf("%d", &ctps);
+                printf("Colaborador cadastrado com sucesso!");
+                goto cadastros;
 
         }else if (resp == 2){
 
