@@ -1,8 +1,9 @@
 #include <stdio.h>
-#include <string.h>
-#include <unistd.h>
+#include <stdlib.h>
+#include <locale.h> // Biblioteca para usar acentos no programa
 
 int main(void){
+    setlocale(LC_ALL,""); // código para setar os acentos no programa
     // Variaveis de loguin
     char login[8];
     char *senha[8];
