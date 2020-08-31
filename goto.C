@@ -9,11 +9,8 @@ int main(void){
     char *senha[8];
 
     // Variaveis de cadastro e consulta
-
     char nome[40], endereco[40], sexo[0];
     int idade, cpf, ctps;
-
-
     /*
     telalog:
     printf("Digite seu login -> ");
@@ -22,7 +19,6 @@ int main(void){
     scanf("%s", &senha);
     */
 // MENU INICIAR
-
     iniciar:
         system("cls");
         printf("**********************************************\n");
@@ -34,25 +30,32 @@ int main(void){
         printf("Resposta -> ");
         scanf("%d", &resp); // Comando de entrada responsavel por guardar a resposta na variavel "resp"
 
-        // Bloco condicional
-        if (resp == 1) {
-            goto cadastros; // Salta para a tela de cadastros
-        }else if (resp == 2){
-            goto consultas; // Salta para a tela de consultas
-        }else if (resp == 3){
-            goto reclamacoes; // Salta para a tela de reclamações
-        }else if (resp == 4){
-            goto relatorios; // Salta para a tela de relatorios
-        }else if (resp == 5){
-            goto tichamados; // Salta para a tela de chamados para a equipe de Ti
-        }else if (resp == 0){
-            exit(0); // Encerra o programa
-        }else{
-            goto iniciar;
+        // Bloco de escolha
+        switch(resp){
+            case 1:
+                goto cadastros; // Salta para a tela de cadastros
+                break;
+            case 2:
+                goto consultas; // Salta para a tela de consultas
+                break;
+            case 3:
+                goto reclamacoes; // Salta para a tela de reclamações
+                break;
+            case 4:
+                goto relatorios; // Salta para a tela de relatorios
+                break;
+            case 5:
+                goto tichamados; // Salta para a tela de chamados para a equipe de Ti
+                break;
+            case 0:
+                exit(0); // Encerra o programa
+                break;
+            default:
+                goto iniciar; // Salta para o inicio
+                break;
         }
 
 //AREA - TELA DE CADASTROS GERAIS INCLUINDO CONSULTA DOS MESMOS
-
     cadastros:
         system("cls");
         printf("**********************************************\n");
@@ -64,13 +67,12 @@ int main(void){
         printf("Resposta -> ");
         scanf("%d", &resp);
 
+        // Bloco condicional
         if (resp == 1){
 			system("cls");
             printf("Idade: ");
             scanf("%d", &idade);
-
             // validação de idade para cadastro
-
             if (idade < 18){
                 char validacao;
                 printf("\nEste colaborador ainda nao possui idade superior ou equivalente a 18.\nDeseja prosseguir com o cadastro mesmo assim?[S/N]: ");
@@ -80,13 +82,14 @@ int main(void){
                 }else if (validacao == 'S' || validacao == 's'){
                     printf("");
                 }else{
-                    printf("Opcao invalida! Tente novamente.");
+                    printf("Opcao invalida! Tente novamente. ");
+                    system("pause");
                     goto cadastros;
 				}
-            }// fim da valicidação de idade.
+            }
+            // fim da valicidação de idade.
 
 			// Bloco cadastro
-
             printf("\nNome do funcionario: ");
             scanf("%s" , &nome);
             printf("\nSexo [M/F]: ");
@@ -104,11 +107,11 @@ int main(void){
 
         }else if (resp == 2){
 
+            // Declaração de variaveis locais.
+            char nomemae[40];
+            int numconvenio, telefonecontato;
+
             // Cadastro do paciente
-
-            char nomemae[40]; // Variavel Local.
-            int numconvenio, telefonecontato;// Variavel Local
-
             system("cls");
             printf("\nNome do paciente: ");
             scanf("%s", &nome);
@@ -129,22 +132,22 @@ int main(void){
 
         }else if (resp == 3){
 
+            // Declaração de variavel local
+            int diploma;
+
             // Cadastro do médico
-
-            int diploma; // Variavel Local
-
             system("cls");
             printf("Idade: ");
             scanf("%d", &idade);
 
             // validação de idade para cadastro
-
             if (idade < 21){
                 char validacao;
                 printf("\nEste colaborador ainda nao possui idade superior ou equivalente a 21 anos.\nNao pode ser cadastrado!\n");
                 system("pause");
                 goto cadastros;
-            } // Fim validação de idade
+            }
+            // Fim validação de idade
 
             printf("\nNome do medico: ");
             scanf("%s" , &nome);
@@ -159,6 +162,9 @@ int main(void){
             printf("\nNumeracao do diploma em medicina: ");
             scanf("%d", &diploma);
 
+            printf("\nMedico cadastrado com sucesso!"); // Fim do cadastro médico
+
+            goto cadastros; // Salta para a tela de cadastros
         }else if (resp == 4){
 
         }else if (resp == 9){
@@ -170,7 +176,6 @@ int main(void){
         }
 
 // TELA DE CONSULTAS GERAIS
-
     consultas:
         system("cls");
         printf("**********************************************\n");
@@ -181,6 +186,7 @@ int main(void){
         printf("Resposta -> ");
         scanf("%d", &resp);
 
+        // Bloco Condicional
         if (resp == 1){
 
         }else if (resp == 2){
@@ -196,7 +202,6 @@ int main(void){
         }
 
 //TELA - AREA DE RECLAMACOES E SUGESTOES
-
     reclamacoes:
         system("cls");
         printf("**********************************************\n");
@@ -207,6 +212,7 @@ int main(void){
         printf("Resposta -> ");
         scanf("%d", &resp);
 
+        // Bloco condicional
         if (resp == 1){
 
         }else if (resp == 2){
@@ -227,7 +233,6 @@ int main(void){
 
 //TELA - ABA DE RELATORIOS
     relatorios:
-
         system("cls");
         printf("**********************************************\n");
         printf("\n*      BEM VINDO A AREA DE RELATORIOS!       *\n\n");
@@ -238,6 +243,7 @@ int main(void){
         printf("Resposta -> ");
         scanf("%d", &resp);
 
+        //Bloco condicional
         if (resp == 1){
 
         }else if (resp == 2){
@@ -255,7 +261,6 @@ int main(void){
         }else{
             goto relatorios;
         }
-
     tichamados:
         system("cls");
         printf("**********************************************\n");
@@ -266,8 +271,11 @@ int main(void){
         printf("Resposta -> ");
         scanf("%d", &resp);
 
-        int tipofalha;		// Variavel local
-		char sistemaafetado[35], resumofalha[100], localfalha[30], resplocal; // Variavel local
+        // Declaração de variavel local
+        int tipofalha;
+		char sistemaafetado[35], resumofalha[255], localfalha[30], resplocal;
+
+		// Bloco condicional
         system("cls");
         if (resp == 1){
             printf("\n[1] - Falha Sistemica. [2] Falha na infra da empresa.\n\n");
@@ -278,12 +286,9 @@ int main(void){
                 scanf("%s", &sistemaafetado);
 				printf("Resumo da falha(max 100 caracteres): ");
 				scanf("%s", &resumofalha);
-
 				printf("\nGerando protocolo do chamado...");
 				printf("");
-
 				goto tichamados; // Salta para a tela de chamados.
-
             }else if(tipofalha == 2){
 				printf("\nLocal da falha: ");
 				scanf("%s", &localfalha);
@@ -300,7 +305,6 @@ int main(void){
                 printf("Tipo de falha nao localizado ou inexistente. Tente novamente.");
                 goto tichamados;
             }
-
         }else if (resp == 2){
 
         }else{
