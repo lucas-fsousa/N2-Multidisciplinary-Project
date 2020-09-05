@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <stdbool.h>
 #include <locale.h> // Biblioteca para usar acentos no programa
+
 
 int main(void){
     setlocale(LC_ALL,""); // código para setar os acentos no programa
@@ -53,7 +55,7 @@ int main(void){
     cadastros:
         system("cls");
         printf("**********************************************\n");
-        printf("\n*   BEM VINDO AO CADASTRO DE FUNCIONARIOS!   *\n\n");
+        printf("\n*      BEM VINDO A TELA DE CADASTROS!       *\n\n");
         printf("**********************************************\n\n");
         printf("[1] - Cadastrar um novo funcionario.\n\n[2] - Cadastrar um novo paciente.\n\n[3] - Cadastrar um novo medico.\n\n");
         printf("[4] - Cadastro de agendamento clinico.\n\n");
@@ -104,7 +106,7 @@ int main(void){
             printf("\nNumero - Carteira de trabalho: ");
             scanf("%s", &ctps);
 
-            itoa(idade, idadeString, 10); // Converte um inteiro para String.
+//            string(itoa(idade, idadeString, 10)); // Converte um inteiro para String.
             strcat(cadastro, cpf); // Concatena o cpf no cadastro
             strcat(cadastro, ext); // Concatena o cpf com a extensão txt no cadastro;
             file = fopen(cadastro, "a"); // Abre o arquivo para adicionar valores.
@@ -112,28 +114,28 @@ int main(void){
             //Acrescentando informaçoes no arquivo de texto.
             fputs("NOME: ", file);
             fputs(nome, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nIDADE: ", file);
             fputs(idadeString, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nSEXO: ", file);
             fputs(sexo, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nENDERECO: ", file);
             fputs(endereco, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nCARTEIRA DE TRABALHO: ", file);
             fputs(ctps, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);;
             fputs("\nCPF: ", file);
             fputs(cpf, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nTELEFONE DE CONTATO: ", file);
             fputs(telefonecontato, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nTIPO: FUNCIONARIO", file);
             fputs("\n", file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fclose(file); // Fecha o arquivo de texto
             printf("\nColaborador cadastrado com sucesso!\n"); // Finaliza cadastro informando sucesso para o usuario.
 
@@ -164,7 +166,7 @@ int main(void){
             printf("\nCPF: ");
             scanf("%s", &cpf);
 
-            itoa(idade, idadeString, 10); // Converte um inteiro para String.
+//            itoa(idade, idadeString, 10); // Converte um inteiro para String.
             strcat(cadastro, cpf); // Acrescenta o CPF a variavel de cadastro
             strcat(cadastro, ext); // Concatena o cpf com a extensão txt a variavel de cadastro;
             file = fopen(cadastro, "a"); // Abre o arquivo para adicionar valores.
@@ -172,33 +174,33 @@ int main(void){
             //Acrescentando informaçoes no arquivo de texto.
             fputs("NOME: ", file);
             fputs(nome, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nNOME DA MAE: ", file);
             fputs(nomemae, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nIDADE: ", file);
             fputs(idadeString, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nSEXO: ", file);
             fputs(sexo, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nENDERECO: ", file);
             fputs(endereco, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nCARTAO DE CONVENIO: ", file);
             fputs(numconvenio, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nCPF: ", file);
             fputs(cpf, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nTELEFONE DE CONTATO: ", file);
             fputs(telefonecontato, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nTIPO: PACIENTE", file);
             fputs("\n", file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fclose(file); // Fecha o arquivo
-            printf("Cliente cadastrado com sucesso!"); // Fim Cadastro do paciente
+            printf("\nCliente cadastrado com sucesso!\n"); // Fim Cadastro do paciente
 
             system("pause"); // Pausa a tela para que o usuario seja capaz de visualizar as informaçoes;
             goto cadastros; // Direciona o usuario para tela de cadastros
@@ -237,7 +239,7 @@ int main(void){
             printf("\nNumeracao do diploma em medicina: ");
             scanf("%s", &diploma);
 
-            itoa(idade, idadeString, 10); // Converte um inteiro para String.
+//            itoa(idade, idadeString, 10); // Converte um inteiro para String.
             strcat(cadastro, cpf); // Acrescenta o CPF a variavel de cadastro
             strcat(cadastro, ext); // Concatena o cpf com a extensão;
             file = fopen(cadastro, "a"); // Abre o arquivo para adicionar valores.
@@ -245,33 +247,33 @@ int main(void){
             //Acrescentando informaçoes no arquivo de texto.
             fputs("NOME: ", file);
             fputs(nome, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nIDADE: ", file);
             fputs(idadeString, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nSEXO: ", file);
             fputs(sexo, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nENDERECO: ", file);
             fputs(endereco, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nCARTEIRA DE TRABALHO: ", file);
             fputs(ctps, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nCPF: ", file);
             fputs(cpf, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nNUMERACAO DO DIPLOMA MEDICO: ", file);
             fputs(diploma, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nTELEFONE DE CONTATO: ", file);
             fputs(telefonecontato, file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("\nTIPO: MEDICO", file);
             fputs("\n", file);
-            fputs("----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fclose(file); // Fecha o arquivo
-            printf("\nMedico cadastrado com sucesso!"); // Fim do cadastro médico
+            printf("\nMedico cadastrado com sucesso!\n"); // Fim do cadastro médico
 
             system("pause"); // Pausa a tela para que o usuario visualize as informações.
             goto cadastros; // Direciona o usuario para a tela de cadastros.
@@ -280,14 +282,23 @@ int main(void){
             system("cls"); // Limpa a tela
 
             // Declarando variaveis
-            char datahora[10], cadastro[50] = "";
+            char datahora[25] = "", cadastro[50] = "", nome[40] = "";
 
             // Entrada de dados do usuario
-            printf("Nome do paciente: ");
-            scanf("%s", &nome);
             printf("\nCPF do paciente: ");
             scanf("%s", &cpf);
-            printf("\nHorario de agendamento(formato hh:mm:ss): ");
+            strcat(cpf, ext);
+
+            // Valida se o paciente já está cadastrado no sistema.
+            if (file = fopen(cpf, "r")){
+                printf("\n");
+            }else{
+                printf("Paciente ainda nao cadastrado! Favor realizar o cadastro primeiramente.\n");
+                goto cadastros;
+            }
+            printf("Nome do paciente: ");
+            scanf("%s", &nome);
+            printf("\nData\Hora do agendamento(formato DD/MM/AA - hh:mm:ss): ");
             scanf("%s", &datahora);
             printf("\nGerando ordem de serviço... ");
 
@@ -301,7 +312,7 @@ int main(void){
                     n *= rand() % 100; // N recebera ele mesmo multiplicado pelo numero aleatório gerado
                 }
             }
-            itoa(n, os, 10); // Converte os varelos de inteiros para string
+//            itoa(n, os, 10); // Converte os varelos de inteiros para string
             printf("Numero da OS: %s\n", os); // Informa ao usuario o numero gerado
             strcat(cadastro, "agendamentos\\"); // Acrescenta o caminho de onde serão salvos as informações
             strcat(cadastro, os);
@@ -310,16 +321,16 @@ int main(void){
             file = fopen(cadastro, "a"); // Abre o arquivo de texto.
             fputs("Nome do paciente: ", file);
             fputs(nome, file);
-            fputs("\n----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("CPF DO PACIENTE: ", file);
             fputs(cpf, file);
-            fputs("\n----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("HORARIO DO AGENDAMENTO: ", file);
             fputs(datahora, file);
-            fputs("\n----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fputs("ORDEM DE SERVICO: ", file);
             fputs(os, file);
-            fputs("\n----------------------------------------------------\n", file);
+            fputs("\n----------------------------------------------------", file);
             fclose(file); // Fecha o arquivo de texto
 
             printf("\nAgendamento concluido com sucesso!\n");
@@ -337,8 +348,8 @@ int main(void){
         system("cls");
         printf("**********************************************\n");
         printf("\n*       BEM VINDO A AREA DE CONSULTAS!       *\n\n");
-        printf(" **********************************************\n\n");
-        printf("[1] - Consultar ficha de um colaborador[medico | funcionario].\n\n[2] - Consultar ficha do cliente.\n\n");
+        printf("**********************************************\n\n");
+        printf("[1] - Consultar ficha de um colaborador [medico | funcionario].\n\n[2] - Consultar ficha do cliente.\n\n");
         printf("[3] - Consultar agendamentos.\n\n[0] - Voltar ao menu inicial\n\n");
         printf("Resposta -> ");
         scanf("%d", &resp);
@@ -358,7 +369,7 @@ int main(void){
             strcat(cadastro, ext);
             file = fopen(cadastro, "r");
             if(file == NULL){
-                printf("Arquivo nao localizado!\n");
+                printf("\nCadastro nao localizado!\n");
                 exit(0);
             }
             while(fgets(frase, 500, file) != NULL){
@@ -382,8 +393,8 @@ int main(void){
             strcat(cadastro, ext);
             file = fopen(cadastro, "r");
             if(file == NULL){
-                printf("Arquivo nao localizado!\n");
-                exit(0);
+                printf("Cadastro nao localizado!\n");
+                goto consultas;
             }
             while(fgets(frase, 500, file) != NULL){
                 printf("%s", frase);
@@ -406,14 +417,21 @@ int main(void){
 
             file = fopen(cadastro, "r"); // Abre o arquivo de texto
             if(file == NULL){
-                printf("Arquivo nao localizado!\n");
-                exit(0);
+                printf("\nOrdem de servico nao localizada!\n");
+                goto consultas;
             }
             while(fgets(frase, 500, file) != NULL){
                 printf("%s", frase);
             }
             fclose(file);
-            printf("\n")
+            printf("\n");
+            printf("Deseja dar baixa no agendamento? [0 - para SIM / 1 - para NAO]: ");
+            scanf("%d", &resp);
+            if (resp == 0){
+                file = fopen(cadastro, "a");
+                fputs("STATUS: CONCLUIDO!", file);
+                fclose(file);
+            }
             system("pause"); // Pausa a tela para o usuario conseguir ler as informaçoes;
 
         }else if (resp == 0){
@@ -428,23 +446,37 @@ int main(void){
         printf("**********************************************\n");
         printf("\n*       BEM VINDO A AREA DE SUGESTOES!       *\n\n");
         printf(" **********************************************\n\n");
-        printf("[1] - Registrar uma reclamacao.\n\n[2] - Consultar uma reclamacao.\n\n[3] - Registar um elogio.\n\n");
-        printf("[4] - Consultar um elogio.\n\n[5] - Registar uma sugestao.\n\n[6] - Consultar uma sugestao.\n\n[0] - Voltar ao menu inicial\n\n");
+        printf("[1] - Registrar uma reclamacao/Sugestao/Elogio.\n\n[2] - Consultar uma reclamacao/Sugestao/Elogio.\n\n");
+        printf("[0] - Voltar ao menu inicial\n\n");
         printf("Resposta -> ");
         scanf("%d", &resp);
 
         // Bloco condicional
         if (resp == 1){
+            char resenha[255], categoria[15];
+            printf("Para prosseguir informe a categoria.\n");
+            printf("Sugestao/Elogio/Critica: ");
+            scanf("%s", &categoria);
+            printf("%s: ",categoria);
+            scanf("%s", &resenha);
+
+            strcat(categoria, ext); // Concatena a extensao com o nome do arquivo.
+            file = fopen(categoria, "a"); // Abre o arquivo de texto.
+
+            // Acrescentando informacoes ao bloco de texto.
+            fputs("CATEGORIA: ", file);
+            fputs(categoria, file);
+            fputs("\n----------------------------------------------------", file);
+            fputs("RESENHA: ", file);
+            fputs(resenha, file);
+            fputs("\n----------------------------------------------------", file);
+            fclose(file); // Fecha o arquivo de texto
+            printf("%s registrada com sucesso!\n", categoria);
+
+            system("pause"); // Pausa o sistem para que o osuario visualize as informacoes
+            goto reclamacoes; // Direciona o usuario para o setor de reclamacoes
 
         }else if (resp == 2){
-
-        }else if (resp == 3){
-
-        }else if (resp == 4){
-
-        }else if (resp == 5){
-
-        }else if (resp == 6){
 
         }else if (resp == 0){
             goto iniciar;
@@ -523,13 +555,13 @@ int main(void){
 				printf("");
 				goto tichamados;
             }else{
-                printf("Tipo de falha nao localizado ou inexistente. Tente novamente.");
+                printf("\nTipo de falha nao localizado ou inexistente. Tente novamente.\n");
                 goto tichamados;
             }
         }else if (resp == 2){
 
         }else{
-            printf("Opcao inexistente");
+            printf("\nOpcao inexistente.\n");
             goto tichamados;
         }
 }
