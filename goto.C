@@ -5,20 +5,81 @@
 #include <stdbool.h>
 #include <locale.h> // Biblioteca para usar acentos no programa
 
+int validaridade(int testIdade){
+    // Declaração de variavel local
+    if (testIdade < 21){
+        // Entrada de dados do usuario
+        printf("\nEste colaborador ainda nao possui idade superior ou equivalente a 21.");
+        exit(0);
+    }
+}
+// Funcao de pausar a tela
+void pause(){
+    char pausar[3];
+    printf("\nPressione qualquer tecla para continuar...\n");
+    scanf("%c", &pausar);
+    getchar();
+}
 
+// Funcao de limpar tela
+void limpatela(){
+    if (system("cls")){
+        system("clear");
+    }else{
+        system("cls");
+    }
+}
+
+// Funcao de gear numero aleatorio
+char gerarOS(){
+    int i, n;
+    char os[15], fn[15];
+    while(n <= 99999999){
+        for (i = 0; i <=10; i++){ // Gera 10 numero aleatorios
+            n *= rand() % 100; // N recebera ele mesmo multiplicado pelo numero aleatório gerado
+        }
+    }
+//    itoa(num, os, 10);
+//    return os;
+}
+
+// Funcao para resetar as strings.
+void resetaString(){
+    char os[15] = "", fn[15] = "", nome[40] = "", endereco[40] = "", sexo[10] = "", cadastro[50] = "";
+    char cpf[12] = "", ctps[25] = "", idadeString[20] = "", telefonecontato[15] = "", frase[500] = "";
+}
+
+// Funcao que le as informacoes no bloco de texto.
+char leitura(char ler[70]){
+    FILE *file;
+    char frase[500];
+    file = fopen(ler, "r");
+    if(file == NULL){
+        printf("\nCadastro nao localizado!\n");
+    }
+    while(fgets(frase, 500, file) != NULL){
+        printf("%s", frase);
+    }
+    fclose(file);
+}
+
+char cadatrar(char cadastro[70])
+
+// Codigo principal
 int main(void){
     setlocale(LC_ALL,""); // código para setar os acentos no programa
 
     // Variaveis globais.
     FILE *file;
-    char nome[40], endereco[40], sexo[10], cadastro[50], ext[5] = ".txt";
+    char nome[40], endereco[40], sexo[10], cadastro[70] = "", ext[5] = ".txt";
     char cpf[12], ctps[25], idadeString[20], telefonecontato[15] = "";
-    int idade;
+    char os[15], fn[15], frase[500];;
+    int idade, numos;
 
     iniciar:
-        system("cls");
+        limpatela();
         printf("**********************************************\n");
-        printf("\n*         BEM VINDO AO MENU INICIAL!         *\n\n");
+        printf("*         BEM VINDO AO MENU INICIAL!         *\n");
         printf("**********************************************\n\n");
         int resp;
         printf("[1] - Cadastros Gerais.\n\n[2] - Consultas Gerais.\n\n[3] - Reclamacoes e elogios.\n\n[4] - Relatorios.\n\n[5] - Abrir chamado para a equipe de TI");
@@ -27,35 +88,30 @@ int main(void){
         scanf("%d", &resp); // Comando de entrada responsavel por guardar a resposta na variavel "resp"
 
         // Bloco de escolha
-        switch(resp){
-            case 1:
-                goto cadastros; // Salta para a tela de cadastros
-                break;
-            case 2:
-                goto consultas; // Salta para a tela de consultas
-                break;
-            case 3:
-                goto reclamacoes; // Salta para a tela de reclamações
-                break;
-            case 4:
-                goto relatorios; // Salta para a tela de relatorios
-                break;
-            case 5:
-                goto tichamados; // Salta para a tela de chamados para a equipe de Ti
-                break;
-            case 0:
-                exit(0); // Encerra o programa
-                break;
-            default:
-                goto iniciar; // Salta para o inicio
-                break;
+        if (resp == 1){
+            goto cadastros;
+        }else if (resp == 2){
+            goto consultas;
+        }else if (resp == 3){
+            goto reclamacoes;
+        }else if (resp == 4){
+            goto relatorios;
+        }else if (resp == 5){
+            goto tichamados;
+        }else if (resp == 0){
+            printf("Saindo do sistema... Até logo!");
+            exit(0);
+        }else{
+            printf("Resposta inválida!! Tente novamente.");
+            pause();
+            goto iniciar;
         }
 
 //AREA - TELA DE CADASTROS GERAIS INCLUINDO CONSULTA DOS MESMOS
     cadastros:
-        system("cls");
+        limpatela();
         printf("**********************************************\n");
-        printf("\n*      BEM VINDO A TELA DE CADASTROS!       *\n\n");
+        printf("*       BEM VINDO A TELA DE CADASTROS!       *\n");
         printf("**********************************************\n\n");
         printf("[1] - Cadastrar um novo funcionario.\n\n[2] - Cadastrar um novo paciente.\n\n[3] - Cadastrar um novo medico.\n\n");
         printf("[4] - Cadastro de agendamento clinico.\n\n");
@@ -65,34 +121,14 @@ int main(void){
 
         // Bloco condicional
         if (resp == 1){
-            char cadastro[50] = "";
-			system("cls");
+			limpatela(); // Limpa a tela
+			resetaString(); // Reset da variavel cadastro
+			//Entrada de dados do usuario.
             printf("Idade: ");
             scanf("%d", &idade);
-
             // validação de idade para cadastro
-            if (idade < 18){
-                    // Declaração de variavel
-                char validacao;
-
-                    // Entrada de dados do usuario
-                printf("\nEste colaborador ainda nao possui idade superior ou equivalente a 18.\nDeseja prosseguir com o cadastro mesmo assim?[S/N]: ");
-                scanf("%s", &validacao);
-
-                    //Bloco condicional
-                if (validacao == 'N' || validacao == 'n'){ // Se o usuario optar por não cadastrar o menor de idade, o mesmo sera direcionado para o menu iniciar
-                    goto iniciar; // Direciona o usuario para o menu iniciar caso a opcao seja verdadeira.
-                }else if (validacao == 'S' || validacao == 's'){
-                    printf("");
-                }else{
-                    printf("Opcao invalida! Tente novamente. ");
-                    system("pause");
-                    goto cadastros; // Direciona o usuario para o bloco de cadastros caso seja inserida uma opcao invalida
-				}
-            }
-            // fim da valicidação de idade.
-
-			// Bloco cadastro com entrada de dados do usuario
+            validaridade(idade);
+            // Bloco cadastro com entrada de dados do usuario
             printf("\nNome do funcionario: ");
             scanf("%s" , &nome);
             printf("\nSexo [Masculino/Feminino]: ");
@@ -139,14 +175,15 @@ int main(void){
             fclose(file); // Fecha o arquivo de texto
             printf("\nColaborador cadastrado com sucesso!\n"); // Finaliza cadastro informando sucesso para o usuario.
 
-            system("pause"); // Para a tela para que o usuario seja capaz de visualizar as informações
+            pause(); // Para a tela para que o usuario seja capaz de visualizar as informações
             goto cadastros; // Salta diretamente para a tela de cadastros.
+            goto cadastros; // Direciona o usuario para o bloco de cadastros caso seja inserida uma opcao invalida
 
         }else if (resp == 2){
-            char cadastro[50] = "";
+            resetaString();
             char nomemae[40];
-            char numconvenio[25], telefonecontato[15] = "";
-            system("cls");
+            char numconvenio[25];
+            limpatela();
 
             // Entrada de dados do usuario para cadastro do paciente
             printf("\nNome do paciente: ");
@@ -197,20 +234,18 @@ int main(void){
             fputs(telefonecontato, file);
             fputs("\n----------------------------------------------------", file);
             fputs("\nTIPO: PACIENTE", file);
-            fputs("\n", file);
             fputs("\n----------------------------------------------------", file);
             fclose(file); // Fecha o arquivo
             printf("\nCliente cadastrado com sucesso!\n"); // Fim Cadastro do paciente
 
-            system("pause"); // Pausa a tela para que o usuario seja capaz de visualizar as informaçoes;
+            pause(); // Pausa a tela para que o usuario seja capaz de visualizar as informaçoes;
             goto cadastros; // Direciona o usuario para tela de cadastros
 
         }else if (resp == 3){
-            system("cls");
+            limpatela();
 
             // Declaração de variavel local
-            char telefonecontato[15] = "";
-            char cadastro[50] = "";
+            resetaString();
             char diploma[20];
 
             // Cadastro do médico
@@ -218,14 +253,9 @@ int main(void){
             scanf("%d", &idade);
 
             // validação de idade para cadastro
-            if (idade < 21){
-                char validacao;
-                printf("\nEste colaborador ainda nao possui idade superior ou equivalente a 21 anos.\nNao pode ser cadastrado!\n");
-                system("pause");
-                goto cadastros;
-            }
-            // Fim validação de idade
+            validaridade(idade);
 
+            // Entrada de dados do usuario
             printf("\nNome do medico: ");
             scanf("%s" , &nome);
             printf("\nSexo [Masculino/Feminino]: ");
@@ -236,6 +266,8 @@ int main(void){
             scanf("%s", &endereco);
             printf("\nNumero - Carteira de trabalho: ");
             scanf("%s", &ctps);
+            printf("\nTelefone contato com DDD(sem espacos): ");
+            scanf("%s", &telefonecontato);
             printf("\nNumeracao do diploma em medicina: ");
             scanf("%s", &diploma);
 
@@ -270,19 +302,19 @@ int main(void){
             fputs(telefonecontato, file);
             fputs("\n----------------------------------------------------", file);
             fputs("\nTIPO: MEDICO", file);
-            fputs("\n", file);
             fputs("\n----------------------------------------------------", file);
             fclose(file); // Fecha o arquivo
             printf("\nMedico cadastrado com sucesso!\n"); // Fim do cadastro médico
 
-            system("pause"); // Pausa a tela para que o usuario visualize as informações.
+            pause(); // Pausa a tela para que o usuario visualize as informações.
             goto cadastros; // Direciona o usuario para a tela de cadastros.
 
         }else if (resp == 4){
-            system("cls"); // Limpa a tela
+            limpatela(); // Limpa a tela
 
             // Declarando variaveis
-            char datahora[25] = "", cadastro[50] = "", nome[40] = "";
+            resetaString();
+            char datahora[25] = "";
 
             // Entrada de dados do usuario
             printf("\nCPF do paciente: ");
@@ -294,6 +326,7 @@ int main(void){
                 printf("\n");
             }else{
                 printf("Paciente ainda nao cadastrado! Favor realizar o cadastro primeiramente.\n");
+                pause();
                 goto cadastros;
             }
             printf("Nome do paciente: ");
@@ -303,16 +336,7 @@ int main(void){
             printf("\nGerando ordem de serviço... ");
 
             srand(time(NULL)); // Funcao para gerar numeros aleatórios;
-
-            // Declaração de variaveis para o for e o While
-            int i, n;
-            char os[15], fn[15];
-            while(n <= 99999999){
-                for (i = 0; i <=10; i++){ // Gera 10 numero aleatorios
-                    n *= rand() % 100; // N recebera ele mesmo multiplicado pelo numero aleatório gerado
-                }
-            }
-//            itoa(n, os, 10); // Converte os varelos de inteiros para string
+            numos = gerarOS();
             printf("Numero da OS: %s\n", os); // Informa ao usuario o numero gerado
             strcat(cadastro, "agendamentos\\"); // Acrescenta o caminho de onde serão salvos as informações
             strcat(cadastro, os);
@@ -334,7 +358,7 @@ int main(void){
             fclose(file); // Fecha o arquivo de texto
 
             printf("\nAgendamento concluido com sucesso!\n");
-            system("pause"); // Pausa a tela para o usuario conseguir visualizar as informações.
+            pause(); // Pausa a tela para o usuario conseguir visualizar as informações.
             goto cadastros;
 
         }else if (resp == 0){
@@ -345,9 +369,9 @@ int main(void){
 
 // TELA DE CONSULTAS GERAIS
     consultas:
-        system("cls");
+        limpatela(); // Limpa a tela
         printf("**********************************************\n");
-        printf("\n*       BEM VINDO A AREA DE CONSULTAS!       *\n\n");
+        printf("*       BEM VINDO A AREA DE CONSULTAS!       *\n");
         printf("**********************************************\n\n");
         printf("[1] - Consultar ficha de um colaborador [medico | funcionario].\n\n[2] - Consultar ficha do cliente.\n\n");
         printf("[3] - Consultar agendamentos.\n\n[0] - Voltar ao menu inicial\n\n");
@@ -356,10 +380,11 @@ int main(void){
 
         // Bloco Condicional
         if (resp == 1){
-            system("cls"); // limpa a tela
+            limpatela(); // limpa a tela
 
             //Declaração de variavel
-            char cadastro[50] = "", frase[500];
+            resetaString();
+            char frase[500];
 
             // Entrada de dados
             printf("CPF a ser consultado: ");
@@ -367,23 +392,15 @@ int main(void){
             printf("\n");
             //Concatenação da string com a extensão txt
             strcat(cadastro, ext);
-            file = fopen(cadastro, "r");
-            if(file == NULL){
-                printf("\nCadastro nao localizado!\n");
-                exit(0);
-            }
-            while(fgets(frase, 500, file) != NULL){
-                printf("%s", frase);
-            }
-            fclose(file);
-            system("pause");
-            goto cadastros;
+            leitura(cadastro);
+            pause();
+            goto iniciar;
 
         }else if (resp == 2){
-            system("cls"); // limpa a tela
+            resetaString();
+            limpatela(); // limpa a tela
 
             //Declaração de variavel
-            char cadastro[50] = "", frase[500];
 
             // Entrada de dados
             printf("CPF a ser consultado: ");
@@ -400,11 +417,12 @@ int main(void){
                 printf("%s", frase);
             }
             fclose(file);
-            system("pause"); // Pausa a tela para o usuario conseguir absorver as informaçoes
+            pause(); // Pausa a tela para o usuario conseguir absorver as informaçoes
             goto cadastros;
 
         }else if (resp == 3){
-            system("cls");
+            limpatela();
+            resetaString();
             // Declaracao da variavel;
             char os[15] = "", frase[500];
 
@@ -414,16 +432,7 @@ int main(void){
             strcat(cadastro, "agendamentos\\");
             strcat(cadastro, os);
             strcat(cadastro, ext);
-
-            file = fopen(cadastro, "r"); // Abre o arquivo de texto
-            if(file == NULL){
-                printf("\nOrdem de servico nao localizada!\n");
-                goto consultas;
-            }
-            while(fgets(frase, 500, file) != NULL){
-                printf("%s", frase);
-            }
-            fclose(file);
+            leitura(cadastro);
             printf("\n");
             printf("Deseja dar baixa no agendamento? [0 - para SIM / 1 - para NAO]: ");
             scanf("%d", &resp);
@@ -432,7 +441,7 @@ int main(void){
                 fputs("STATUS: CONCLUIDO!", file);
                 fclose(file);
             }
-            system("pause"); // Pausa a tela para o usuario conseguir ler as informaçoes;
+            pause(); // Pausa a tela para o usuario conseguir ler as informaçoes;
 
         }else if (resp == 0){
             goto iniciar;
@@ -442,9 +451,9 @@ int main(void){
 
 //TELA - AREA DE RECLAMACOES E SUGESTOES
     reclamacoes:
-        system("cls");
+        limpatela();
         printf("**********************************************\n");
-        printf("\n*       BEM VINDO A AREA DE SUGESTOES!       *\n\n");
+        printf("*       BEM VINDO A AREA DE SUGESTOES!       *\n");
         printf(" **********************************************\n\n");
         printf("[1] - Registrar uma reclamacao/Sugestao/Elogio.\n\n[2] - Consultar uma reclamacao/Sugestao/Elogio.\n\n");
         printf("[0] - Voltar ao menu inicial\n\n");
@@ -473,7 +482,7 @@ int main(void){
             fclose(file); // Fecha o arquivo de texto
             printf("%s registrada com sucesso!\n", categoria);
 
-            system("pause"); // Pausa o sistem para que o osuario visualize as informacoes
+            pause(); // Pausa o sistem para que o osuario visualize as informacoes
             goto reclamacoes; // Direciona o usuario para o setor de reclamacoes
 
         }else if (resp == 2){
@@ -486,9 +495,9 @@ int main(void){
 
 //TELA - ABA DE RELATORIOS
     relatorios:
-        system("cls");
+        limpatela();
         printf("**********************************************\n");
-        printf("\n*      BEM VINDO A AREA DE RELATORIOS!       *\n\n");
+        printf("*      BEM VINDO A AREA DE RELATORIOS!       *\n");
         printf("**********************************************\n\n");
         printf("[1] - Gerar relatorio de consultas do dia.\n\n[2] - Gerar relatiorio de vendas do dia.\n\n[3] - Gerar relatorio folha ponto do dia.\n\n");
         printf("[4] - Gerar todos os relatorios.\n\n[5] - Exportar relatorio mensal para uma planilha eletronica.\n\n[6] - Consultar relatorio(s) em tela.");
@@ -515,9 +524,9 @@ int main(void){
             goto relatorios;
         }
     tichamados:
-        system("cls");
+        limpatela();
         printf("**********************************************\n");
-        printf("\n*    BEM VINDO A AREA CHAMADOS INTERNOS!     *\n\n");
+        printf("*    BEM VINDO A AREA CHAMADOS INTERNOS!     *\n");
         printf("**********************************************\n\n");
         printf("[1] - Registrar um novo chamado.\n\n[2] - Consultar um chamado existente.\n\n[3] - Cancelar um chamado existente.\n\n");
         printf("[4] - Reabrir chamado encerrado indevidamente.\n\n[0] - Voltar ao menu inicial\n\n");
@@ -529,7 +538,7 @@ int main(void){
 		char sistemaafetado[35], resumofalha[255], localfalha[30], resplocal;
 
 		// Bloco condicional
-        system("cls");
+        limpatela();
         if (resp == 1){
             printf("\n[1] - Falha Sistemica. [2] Falha na infra da empresa.\n\n");
             printf("Resposta -> ");
@@ -564,4 +573,5 @@ int main(void){
             printf("\nOpcao inexistente.\n");
             goto tichamados;
         }
+
 }
