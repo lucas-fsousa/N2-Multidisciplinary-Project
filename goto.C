@@ -2,15 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <stdexcept>
 #include <stdbool.h>
 #include <locale.h> // Biblioteca para usar acentos no programa
 
+// Funcao para validar idade.
 int validaridade(int testIdade){
     // Declaração de variavel local
     if (testIdade < 21){
         // Entrada de dados do usuario
-        printf("\nEste colaborador ainda nao possui idade superior ou equivalente a 21.");
-        exit(0);
+        printf("\nEste colaborador ainda nao possui idade superior ou equivalente a 21.\n");
+        return 0;
     }
 }
 // Funcao de pausar a tela
@@ -63,11 +65,44 @@ char leitura(char ler[70]){
     fclose(file);
 }
 
-char cadatrar(char cadastro[70])
+char cadastrar(char initcadastro[70], char nome[40], char idadeString[5], char sexo[15], char endereco[40], char cpf[16], char telcont[20]){
+    FILE *file;
+    file = fopen(initcadastro, "a"); // Abre o arquivo para adicionar valores.
 
+    //Acrescentando informaçoes no arquivo de texto.
+    fputs("NOME: ", file);
+    fputs(nome, file);
+    fputs("\n----------------------------------------------------", file);
+    fputs("\nIDADE: ", file);
+    fputs(idadeString, file);
+    fputs("\n----------------------------------------------------", file);
+    fputs("\nSEXO: ", file);
+    fputs(sexo, file);
+    fputs("\n----------------------------------------------------", file);
+    fputs("\nENDERECO: ", file);
+    fputs(endereco, file);
+    fputs("\n----------------------------------------------------", file);
+    fputs("\nCPF: ", file);
+    fputs(cpf, file);
+    fputs("\n----------------------------------------------------", file);
+    fputs("\nTELEFONE DE CONTATO: ", file);
+    fputs(telcont, file);
+    fputs("\n----------------------------------------------------", file);
+    fclose(file);
+}
+
+// Funcao para criar pasta padrao do sistema.
+void criarpastas(){
+    system("mkdir funcionarios");
+    system("mkdir agendamentos");
+    system("mkdir ti-os-chamados");
+    system("mkdir pacientes");
+}
 // Codigo principal
 int main(void){
     setlocale(LC_ALL,""); // código para setar os acentos no programa
+    //Criando pastadas do sistema.
+    criarpastas();
 
     // Variaveis globais.
     FILE *file;
@@ -88,23 +123,30 @@ int main(void){
         scanf("%d", &resp); // Comando de entrada responsavel por guardar a resposta na variavel "resp"
 
         // Bloco de escolha
-        if (resp == 1){
-            goto cadastros;
-        }else if (resp == 2){
-            goto consultas;
-        }else if (resp == 3){
-            goto reclamacoes;
-        }else if (resp == 4){
-            goto relatorios;
-        }else if (resp == 5){
-            goto tichamados;
-        }else if (resp == 0){
-            printf("Saindo do sistema... Até logo!");
-            exit(0);
-        }else{
-            printf("Resposta inválida!! Tente novamente.");
-            pause();
-            goto iniciar;
+        switch(resp){
+            case 1:
+                goto cadastros;
+                break;
+            case 2:
+                goto consultas;
+                break;
+            case 3:
+                goto reclamacoes;
+                break;
+            case 4:
+                goto relatorios;
+                break;
+            case 5:
+                goto tichamados;
+                break;
+            case 0:
+                printf("Saindo do sistema... Até logo!\n");
+                exit(0);
+                break;
+            default:
+                printf("Resposta inválida!! Tente novamente.");
+                pause();
+                goto iniciar;
         }
 
 //AREA - TELA DE CADASTROS GERAIS INCLUINDO CONSULTA DOS MESMOS
@@ -127,7 +169,10 @@ int main(void){
             printf("Idade: ");
             scanf("%d", &idade);
             // validação de idade para cadastro
-            validaridade(idade);
+            if (validaridade(idade) == 0){
+                pause();
+                goto iniciar;
+            }
             // Bloco cadastro com entrada de dados do usuario
             printf("\nNome do funcionario: ");
             scanf("%s" , &nome);
@@ -143,31 +188,22 @@ int main(void){
             scanf("%s", &ctps);
 
 //            string(itoa(idade, idadeString, 10)); // Converte um inteiro para String.
+            if (system("mkdir funcionarios/") == false){
+                strcat(cadastro, "funcionarios\\");
+                limpatela();
+            }else{
+                strcat(cadastro, "funcionarios/");
+                limpatela();
+            }
             strcat(cadastro, cpf); // Concatena o cpf no cadastro
             strcat(cadastro, ext); // Concatena o cpf com a extensão txt no cadastro;
-            file = fopen(cadastro, "a"); // Abre o arquivo para adicionar valores.
 
-            //Acrescentando informaçoes no arquivo de texto.
-            fputs("NOME: ", file);
-            fputs(nome, file);
-            fputs("\n----------------------------------------------------", file);
-            fputs("\nIDADE: ", file);
-            fputs(idadeString, file);
-            fputs("\n----------------------------------------------------", file);
-            fputs("\nSEXO: ", file);
-            fputs(sexo, file);
-            fputs("\n----------------------------------------------------", file);
-            fputs("\nENDERECO: ", file);
-            fputs(endereco, file);
-            fputs("\n----------------------------------------------------", file);
+            //Acrescentando informaçoes basicas de cadastro no arquivo de texto.
+            cadastrar(cadastro, nome, idadeString, sexo, endereco, cpf, telefonecontato);
+            //Acrescentando demais informacoes no cadastro.
+            file = fopen(cadastro, "a");
             fputs("\nCARTEIRA DE TRABALHO: ", file);
             fputs(ctps, file);
-            fputs("\n----------------------------------------------------", file);;
-            fputs("\nCPF: ", file);
-            fputs(cpf, file);
-            fputs("\n----------------------------------------------------", file);
-            fputs("\nTELEFONE DE CONTATO: ", file);
-            fputs(telefonecontato, file);
             fputs("\n----------------------------------------------------", file);
             fputs("\nTIPO: FUNCIONARIO", file);
             fputs("\n", file);
@@ -177,7 +213,6 @@ int main(void){
 
             pause(); // Para a tela para que o usuario seja capaz de visualizar as informações
             goto cadastros; // Salta diretamente para a tela de cadastros.
-            goto cadastros; // Direciona o usuario para o bloco de cadastros caso seja inserida uma opcao invalida
 
         }else if (resp == 2){
             resetaString();
@@ -204,39 +239,31 @@ int main(void){
             scanf("%s", &cpf);
 
 //            itoa(idade, idadeString, 10); // Converte um inteiro para String.
-            strcat(cadastro, cpf); // Acrescenta o CPF a variavel de cadastro
-            strcat(cadastro, ext); // Concatena o cpf com a extensão txt a variavel de cadastro;
-            file = fopen(cadastro, "a"); // Abre o arquivo para adicionar valores.
+            if (system("mkdir pacientes/") == false){
+                strcat(cadastro, "pacientes\\");
+                limpatela();
+            }else{
+                strcat(cadastro, "pacientes/");
+                limpatela();
+            }
+            strcat(cadastro, cpf); // Concatena o cpf no cadastro
+            strcat(cadastro, ext); // Concatena o cpf com a extensão txt no cadastro;
 
-            //Acrescentando informaçoes no arquivo de texto.
-            fputs("NOME: ", file);
-            fputs(nome, file);
-            fputs("\n----------------------------------------------------", file);
+            //Acrescentando informacoes basicas do cadastro atraves da funcao.
+            cadastrar(cadastro, nome, idadeString, sexo, endereco, cpf, telefonecontato);
+
+            //Acrescentando demais informaçoes no arquivo de texto.
+            file = fopen(cadastro, "a");
             fputs("\nNOME DA MAE: ", file);
             fputs(nomemae, file);
-            fputs("\n----------------------------------------------------", file);
-            fputs("\nIDADE: ", file);
-            fputs(idadeString, file);
-            fputs("\n----------------------------------------------------", file);
-            fputs("\nSEXO: ", file);
-            fputs(sexo, file);
-            fputs("\n----------------------------------------------------", file);
-            fputs("\nENDERECO: ", file);
-            fputs(endereco, file);
             fputs("\n----------------------------------------------------", file);
             fputs("\nCARTAO DE CONVENIO: ", file);
             fputs(numconvenio, file);
             fputs("\n----------------------------------------------------", file);
-            fputs("\nCPF: ", file);
-            fputs(cpf, file);
-            fputs("\n----------------------------------------------------", file);
-            fputs("\nTELEFONE DE CONTATO: ", file);
-            fputs(telefonecontato, file);
-            fputs("\n----------------------------------------------------", file);
             fputs("\nTIPO: PACIENTE", file);
             fputs("\n----------------------------------------------------", file);
             fclose(file); // Fecha o arquivo
-            printf("\nCliente cadastrado com sucesso!\n"); // Fim Cadastro do paciente
+            printf("\nPaciente cadastrado com sucesso!\n"); // Fim Cadastro do paciente
 
             pause(); // Pausa a tela para que o usuario seja capaz de visualizar as informaçoes;
             goto cadastros; // Direciona o usuario para tela de cadastros
@@ -272,34 +299,26 @@ int main(void){
             scanf("%s", &diploma);
 
 //            itoa(idade, idadeString, 10); // Converte um inteiro para String.
-            strcat(cadastro, cpf); // Acrescenta o CPF a variavel de cadastro
-            strcat(cadastro, ext); // Concatena o cpf com a extensão;
-            file = fopen(cadastro, "a"); // Abre o arquivo para adicionar valores.
+            if (system("mkdir funcionarios/") == false){
+                strcat(cadastro, "funcionarios\\");
+                limpatela();
+            }else{
+                strcat(cadastro, "funcionarios/");
+                limpatela();
+            }
+            strcat(cadastro, cpf); // Concatena o cpf no cadastro
+            strcat(cadastro, ext); // Concatena o cpf com a extensão txt no cadastro;
 
-            //Acrescentando informaçoes no arquivo de texto.
-            fputs("NOME: ", file);
-            fputs(nome, file);
-            fputs("\n----------------------------------------------------", file);
-            fputs("\nIDADE: ", file);
-            fputs(idadeString, file);
-            fputs("\n----------------------------------------------------", file);
-            fputs("\nSEXO: ", file);
-            fputs(sexo, file);
-            fputs("\n----------------------------------------------------", file);
-            fputs("\nENDERECO: ", file);
-            fputs(endereco, file);
-            fputs("\n----------------------------------------------------", file);
+            // Acrescentando informacoes basicas do cadastro atraves de funcao.
+            cadastrar(cadastro, nome, idadeString, sexo, endereco, cpf, telefonecontato);
+
+            //Acrescentando demais informaçoes no arquivo de texto.
+            file = fopen(cadastro, "a");
             fputs("\nCARTEIRA DE TRABALHO: ", file);
             fputs(ctps, file);
             fputs("\n----------------------------------------------------", file);
-            fputs("\nCPF: ", file);
-            fputs(cpf, file);
-            fputs("\n----------------------------------------------------", file);
             fputs("\nNUMERACAO DO DIPLOMA MEDICO: ", file);
             fputs(diploma, file);
-            fputs("\n----------------------------------------------------", file);
-            fputs("\nTELEFONE DE CONTATO: ", file);
-            fputs(telefonecontato, file);
             fputs("\n----------------------------------------------------", file);
             fputs("\nTIPO: MEDICO", file);
             fputs("\n----------------------------------------------------", file);
@@ -315,14 +334,21 @@ int main(void){
             // Declarando variaveis
             resetaString();
             char datahora[25] = "";
-
+            if (system("mkdir pacientes/") == false){
+                strcat(cadastro, "pacientes\\");
+                limpatela();
+            }else{
+                strcat(cadastro, "pacientes/");
+                limpatela();
+            }
             // Entrada de dados do usuario
             printf("\nCPF do paciente: ");
             scanf("%s", &cpf);
-            strcat(cpf, ext);
+            strcat(cadastro, cpf);
+            strcat(cadastro, ext);
 
             // Valida se o paciente já está cadastrado no sistema.
-            if (file = fopen(cpf, "r")){
+            if (file = fopen(cadastro, "r")){
                 printf("\n");
             }else{
                 printf("Paciente ainda nao cadastrado! Favor realizar o cadastro primeiramente.\n");
@@ -336,9 +362,9 @@ int main(void){
             printf("\nGerando ordem de serviço... ");
 
             srand(time(NULL)); // Funcao para gerar numeros aleatórios;
-            numos = gerarOS();
-            printf("Numero da OS: %s\n", os); // Informa ao usuario o numero gerado
-            strcat(cadastro, "agendamentos\\"); // Acrescenta o caminho de onde serão salvos as informações
+//            numos = gerarOS();
+//            printf("Numero da OS: %s\n", os); // Informa ao usuario o numero gerado
+            strcat(cadastro, "agendamentos/"); // Acrescenta o caminho de onde serão salvos as informações
             strcat(cadastro, os);
             strcat(cadastro, ext);
 
@@ -373,7 +399,7 @@ int main(void){
         printf("**********************************************\n");
         printf("*       BEM VINDO A AREA DE CONSULTAS!       *\n");
         printf("**********************************************\n\n");
-        printf("[1] - Consultar ficha de um colaborador [medico | funcionario].\n\n[2] - Consultar ficha do cliente.\n\n");
+        printf("[1] - Consultar ficha de um colaborador [medico | funcionario].\n\n[2] - Consultar ficha do paciente.\n\n");
         printf("[3] - Consultar agendamentos.\n\n[0] - Voltar ao menu inicial\n\n");
         printf("Resposta -> ");
         scanf("%d", &resp);
@@ -388,9 +414,17 @@ int main(void){
 
             // Entrada de dados
             printf("CPF a ser consultado: ");
-            scanf("%s", &cadastro);
+            scanf("%s", &cpf);
             printf("\n");
             //Concatenação da string com a extensão txt
+            if (system("mkdir funcionarios/") == false){
+                strcat(cadastro, "funcionarios\\");
+                limpatela();
+            }else{
+                strcat(cadastro, "funcionarios/");
+                limpatela();
+            }
+            strcat(cadastro, cpf);
             strcat(cadastro, ext);
             leitura(cadastro);
             pause();
@@ -404,9 +438,17 @@ int main(void){
 
             // Entrada de dados
             printf("CPF a ser consultado: ");
-            scanf("%s", &cadastro);
+            scanf("%s", &cpf);
             printf("\n");
             //Concatenação da string com a extensão txt
+            if (system("mkdir pacientes/") == false){
+                strcat(cadastro, "pacientes\\");
+                limpatela();
+            }else{
+                strcat(cadastro, "pacientes/");
+                limpatela();
+            }
+            strcat(cadastro, cpf);
             strcat(cadastro, ext);
             file = fopen(cadastro, "r");
             if(file == NULL){
@@ -424,12 +466,19 @@ int main(void){
             limpatela();
             resetaString();
             // Declaracao da variavel;
-            char os[15] = "", frase[500];
+            char os[15] = "", cons[15], frase[500];
 
             //Entrada de dados do usuario
             printf("Digite o numero da ordem de servico do agendamento clinico: ");
-            scanf("%s", &os);
-            strcat(cadastro, "agendamentos\\");
+            scanf("%s", &cons);
+            if (system("mkdir agendamentos/") == false){
+                strcat(cadastro, "agendamentos\\");
+                limpatela();
+            }else{
+                strcat(cadastro, "agendamentos/");
+                limpatela();
+            }
+            strcat(cadastro, cons);
             strcat(cadastro, os);
             strcat(cadastro, ext);
             leitura(cadastro);
