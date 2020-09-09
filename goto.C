@@ -42,12 +42,13 @@ char leitura(char ler[70]){
     char frase[500];
     file = fopen(ler, "r");
     if(file == NULL){
-        printf("\nCadastro nao localizado!\n");
+        return 1;
     }
     while(fgets(frase, 500, file) != NULL){
         printf("%s", frase);
     }
     fclose(file);
+    return 0;
 }
 
 char cadastrar(char initcadastro[70], char nome[40], char idadeString[5], char sexo[15], char endereco[40], char cpf[16], char telcont[20]){
@@ -273,7 +274,7 @@ int main(void){
             goto iniciar; // Direciona o usuario para a tela de inicio.
         }else if (resp == 4){
             limpatela(); // Limpa a tela
-            char data[15] = "", hora[15] = "",cadastroOS[50] = "", verificapaciente[50] = "", os[15] = ""; // Declarando variaveis locais
+            char data[15] = "", hora[15] = "",cadastroOS[50] = "", verificapaciente[50] = "", os[15] = "", auxiliarOS[50] = ""; // Declarando variaveis locais
             int numos; // Declarando variavel local
             system("mkdir pacientes\\");
             strcat(verificapaciente, "pacientes\\");
@@ -286,9 +287,9 @@ int main(void){
             // Valida se o paciente já está cadastrado no sistema.
             if (file = fopen(verificapaciente, "r")){
                 fclose(file);
-                printf("\n");
-                system("mkdir agendamentos\\");
+                system("mkdir agendamentos\\concluidos\\");
                 limpatela(); // Limpa a tela
+                printf("\n");
             }else{
                 printf("Paciente ainda nao cadastrado! Favor realizar o cadastro primeiramente.\n");
                 pause();
@@ -305,10 +306,31 @@ int main(void){
             printf("Numero da OS: %d\n", numos); // Informa ao usuario o numero gerado
             srand(time(NULL)); // Funcao auxiliar para gerar numeros aleatórios.
             itoa(numos, os, 10); // Converte inteiro para string
+            //Concatenacao de strings
             strcat(cadastroOS, "agendamentos\\");
             strcat(cadastroOS, os);
             strcat(cadastroOS, ext);
+            strcat(auxiliarOS, "agendamentos\\concluidos\\");
+            strcat(auxiliarOS, os);
+            strcat(auxiliarOS, ext);
             file = fopen(cadastroOS, "a"); // Abre o arquivo de texto.
+            fputs("Nome do paciente: ", file);
+            fputs(nome, file);
+            fputs("\n----------------------------------------------------", file);
+            fputs("\nCPF DO PACIENTE: ", file);
+            fputs(cpf, file);
+            fputs("\n----------------------------------------------------", file);
+            fputs("\nHORARIO DO AGENDAMENTO: ", file);
+            fputs(data, file);
+            fputs(" - ", file);
+            fputs(hora, file);
+            fputs("\n----------------------------------------------------", file);
+            fputs("\nORDEM DE SERVICO: ", file);
+            fputs(os, file);
+            fputs("\n----------------------------------------------------", file);
+            fclose(file); // Fecha o arquivo de texto
+            //Abre arquivo de texto auxiliar.
+            file = fopen(auxiliarOS, "a");
             fputs("Nome do paciente: ", file);
             fputs(nome, file);
             fputs("\n----------------------------------------------------", file);
@@ -339,7 +361,7 @@ int main(void){
         printf("*       BEM VINDO A AREA DE CONSULTAS!       *\n");
         printf("**********************************************\n\n");
         printf("[1] - Consultar ficha de um colaborador [medico | funcionario].\n\n[2] - Consultar ficha do paciente.\n\n");
-        printf("[3] - Consultar agendamentos.\n\n[0] - Voltar ao menu inicial\n\n");
+        printf("[3] - Consultar agendamentos pendentes.\n\n[4] - Consultar historico de agendamentos.\n\n[0] - Voltar ao menu inicial\n\n");
         printf("Resposta -> ");
         scanf("%d", &resp);
         // Bloco Condicional
@@ -383,15 +405,18 @@ int main(void){
         }else if (resp == 3){
             limpatela();
             // Declaracao da variavel;
-            char consultarOS[50] = "", digitoOS[25] = "";
+            char consultarOS[50] = "", digitoOS[25] = "", baixaOS[40] = "";
             //Entrada de dados do usuario
             printf("Digite o numero da ordem de servico do agendamento clinico: ");
-            printf("\n");
             scanf("%s", &digitoOS);
             strcat(consultarOS, "agendamentos\\");
             strcat(consultarOS, digitoOS);
             strcat(consultarOS, ext);
-            leitura(consultarOS);
+            if(leitura(consultarOS) == 1){
+                printf("Esta ordem de servico não foi localizada. Talvez tenha sido concluida, portanto verifique no histórico.");
+                pause();
+                goto iniciar;
+            }
             printf("\n");
             printf("Deseja dar baixa no agendamento? [0 - para SIM / 1 - para NAO]: ");
             scanf("%d", &resp);
@@ -400,8 +425,35 @@ int main(void){
                 fputs("\nSTATUS: CONCLUIDO!", file);
                 fputs("\n----------------------------------------------------", file);
                 fclose(file);
+                //Arquivo movido para pasta de conclusão final
+                strcat(baixaOS, "agendamentos\\concluidos\\");
+                strcat(baixaOS, digitoOS);
+                strcat(baixaOS, ext);
+                file = fopen(baixaOS, "a");
+                fputs("\nSTATUS: CONCLUIDO!", file);
+                fputs("\n----------------------------------------------------", file);
+                fclose(file);
+                remove(consultarOS);
             }
             pause(); // Pausa a tela para o usuario conseguir ler as informaçoes;
+            goto iniciar;
+        }else if (resp == 4){
+            limpatela();
+            // Declaracao da variavel;
+            char consultarOS[50] = "", digitoOS[25] = "";
+            //Entrada de dados do usuario
+            printf("Digite o numero da ordem de servico do agendamento clinico: ");
+            scanf("%s", &digitoOS);
+            printf("\n");
+            strcat(consultarOS, "agendamentos\\concluidos\\");
+            strcat(consultarOS, digitoOS);
+            strcat(consultarOS, ext);
+            if(leitura(consultarOS) == 1){
+                printf("Essa ordem de servico nao existe ou possui prazo de criacao superior a 365 dias e foi removida do banco.");
+                pause();
+                goto iniciar;
+            }
+            pause(); // Pausa a tela para o usuario visualizar as informacoes;
             goto iniciar;
         }else if (resp == 0){
             goto iniciar;
