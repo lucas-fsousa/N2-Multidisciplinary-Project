@@ -6,6 +6,23 @@
 #include <stdbool.h>
 #include <locale.h> // Biblioteca para usar acentos no programa
 
+// Funcao para validar um CPF
+bool validaCPFTEL(long long valor){
+        int contdig = 0;
+        //contador de digitos;
+        do
+        {
+           contdig = contdig + 1;
+           valor = valor / 10;
+        }
+        while (valor != 0);
+        if (contdig < 10){ // Se o cpf possuir menos de 10 digitos (excluindo o digito inicial se ele for 0) sera considerado invalido.
+            return false;
+        }else{
+            return true;
+        }
+}
+
 // Funcao de pausar a tela
 void pause(){
     char pausar[3];
@@ -137,6 +154,8 @@ int main(void){
         // Bloco condicional
         if (resp == 1){
             char cadastroFunc[50] = "", idadeString[20] = ""; //Declaracao de variavel local
+            int sex = 0;
+            long long cp = 0, telctt;
 			limpatela(); // Limpa a tela
 			//Entrada de dados do usuario.
             printf("Idade: ");
@@ -151,14 +170,41 @@ int main(void){
             // Bloco cadastro com entrada de dados do usuario
             printf("\nNome do funcionario: ");
             scanf("%s" , &nome);
-            printf("\nSexo [Masculino/Feminino]: ");
-            scanf("%s", &sexo);
+            changesexo: // Ponto de validacão do Sexo
+            printf("\nSexo [0 - Masculino / 1 - Feminino]: ");
+            scanf("%d", &sex);
+            if(sex == 1){
+                strcat(sexo, "Feminino");
+            }else if(sex == 0){
+                strcat(sexo, "Masculino");
+            }else{
+                printf("\nAlternativa inválida. Tente novamente.");
+                pause();
+                limpatela();
+                goto changesexo;
+            }
+            changecpf: // Ponto de validacao do CPF
             printf("\nCPF: ");
-            scanf("%s", &cpf);
+            scanf("%lld", &cp);
+            if(validaCPFTEL(cp) == false){
+                printf("CPF inválido. Tenve novamente.\n");
+                pause();
+                limpatela();
+                goto changecpf;
+            }
+            itoa(cp, cpf, 12);
             printf("\nEndereco: ");
             scanf("%s", &endereco);
+            changetelefone: // Ponto de validacao do telefone
             printf("\nTelefone contato com DDD(sem espacos): ");
-            scanf("%s", &telefonecontato);
+            scanf("%lld", &telctt);
+            if(validaCPFTEL(telctt) == false){
+                printf("\nTelefone incorreto, favor tentar novamente.");
+                pause();
+                limpatela();
+                goto changetelefone;
+            }
+            itoa(telctt, telefonecontato, 15); // Convertendo inteiro para String
             printf("\nNumero - Carteira de trabalho: ");
             scanf("%s", &ctps);
             itoa(idade, idadeString, 10); // Converte um inteiro para String.
@@ -181,28 +227,57 @@ int main(void){
             pause(); // Para a tela para que o usuario seja capaz de visualizar as informações
             goto iniciar; // Salta diretamente para a tela de inicio.
         }else if (resp == 2){
-            char cadastroPac[50] = "", idadeString[20] = ""; //Declaracao de variavel local
-            char nomemae[40]; // Declaracao de variavel local
-            char numconvenio[25]; // Declaracao de variavel local
             limpatela();
-            // Entrada de dados do usuario para cadastro do paciente
-            printf("\nNome do paciente: ");
-            scanf("%s", &nome);
-            printf("\nIdade do paciente: ");
+            char cadastroPac[50] = "", idadeString[20] = ""; //Declaracao de variavel local
+            char nomemae[40], numconvenio[25]; // Declaracao de variavel local
+            int sex = 0; // Declaracao de variavel local
+            long long cp = 0, telctt; // Declaracao de variavel local
+			limpatela(); // Limpa a tela
+			//Entrada de dados do usuario.
+            printf("Idade: ");
             scanf("%d", &idade);
-            printf("\nSexo [Masculino/Feminino]: ");
-            scanf("%s", &sexo);
+            // Bloco cadastro com entrada de dados do usuario
+            printf("\nNome do paciente: ");
+            scanf("%s" , &nome);
+            changesexopac: // Ponto de validacão do Sexo
+            printf("\nSexo [0 - Masculino / 1 - Feminino]: ");
+            scanf("%d", &sex);
+            if(sex == 1){
+                strcat(sexo, "Feminino");
+            }else if(sex == 0){
+                strcat(sexo, "Masculino");
+            }else{
+                printf("\nAlternativa inválida. Tente novamente.");
+                pause();
+                limpatela();
+                goto changesexopac;
+            }
+            changecpfpac: // Ponto de validacao do CPF
+            printf("\nCPF: ");
+            scanf("%lld", &cp);
+            if(validaCPFTEL(cp) == false){
+                printf("CPF inválido. Tenve novamente.\n");
+                pause();
+                limpatela();
+                goto changecpfpac;
+            }
+            itoa(cp, cpf, 12);
+            printf("\nEndereco: ");
+            scanf("%s", &endereco);
+            changetelefonepac: // Ponto de validacao do telefone
+            printf("\nTelefone contato com DDD(sem espacos): ");
+            scanf("%lld", &telctt);
+            if(validaCPFTEL(telctt) == false){
+                printf("\nTelefone incorreto, favor tentar novamente.");
+                pause();
+                limpatela();
+                goto changetelefonepac;
+            }
+            itoa(telctt, telefonecontato, 15); // Convertendo inteiro para String
             printf("\nNumero - Cartao de convenio(Ou 0 se nao houver): ");
             scanf("%s", &numconvenio);
             printf("\nNome da Mae: ");
             scanf("%s", &nomemae);
-            printf("\nTelefone contato com DDD(sem espacos): ");
-            scanf("%s", &telefonecontato);
-            printf("\nEndereco: ");
-            scanf("%s", &endereco);
-            printf("\nCPF: ");
-            scanf("%s", &cpf);
-            itoa(idade, idadeString, 10); // Converte um inteiro para String.
             system("mkdir pacientes\\");
             strcat(cadastroPac, "pacientes\\");
             limpatela();
@@ -367,8 +442,8 @@ int main(void){
         // Bloco Condicional
         if (resp == 1){
             limpatela(); // limpa a tela
-            char consultaficha[50] = ""; //Declaração de variavel local
-            // Entrada de dados
+            char consultaficha[50] = "", cpf[12] = ""; //Declaração de variavel local
+            // Entrada de dados do usuario
             printf("CPF a ser consultado: ");
             scanf("%s", &cpf);
             printf("\n");
@@ -378,10 +453,10 @@ int main(void){
             strcat(consultaficha, ext);
             leitura(consultaficha);
             pause(); // Pausa a tela para o usuario.
-            goto iniciar; // Salta para o menur iniciar.
+            goto consultas; // Direciona o usuario ao menu de consulta.
         }else if (resp == 2){
             limpatela(); // limpa a tela
-            char consultaPac[50] = "", frase[500] = ""; //Declaração de variavel local
+            char consultaPac[50] = "", frase[500] = "", cpf[12] = ""; //Declaração de variavel local
             // Entrada de dados
             printf("CPF a ser consultado: ");
             scanf("%s", &cpf);
@@ -394,8 +469,8 @@ int main(void){
             if(file == NULL){
                 printf("Cadastro nao localizado!\n");
                 pause(); // Pausa a tela para o usuario.
-                goto iniciar;
-            }
+                goto consultas; // Direciona ao menu de consultas
+            }//Processo de leitura do arquivo que imprime na tela caractere por carectere
             while(fgets(frase, 500, file) != NULL){
                 printf("%s", frase);
             }
@@ -404,61 +479,66 @@ int main(void){
             goto iniciar;
         }else if (resp == 3){
             limpatela();
-            // Declaracao da variavel;
-            char consultarOS[50] = "", digitoOS[25] = "", baixaOS[40] = "";
+            // Declaracao da variavel local;
+            char consultarOS[50] = "", digitoOS[25] = "", baixaOS[40] = "", resultadobusca;
             //Entrada de dados do usuario
-            printf("Digite o numero da ordem de servico do agendamento clinico: ");
+            printf("Digite o numero da OS do agendamento clinico: ");
             scanf("%s", &digitoOS);
+            //Concatenacao de strings
             strcat(consultarOS, "agendamentos\\");
             strcat(consultarOS, digitoOS);
             strcat(consultarOS, ext);
-            if(leitura(consultarOS) == 1){
-                printf("Esta ordem de servico não foi localizada. Talvez tenha sido concluida, portanto verifique no histórico.");
-                pause();
-                goto iniciar;
+            resultadobusca = leitura(consultarOS);
+            // Condicao de verificacao
+            if(resultadobusca == 'f'){
+                printf("\nEsta ordem de servico não foi localizada. Verifique no histórico de angendamentos.\n");
+                pause(); // Pausa a tela para o usuario
+                goto consultas; // Direciona o usuario ao menu de consultas
+            }else if(resultadobusca == 't'){
+                printf("\nDeseja dar baixa no agendamento? [0 - para SIM / 1 - para NAO]: ");
+                scanf("%d", &resp);
+                if (resp == 0){
+                    //Arquivo movido para pasta de conclusão final
+                    strcat(baixaOS, "agendamentos\\concluidos\\");
+                    strcat(baixaOS, digitoOS);
+                    strcat(baixaOS, ext);
+                    file = fopen(baixaOS, "a");
+                    fputs("\nSTATUS: CONCLUIDO!", file);
+                    fputs("\n----------------------------------------------------", file);
+                    fclose(file);
+                    remove(consultarOS);
+                }
+                goto consultas; // Salta para a tela de consultas
             }
-            printf("\n");
-            printf("Deseja dar baixa no agendamento? [0 - para SIM / 1 - para NAO]: ");
-            scanf("%d", &resp);
-            if (resp == 0){
-                file = fopen(consultarOS, "a");
-                fputs("\nSTATUS: CONCLUIDO!", file);
-                fputs("\n----------------------------------------------------", file);
-                fclose(file);
-                //Arquivo movido para pasta de conclusão final
-                strcat(baixaOS, "agendamentos\\concluidos\\");
-                strcat(baixaOS, digitoOS);
-                strcat(baixaOS, ext);
-                file = fopen(baixaOS, "a");
-                fputs("\nSTATUS: CONCLUIDO!", file);
-                fputs("\n----------------------------------------------------", file);
-                fclose(file);
-                remove(consultarOS);
-            }
-            pause(); // Pausa a tela para o usuario conseguir ler as informaçoes;
-            goto iniciar;
         }else if (resp == 4){
             limpatela();
             // Declaracao da variavel;
-            char consultarOS[50] = "", digitoOS[25] = "";
+            char consultarOS[50] = "", digitoOS[25] = "", verificaPendencia[50] = "agendamentos\\";
             //Entrada de dados do usuario
-            printf("Digite o numero da ordem de servico do agendamento clinico: ");
+            printf("Digite o numero da OS do agendamento clinico para buscar no histórico: ");
             scanf("%s", &digitoOS);
             printf("\n");
+            //Concatenacao de informacoes
             strcat(consultarOS, "agendamentos\\concluidos\\");
             strcat(consultarOS, digitoOS);
             strcat(consultarOS, ext);
-            if(leitura(consultarOS) == 1){
-                printf("Essa ordem de servico nao existe ou possui prazo de criacao superior a 365 dias e foi removida do banco.");
-                pause();
-                goto iniciar;
+            strcat(verificaPendencia, digitoOS);
+            strcat(verificaPendencia, ext);
+            FILE *verif; // Declaração de variavel do tipo FILE
+            verif = fopen(verificaPendencia, "r"); // Verifica se o arquivo exsiste na pasta indicada.
+            if(verif == NULL){
+                leitura(consultarOS); // Faz a leitura dos arquivos na pasta indicada
+                pause(); // Pausa a tela para o usuario visualizar as informacoes;
+                goto consultas; // Direciona o usuario ao menu de consultas
             }
-            pause(); // Pausa a tela para o usuario visualizar as informacoes;
-            goto iniciar;
+            fclose(verif); // fecha o arquivo de texto
+            printf("Esta OS de agendamento não existe ou pode estar pendente de tratamento. Favor verificar agendamentos pendentes.");
+            pause(); // Pausa a tela para o usuario verificar as informacoes
+            goto consultas; // Salta para a tela de consultas
         }else if (resp == 0){
-            goto iniciar;
+            goto iniciar; // Direciona o usuario para o menu inicial
         }else{
-            goto iniciar;
+            goto consultas; // Salta para a tela de consultas
         }
 
 //TELA - AREA DE RECLAMACOES E SUGESTOES
@@ -585,5 +665,4 @@ int main(void){
             printf("\nOpcao inexistente.\n");
             goto tichamados;
         }
-
 }
