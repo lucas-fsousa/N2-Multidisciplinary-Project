@@ -5,12 +5,32 @@
 #include <stdbool.h> // Biblioteca para utilizar retornos booleanos
 #include <locale.h> // Biblioteca para usar acentos no programa
 
-/*
-char cpf[11];
-char *eptr;
-long long recebeint;
-recebeint = strtoll(cpf, &eptr, 10);
-*/
+// Funcao para confirmação de cadastro
+
+char confirmacadastro(char nomePs[35], char nomeMa[35], char idade[3], char sex[10], char cpf[12], char endereco[35], char telcont[12], char ctps[12], char dipl[10], char convenio[12]){
+    printf("\n ------------------------------------------\n");
+    printf("  -- REVISAO DE INFORMACOES DO CADASTRO --\n");
+    printf("\n  NOME: %s", nomePs);
+    printf("\n ------------------------------------------");
+    printf("\n  NOME DA MAE: %s", nomeMa);
+    printf("\n ------------------------------------------");
+    printf("\n  IDADE: %s", idade);
+    printf("\n ------------------------------------------");
+    printf("\n  SEXO: %s", sex);
+    printf("\n ------------------------------------------");
+    printf("\n  CPF: %s",cpf);
+    printf("\n ------------------------------------------");
+    printf("\n  ENDERECO: %s", endereco);
+    printf("\n ------------------------------------------");
+    printf("\n  TELEFONE DE CONTATO: %s", telcont);
+    printf("\n ------------------------------------------");
+    printf("\n  CARTEIRA DE TRABALHO: %s", ctps);
+    printf("\n ------------------------------------------");
+    printf("\n  CERTIFICACAO DIPLOMA - MEDICINA: %s", dipl);
+    printf("\n ------------------------------------------");
+    printf("\n  CONVENIO MEDICO: %s", convenio);
+    printf("\n ------------------------------------------\n");
+}
 
 // Funcao para validar um TELEFONE de contato
 bool validaTEL(long long valor){
@@ -255,15 +275,8 @@ int main(void){
             printf("\nID - Carteira de trabalho: ");
             scanf("%s", &ctps);
 
-            // Errata das informações de cadastro - Revisão.
-            printf("-- REVISAO DE INFORMACOES DO CADASTRO --\n");
-            printf("NOME: %s\n", nome);
-            printf("IDADE: %s\n", idadeString);
-            printf("SEXO: %s\n", sexo);
-            printf("CPF: %s\n",cpf);
-            printf("ENDERECO: %s\n", endereco);
-            printf("TELEFONE DE CONTATO: %s\n", telefonecontato);
-            printf("CARTEIRA DE TRABALHO: %s\n", ctps);
+            // Revisão de informações no cadastro.
+            confirmacadastro(nome,"N/A",idadeString,sexo,cpf,endereco,telefonecontato,ctps,"N/A","N/A");
             printf("\nDeseja finalizar o cadastro?[0 - NÃO / 1 - SIM]: ");
             scanf("%d", &confirma);
             if(confirma == 0){
@@ -358,17 +371,9 @@ int main(void){
                     break;
                 }
             }
-            // Errata das informações. REVISAR
-            printf("-- REVISAO DE INFORMACOES DO CADASTRO --\n");
-            printf("NOME: %s\n", nome);
-            printf("NOME DA MÃE: \n%s", nomemae);
-            printf("IDADE: %s\n", idadeString);
-            printf("SEXO: %s\n", sexo);
-            printf("CPF: %s\n",cpf);
-            printf("ENDERECO: %s\n", endereco);
-            printf("CONVENIO MEDICO: %s\n", numconvenio);
-            printf("TELEFONE DE CONTATO: %s\n", telefonecontato);
-            printf("\nDeseja finalizar o cadastro?[0 - NÃO/ 1 - SIM]: ");
+            // Revisão de informações no cadastro.
+            confirmacadastro(nome,nomemae,idadeString,sexo,cpf,endereco,telefonecontato,ctps,"N/A",numconvenio);
+            printf("\nDeseja finalizar o cadastro?[0 - NAO / 1 - SIM]: ");
             scanf("%d", &confirma);
             if(confirma == 0){
                 printf("Cadastro cancelado.\n");
@@ -459,18 +464,7 @@ int main(void){
             scanf("%s", &ctps);
             printf("\nID do certificado de medicina: ");
             scanf("%s", &diploma);
-            //Errata das informações, Revisar.
-            printf("-- REVISAO DE INFORMACOES DO CADASTRO --\n");
-            printf("NOME: %s\n", nome);
-            printf("IDADE: %s\n", idadeString);
-            printf("SEXO: %s\n", sexo);
-            printf("CPF: %s\n",cpf);
-            printf("ENDERECO: %s\n", endereco);
-            printf("TELEFONE DE CONTATO: %s\n", telefonecontato);
-            printf("CARTEIRA DE TRABALHO: %s\n", ctps);
-            printf("CERTIFICACAO DIPLOMA - MEDICINA: %s", diploma);
-            printf("\nDeseja finalizar o cadastro?[0 - NÃO/ 1 - SIM]: ");
-            scanf("%d", &confirma);
+            confirmacadastro(nome, "N/A", idadeString, sexo, cpf, endereco, telefonecontato, ctps, diploma, "N/A");
             if(confirma == 0){
                 printf("Cadastro cancelado.\n");
                 pause();
