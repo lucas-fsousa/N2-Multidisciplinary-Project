@@ -215,8 +215,6 @@ int main(void){
         strcat(auxsenha, caminhosenha);
         strcat(auxsenha, senha);
         strcat(auxsenha, ".txt");
-        printf("\nLOGIN>>> %s", auxlogin);
-        printf("\nSENHA>>>> %s", auxsenha);
         // Verificação de adminstração do sistema.
         if(validarAdmin(auxlogin, auxsenha) == true){
             break;
