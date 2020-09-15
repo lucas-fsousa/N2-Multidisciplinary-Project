@@ -1,24 +1,25 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <stdio.h> // Biblioteca para usar os comandos de entrada e saida
+#include <stdlib.h> // Biblioteca padrão e possui a função de (alocação de memoria), controle de processos, conversões e outras.
+#include <string.h> // Biblioteca para utilizar e manipular strings
+#include <time.h> // Biblioteca de datas e horários
 #include <stdbool.h> // Biblioteca para utilizar retornos booleanos
 #include <locale.h> // Biblioteca para usar acentos no programa
 
 // Velidar usuario admin
 bool validarAdmin(char login[11], char senha[16]){
-    FILE *verifadm;
-    verifadm = fopen(login, "r");
-    if(verifadm == NULL){
-        fclose(verifadm);
+    FILE *verifadm; // Declaração de variavel ponteiro do tipo FILE
+    verifadm = fopen(login, "r"); // Tenta abrir o arquivo de texto referente ao login
+    if(verifadm == NULL){ // Se o login não existir, retornará um resultado falso
+        fclose(verifadm); // Fecha o arquivo de texto do tipo login caso haja abertura
         return false;
-    }else{
-        fclose(verifadm);
-        verifadm = fopen(senha, "r");
-        if(verifadm == NULL){
+    }else{ // Se o login existir, o programa verificará a senha
+        fclose(verifadm); // Fecha o arquivo de texto caso haja abertura
+        verifadm = fopen(senha, "r"); // Abre o arquivo de texto do tipo senha
+        if(verifadm == NULL){ // Se a senha não existir, retornará um resultado falso
+            fclose(verifadm); // Fecha o arquivo de texto do tipo senha caso haja abertura
             return false;
-        }else{
-            fclose(verifadm);
+        }else{ // Caso exista senha e login válido, retornará um resultado verdadeiro
+            fclose(verifadm); // Fecha o arquivo de texto do tipo senha após sua abertura
             return true;
         }
     }
@@ -26,19 +27,18 @@ bool validarAdmin(char login[11], char senha[16]){
 
 // Criar login do usuario
 int criarnumusuario(long long num){
-    long long aux;
-    aux = num % 10000;
-    if(aux > 9999 || aux < 1000){
+    long long aux; // Variavel auxiliar do tipo long long que suporta digitos extremamente com mais de 15 casas
+    aux = num % 10000; // a variavel auxiliar receberá o resto da divisão do numero passado como paramentro na função por 10000(retornará 4 digitos se o numero de parametro for valido)
+    if(aux > 9999 || aux < 1000){ // Se o numero tiver mais de 4 digitos ou menos de 4 digitos, o mesmo não será valido e o retorno será negativo.
         return -1;
-    }else{
+    }else{ // Se o numero possuir 4 digitos, este será valido e haverá o retorno do mesmo
         return aux;
     }
-    return aux;
 }
 
 // Funcao para confirmação de cadastro
 char confirmacadastro(char nomePs[35], char nomeMa[35], char idade[3], char sex[10], char cpf[12], char endereco[35], char telcont[12], char ctps[12], char dipl[10], char convenio[12]){
-    //Informará na tela do usuario todas as informações de cadastro que foram utilizadas.
+    //Informará na tela do usuario todas as informações de cadastro que foram utilizadas para que sejam revisadas previamente a conclusão do cadastro.
     printf("\n ------------------------------------------\n");
     printf("  -- REVISAO DE INFORMACOES DO CADASTRO --\n");
     printf("\n  NOME: %s", nomePs);
@@ -65,13 +65,11 @@ char confirmacadastro(char nomePs[35], char nomeMa[35], char idade[3], char sex[
 
 // Funcao para validar um TELEFONE de contato
 bool validaTEL(long long valor){
-    // Declaração de variaveis
-    int contadig = 0, resto;
-    // Enquanto o valor digitado não for 0 a estrutura de repetição repetira o processo de quebra do numero.
-    while(valor != 0){
+    int contadig = 0, resto; // Declaração de variaveis
+    while(valor != 0){ // Enquanto o valor digitado não for 0 a estrutura de repetição repetira o processo de quebra do numero.
         resto = valor % 10;
         valor = valor / 10;
-        contadig++;
+        contadig++; // Contador recebe +1 no final da operação
     }
     /* Validação condicional será verdadeiro se quantidade de digitos for igual a 11.
     Caso o numero seja inferior ou superior a 11, este será considerado inválido.
@@ -85,9 +83,8 @@ bool validaTEL(long long valor){
 
 // Funcao para validar um CPF
 bool validaCPF(long long cpf_entrada){
-       //Declaração de variaveis
-    int n1 , n2 , n3 , n4 , n5 , n6 , n7 , n8 , n9, d1 , d2, verificador;
-    long long CPF, validar_cpf;
+    int n1 , n2 , n3 , n4 , n5 , n6 , n7 , n8 , n9, d1 , d2, verificador; //Declaração de variaveis
+    long long CPF, validar_cpf; //Declaração de variaveis
     CPF = cpf_entrada / 100; // Pega apenas os 9 digitos do CPF sem os digitos verificadores
     // Processo de quebra do numero do CPF para pegar os digitos separadamente
     n1 = CPF /100000000;
@@ -101,17 +98,17 @@ bool validaCPF(long long cpf_entrada){
     n9 = CPF%10;
     // Processo de análise para encontar o primeiro digito verificador
     d1 = ((n1*10)+(n2*9)+(n3*8)+(n4*7)+(n5*6)+(n6*5)+(n7*4)+(n8*3)+(n9*2))%11;
-    if(d1<2){
+    if(d1<2){ // Se o digito encontrado for menor que 2 este sempre receberá 0
        d1 = 0;
-    }else{
+    }else{ // Se o digito encontrado for maior ou igual a 2, este será subtraido de 11(valor máximo da numeração de um CPF).
         d1 = 11 - d1;
     }
     // Processo de análise para encontrar o segundo digito verificador
     d2 = ((n1*11)+(n2*10)+(n3*9)+(n4*8)+(n5*7)+(n6*6)+(n7*5)+(n8*4)+(n9*3)+(d1*2))%11;
-    if(d2<2){
-        d2=0;
-    }else{
-        d2=11 - d2;
+    if(d2<2){ // Se o digito encontrado for menor que 2 este sempre receberá 0
+        d2 = 0;
+    }else{ // Se o digito encontrado for maior ou igual a 2, este será subtraido de 11(valor máximo da numeração de um CPF).
+        d2 = 11 - d2;
     }
     verificador = (d1 * 10) + d2; // Calculo do digito verificador;
     validar_cpf = CPF*100+verificador; // concatena o digito verificador com a numeração do CPF
@@ -127,52 +124,56 @@ bool validaCPF(long long cpf_entrada){
 
 // Funcao de pausar a tela
 void pause(){
-    char pausar[3];
-    printf("\nPressione qualquer tecla para continuar...\n");
-    scanf("%c", &pausar);
+    char pausar[3]; // Declaração da variavel.
+    printf("\nPressione qualquer tecla para continuar...\n"); // Informa uma mensagem na tela para o usuario.
+    scanf("%c", &pausar); // pega a string que for digitada pelo usuario(1 caractere).
     getchar(); // Aguarda o usuario digitar algo ou telcar enter;
 }
 
 // Funcao de limpar tela
 void limpatela(){
-    if (system("cls")){
+    if (system("cls")){ // Se o comando interno do sistema for falso(não existir) o comando interno "clear" será executado
         system("clear");
-    }else{
+    }else{ // Se o comando CLS existir, este será executado.
         system("cls");
     }
 }
 
 // Funcao de gear numero aleatorio
 int gerarOS(){
-    srand(time(NULL)); // Funcao para gerar numeros aleatórios;
-    int i, num;
-    while(num <= 9999999 || num > 9999999999){
-        for (i = 0; i <=9; i++){ // Gera 9 numero aleatorios
-            num *= rand() % 100; // Num recebera ele mesmo multiplicado pelo numero aleatório gerado
+    srand(time(NULL)); // Funcao para gerar numeros aleatórios com base na hora atual;
+    int i = 0, num; // Declaração de variaveis
+    while(i != 1){
+        while(num <= 9999999 || num > 9999999999){ // Se o numero tiver mais de de 10 digitos ou menos de 7 a estrutura de repetição contianuará executando o processo
+            for (i = 0; i <=9; i++){ // Faz uma contagem de 1 a 9.
+                num *= rand() % 100; // Gera um numero aleatório onde Num recebera ele mesmo multiplicado pelo numero aleatório gerado
+            }
+        }
+        if(num != NULL || num != 0){
+            break;
         }
     }
     return num; // Retorna o valor final de num.
 }
 
 // Funcao que le as informacoes no bloco de texto.
-char leitura(char ler[70]){
-    FILE *file;
-    char frase[500];
-    file = fopen(ler, "r");
-    if(file == NULL){
-        return 1;
+bool leitura(char ler[70]){
+    FILE *file; // Declaração da variavel file do tipo FILE.
+    char frase[500]; // Declaração de variavel
+    file = fopen(ler, "r"); // Tenta realizar a abertura do arquivo passado como paramentro na função
+    if(file == NULL){ // Se o arquivo não existir, este retornará -1
+        return false;
     }
-    while(fgets(frase, 500, file) != NULL){
-        printf("%s", frase);
+    while(fgets(frase, 500, file) != NULL){ // enquanto houver caractere dentro do arquivo de texto, o mesmo será apresentado na tela letra após letra.
+        printf("%s", frase); // Informa na tela para o usuario o resultado da busca.
     }
-    fclose(file);
-    return 0;
+    fclose(file); // Fecha o arquivo de texto
+    return true;
 }
 
 char cadastrar(char initcadastro[70], char nome[40], char idadeString[5], char sexo[15], char endereco[40], char cpf[16], char telcont[20]){
     FILE *file; // Declara uma variavel do tipo FILE com um ponteiro para file.
-    file = fopen(initcadastro, "a"); // Abre o arquivo para adicionar valores.
-
+    file = fopen(initcadastro, "a"); // Abre o arquivo de texto com que fora passado como paramentro na função para que seja possivel adicionar valores.
     //Acrescentando informaçoes no arquivo de texto.
     fputs("NOME: ", file);
     fputs(nome, file);
@@ -197,42 +198,53 @@ char cadastrar(char initcadastro[70], char nome[40], char idadeString[5], char s
 
 // Codigo principal
 int main(void){
+    system("mkdir funcionarios\\"); // Cria a pasta de funcionarios
+    system("mkdir pacientes\\"); // Cria a pasta de pacientes
+    system("mkdir system-admins\\logins"); // Cria a pasta de logins
+    limpatela(); // Limpa a tela para o usuário
+    setlocale(LC_ALL,""); // código para setar os acentos no programa
     /*O login será a sigla de 3 digitos da clinica e os 4 ultimos digitos do CPF do colaborador
     Senha provisória é o CPF do usuario até que seja realizada a devida alteração.*/
+    // Variaveis globais.
+    FILE *file;
+    char ext[5] = ".txt", sigla[4] = "CPU", caminhologin[50] = "system-admins\\logins\\", caminhosenha[65] = "system-admins\\senhas\\";
+    int idade, aux;
+    bool admin, usuario;
     int cc = 0;
     while(cc != -1){
-        char login[8] = "", senha[12] = "", caminhologin[50] = "system-admins\\logins\\", caminhosenha[50] = "system-admins\\senhas\\";
-        char auxlogin[34] = "", auxsenha[38] = "";
-        printf("LOGIN -> ");
-        scanf("%s", &login);
+        char login[10] = "", senha[12] = "", auxlogin[34] = "", auxsenha[48] = ""; // Declaração de variavel local
+        printf("LOGIN -> "); // Informa ao usuario para digitar o login
+        scanf("%s", &login); // Leitura da string login
+        printf("SENHA -> "); // Informa ao usuario para digitar a senha
+        scanf("%s", &senha); // Leitura da string senha
         // Caoncatenação de string login
-        strcat(auxlogin, caminhologin);
-        strcat(auxlogin, login);
-        strcat(auxlogin, ".txt");
-        printf("SENHA -> ");
-        scanf("%s", &senha);
+        strcat(auxlogin, caminhologin); // Adiciona o caminho da pasta de login para a variavel auxiliar do login
+        strcat(auxlogin, login); // Adiciona o login na variavel auxiliar do login
+        strcat(auxlogin, ".txt"); // Adiciona a extensão .txt
         // Caoncatenação de string senha
-        strcat(auxsenha, caminhosenha);
-        strcat(auxsenha, senha);
-        strcat(auxsenha, ".txt");
+        strcat(auxsenha, caminhosenha); // Adiciona o caminho da pasta de senha para a variavel auxiliar de senha
+        strcat(auxsenha, senha); // Adiciona a senha na variavel auxiliar da senha para criar um novo diretório
+        strcat(auxsenha, "\\"); // Acrescenta a barra correspondente a separação de diretórios na variavel auxliar da senha
+        strcat(auxsenha, senha);  // Adiciona a senha na variavel auxiliar da senha para criar um novo arquivo de senha
+        strcat(auxsenha, ".txt"); // Adiciona a extensão .txt
         // Verificação de adminstração do sistema.
-        if(validarAdmin(auxlogin, auxsenha) == true){
+        if(strcmp(senha, "1234") == 0 && strcmp(login, "admin") == 0){ // Compara se o as informações digitadas são válidas, caso seja o usuario é reconhecido como admin
+            admin = true;
             break;
+        }else if(validarAdmin(auxlogin, auxsenha) == true){ // Verifica se o usuario é um usuario válido para liberar acesso ao uso da ferramenta
+            usuario = true;
+            break;
+        }else{ // Se nenhum das alternativas anteriores for válida, uma mensagem de erro será exibida para o usuario.
+            printf("\nUsuario ou senha inválidos. Tente novamente.\n");
         }
-        if(cc == 2){
+        if(cc == 2){ // Caso o usuario atinja 3 tentavias de login, o sistema fará autodeslog.
             printf("Numero de tentativas de login esgotadas. Tente novamente mais tarde.");
             pause();
             exit(0);
         }
-        printf("\nUsuario ou senha inválidos. Tente novamente.\n");
-        cc++;
+        cc++; // Contador de tentativas
     }
     iniciar:
-    setlocale(LC_ALL,""); // código para setar os acentos no programa
-    // Variaveis globais.
-    FILE *file;
-    char ext[5] = ".txt", sigla[4] = "CPU";
-    int idade, aux;
         limpatela();
         printf("**********************************************\n");
         printf("*         BEM VINDO AO MENU INICIAL!         *\n");
@@ -243,32 +255,34 @@ int main(void){
         printf("Resposta -> ");
         scanf("%d", &resp); // Comando de entrada responsavel por guardar a resposta na variavel "resp"
         // Bloco de escolha
-        switch(resp){
+        switch(resp){ // Conforme a opção do usuario, o mesmo será direcionado para uma aba especifica de sua escolha.
             case 1:
-                goto cadastros;
+                goto cadastros; // Direcionado o usuario para o setor de cadastros
                 break;
             case 2:
-                goto consultas;
+                goto consultas; // Direcionado o usuario para o setor de consultas
                 break;
             case 3:
-                goto reclamacoes;
+                goto reclamacoes; // Direcionado o usuario para o setor de reclamações
                 break;
             case 4:
-                goto relatorios;
+                goto relatorios; // Direcionado o usuario para o setor de relatórios
                 break;
             case 5:
-                goto tichamados;
+                goto tichamados; // Direcionado o usuario para o setor de abertura e consulta de chamados internos
+                break;
+            case 9:
+                goto trocasenhausuario;
                 break;
             case 0:
                 printf("Saindo do sistema... Até logo!\n");
-                exit(0);
+                exit(0); // Encerra o programa
                 break;
             default:
-                printf("Resposta inválida!! Tente novamente.");
-                pause();
-                goto iniciar;
+                printf("\nResposta inválida!! Tente novamente.");
+                pause(); // Pausa a tela para o usuario visualizar as informações
+                goto iniciar; // Direcionado o usuario para a tela inicial
         }
-
 //AREA - TELA DE CADASTROS GERAIS INCLUINDO CONSULTA DOS MESMOS
     cadastros:
         limpatela();
@@ -282,13 +296,18 @@ int main(void){
         scanf("%d", &resp);
         // Bloco condicional
         if (resp == 1){
-            system("mkdir funcionarios\\");
-            char cadastroFunc[50] = "", idadeString[5] = "", cpf[15] = "", telefonecontato[15] = "", nome[40] = ""; //Declaracao de variavel local
-            char sexo[10] = "", endereco[60] = "", ctps[15] = "", ciarlogin[7] = "", auxlogin[7] = "";
+            char cadastroFunc[50] = "", idadeString[5] = "", cpf[15] = "", telefonecontato[15] = "", nome[40] = ""; // Declaracao de variavel local
+            char sexo[10] = "", endereco[60] = "", ctps[15] = "", login[25] = "", auxlogin[25] = "", criapastasenha[60] = "mkdir system-admins\\senhas\\"; //Declaracao de variavel local;
+            char senha[42] = "";
             int contador = 1, confirma; //Declaracao de variavel local
             char *eptr; //Declaracao de variavel local
             long long recebecpf, recebetel; //Declaracao de variavel local
 			limpatela(); // Limpa a tela
+			if (admin == false){ // O usuario só poderá criar um novo cadastro de funcionário se houver permissão de administrador.
+                printf("Você não possui privilégios suficientes para está função.");
+                pause(); // Pausa a tela para o usuario
+                goto iniciar; // Direciona o usuario para tela inicial.
+			}
             // validação de idade para cadastro
             while(contador !=0){
                 //Entrada de dados do usuario.
@@ -298,7 +317,15 @@ int main(void){
                 if (idade < 21 || idade > 65){
                 // Entrada de dados do usuario
                     printf("\nEste colaborador não possui idade que se encontre no padrão para cadastro de funcionarios!.\n");
-                    pause();
+                    pause(); // Pausa a tela para o usuario
+                    printf("Para cancelar digite 0 ou pressione 1 para continuar: ");
+                    scanf("%d", &confirma);
+                    printf("\n");
+                    if(confirma == 0){
+                        goto cadastros;
+                    }else{
+                        continue;
+                    }
                 }else{
                     break;
                 }
@@ -307,16 +334,15 @@ int main(void){
             printf("\nNome do funcionario: ");
             scanf("%s", &nome);
             while(contador != 0){
-                    // Validar um sexo padrão.
                 printf("\nSexo [0 - MASCULINO / 1 - FEMININO]: ");
                 scanf("%d", &aux);
-                if(aux == 1){
+                if(aux == 1){ // Validar um sexo padrão.
                     strcat(sexo, "FEMININO");
                     break;
-                }else if(aux == 0){
+                }else if(aux == 0){ // Validar um sexo padrão.
                     strcat(sexo, "MASCULINO");
                     break;
-                }else{
+                }else{ // Validar retorna um erro caso a opção escolhida não seja 1 ou 0.
                     printf("\nAlternativa inválida. Tente novamente.");
                 }
             }
@@ -327,6 +353,13 @@ int main(void){
                 recebecpf = strtoll(cpf, &eptr, 10);
                 if(validaCPF(recebecpf) == false){
                     printf("\nCPF inválido. Tenve novamente.");
+                }else{
+                    char temp[10] = "";
+                    aux = criarnumusuario(recebecpf);
+                    itoa(aux, temp, 10);
+                    strcat(auxlogin, sigla);
+                    strcat(auxlogin, temp);
+                    break;
                 }
             }
             printf("\nEndereco: ");
@@ -367,18 +400,40 @@ int main(void){
             fputs("\nTIPO: FUNCIONARIO", file);
             fputs("\n----------------------------------------------------", file);
             fclose(file); // Fecha o arquivo de texto
+            //CRIANDO LOGIN
+            strcat(login, "system-admins\\logins\\"); // Concatenação de string caminho absoluto da pasta
+            strcat(login, auxlogin); // Concatena a variavel de login
+            strcat(login, ext); // Concatena a extensão .txt
+            file = fopen(login, "w"); // Cria o arquivo de login
+            fclose(file); // fecha o arquivo de login
+            strcat(criapastasenha, cpf); // concatena o CPF ao comando de criar pastas
+            strcat(criapastasenha, "\\"); // Concatena o separador de pastas padrão do windows
+            system(criapastasenha); // Cria uma pasta com a senha padrão do usuario
+            // CRIANDO SENHA PADRAO
+            strcat(senha, "system-admins\\senhas\\");
+            strcat(senha, cpf); // Concatena o CPF do usuario para a criação da pasta
+            strcat(senha, "\\"); // Adiciona a barra de separação de diretorios
+            strcat(senha, cpf); // Concatena o CPF para criação de senha padrão
+            strcat(senha, ext); // Concatena a extensão .txt
+            limpatela(); // limpa a tela do usuario
+            file = fopen(senha, "w"); // Cria a senha padrão
+            fclose(file); // Fecha o arquivo
             printf("\nColaborador cadastrado com sucesso!\n"); // Finaliza cadastro informando sucesso para o usuario.
             pause(); // Para a tela para que o usuario seja capaz de visualizar as informações
             goto iniciar; // Salta diretamente para a tela de inicio.
         }else if (resp == 2){
-            system("mkdir pacientes\\");
-            limpatela(); // Limpa a tela
             char idadeString[5] = "", cpf[15] = "", telefonecontato[15] = "", nome[40] = ""; //Declaracao de variavel local
             char sexo[10] = "", endereco[60] = "", ctps[15] = "", nomemae[40] = "", numconvenio[25] = ""; //Declaracao de variavel local
             char cadastroPac[50] = ""; //Declaracao de variavel local
             int contador = 1, confirma; //Declaracao de variavel local
             char *eptr; //Declaracao de variavel local
             long long recebecpf, recebetel; //Declaracao de variavel local
+            limpatela(); // Limpa a tela
+            if (admin == false && usuario == false){
+                printf("Você não possui privilégios suficientes para está função.");
+                pause(); // Pausa a tela para o usuario
+                goto iniciar;
+			}
 			//Entrada de dados do usuario.
 			while(contador != 0){
                 printf("Idade: ");
@@ -477,25 +532,39 @@ int main(void){
             pause(); // Pausa a tela para que o usuario seja capaz de visualizar as informaçoes;
             goto iniciar; // Direciona o usuario para tela de inicio
         }else if (resp == 3){
-            system("mkdir system-admins\\logins");
-            system("mkdir system-admins\\senhas");
-            system("mkdir funcionarios\\");
             char idadeString[5] = "", cpf[15] = "", telefonecontato[15] = "", nome[40] = ""; //Declaracao de variavel local
-            char sexo[10] = "", endereco[60] = "", ctps[15] = "", cadastromed[50] = "", diploma[20] = "", login[25] = "", auxlogin[25] = "", senha[35] = ""; //Declaracao de variavel local;
+            char sexo[10] = "", endereco[60] = "", ctps[15] = "", cadastromed[50] = "", diploma[20] = "", login[25] = "", auxlogin[25] = "", criapastasenha[60] = "mkdir system-admins\\senhas\\"; //Declaracao de variavel local;
+            char senha[42] = "";
             int contador = 1, confirma; //Declaracao de variavel local
             char *eptr; //Declaracao de variavel local
             long long recebecpf, recebetel; //Declaracao de variavel local
 			limpatela(); // Limpa a tela
-			//Entrada de dados do usuario.
-            printf("Idade: ");
-            scanf("%s", &idadeString);
-            idade = atoi(idadeString); // Converte uma string para um inteiro.
+			//Verificação de privilégios de admin.
+			if (admin == false){
+                printf("Você não possui privilégios suficientes para está função.");
+                pause(); // Pausa a tela para o usuario
+                goto iniciar;
+			}
             // validação de idade para cadastro
-            if (idade < 21 || idade > 65){
-            // Entrada de dados do usuario
-                printf("\nEste colaborador não possui idade que se encontre no padrão para cadastro de funcionarios!.\n");
-                pause();
-                goto cadastros;
+            while(contador !=0){
+                //Entrada de dados do usuario.
+                printf("Idade: ");
+                scanf("%s", &idadeString);
+                idade = atoi(idadeString); // Converte uma string para um inteiro.
+                if (idade < 21 || idade > 65){
+                // Entrada de dados do usuario
+                    printf("\nEste colaborador não possui idade que se encontre no padrão para cadastro de funcionarios!.\n");
+                    pause(); // Pausa a tela para o usuario
+                    printf("\nPara cancelar digite 0, para prosseguir digite 1");
+                    scanf("%d", &confirma);
+                    if(confirma == 0){
+                        goto cadastros;
+                    }else{
+                        continue;
+                    }
+                }else{
+                    break;
+                }
             }
             // Bloco cadastro com entrada de dados do usuario
             printf("\nNome do funcionario: ");
@@ -571,23 +640,27 @@ int main(void){
             fputs("\nTIPO: MEDICO", file);
             fputs("\n----------------------------------------------------", file);
             fclose(file); // Fecha o arquivo
-
             //CRIANDO LOGIN
-            strcat(login, "system-admins\\logins\\");
-            strcat(login, auxlogin);
-            strcat(login, ext);
-            file = fopen(login, "w");
-            fclose(file);
+            strcat(login, "system-admins\\logins\\"); // Concatenação de string caminho absoluto da pasta
+            strcat(login, auxlogin); // Concatena a variavel de login
+            strcat(login, ext); // Concatena a extensão .txt
+            file = fopen(login, "w"); // Cria o arquivo de login
+            fclose(file); // fecha o arquivo de login
+            strcat(criapastasenha, cpf); // concatena o CPF ao comando de criar pastas
+            strcat(criapastasenha, "\\"); // Concatena o separador de pastas padrão do windows
+            system(criapastasenha); // Cria uma pasta com a senha padrão do usuario
             // CRIANDO SENHA PADRAO
             strcat(senha, "system-admins\\senhas\\");
-            strcat(senha, cpf);
-            strcat(senha, ext);
-            file = fopen(senha, "w");
-            fclose(file);
-
+            strcat(senha, cpf); // Concatena o CPF do usuario para a criação da pasta
+            strcat(senha, "\\"); // Adiciona a barra de separação de diretorios
+            strcat(senha, cpf); // Concatena o CPF para criação de senha padrão
+            strcat(senha, ext); // Concatena a extensão .txt
+            limpatela(); // limpa a tela do usuario
+            file = fopen(senha, "w"); // Cria a senha padrão
+            fclose(file); // Fecha o arquivo
             printf("\nMedico cadastrado com sucesso!\n"); // Fim do cadastro médico
             pause(); // Pausa a tela para que o usuario visualize as informações.
-            goto iniciar; // Direciona o usuario para a tela de inicio.
+            goto cadastros; // Direciona o usuario para a tela de cadastros.
         }else if (resp == 4){
             limpatela(); // Limpa a tela
             char data[15] = "", nome[40] = "", hora[15] = "", cadastroOS[50] = "", verificapaciente[50] = "", os[15] = "", auxiliarOS[50] = ""; // Declarando variaveis locais
@@ -631,7 +704,7 @@ int main(void){
             strcat(auxiliarOS, os);
             strcat(auxiliarOS, ext);
             file = fopen(cadastroOS, "a"); // Abre o arquivo de texto.
-            fputs("Nome do paciente: ", file);
+            fputs("\nNome do paciente: ", file);
             fputs(nome, file);
             fputs("\n----------------------------------------------------", file);
             fputs("\nCPF DO PACIENTE: ", file);
@@ -684,6 +757,11 @@ int main(void){
         // Bloco Condicional
         if (resp == 1){
             limpatela(); // limpa a tela
+            if (admin == false){ // O usuario só poderá criar um novo cadastro de funcionário se houver permissão de administrador.
+                printf("Você não possui privilégios suficientes para está função.");
+                pause(); // Pausa a tela para o usuario
+                goto iniciar; // Direciona o usuario para tela inicial.
+			}
             char consultaficha[50] = "", cpf[12] = ""; //Declaração de variavel local
             // Entrada de dados do usuario
             printf("CPF a ser consultado: ");
@@ -732,14 +810,14 @@ int main(void){
             strcat(consultarOS, ext);
             resultadobusca = leitura(consultarOS);
             // Condicao de verificacao
-            if(resultadobusca == 'f'){
+            if(resultadobusca == false){
                 printf("\nEsta ordem de servico não foi localizada. Verifique no histórico de angendamentos.\n");
                 pause(); // Pausa a tela para o usuario
                 goto consultas; // Direciona o usuario ao menu de consultas
-            }else if(resultadobusca == 't'){
-                printf("\nDeseja dar baixa no agendamento? [0 - para SIM / 1 - para NAO]: ");
+            }else if(resultadobusca == true){
+                printf("\nDeseja dar baixa no agendamento? [0 - para NAO / 1 - para SIM]: ");
                 scanf("%d", &resp);
-                if (resp == 0){
+                if (resp == 1){
                     //Arquivo movido para pasta de conclusão final
                     strcat(baixaOS, "agendamentos\\concluidos\\");
                     strcat(baixaOS, digitoOS);
@@ -752,6 +830,7 @@ int main(void){
                 }
                 goto consultas; // Salta para a tela de consultas
             }
+            goto consultas; // Salta para a tela de consultas
         }else if (resp == 4){
             limpatela();
             // Declaracao da variavel;
@@ -907,4 +986,64 @@ int main(void){
             printf("\nOpcao inexistente.\n");
             goto tichamados;
         }
+        //Alteração da senha
+        trocasenhausuario:
+            char senha[16], auxsenha[42] = "", novasenha[16] = "", novasenha1[16] = "", auxnovasenha[38] = "", login[9] = "", auxlogin[34] = "";
+            char criarcaminhonovasenha[62] = "", deletarsenhaantiga[62] = "";
+            FILE *trocasenha;
+            int errata, contador = 1;
+            limpatela();
+            while(contador != 0){
+                printf("\nDigite o user login: ");
+                scanf("%s", &login);
+                printf("\nPara continuar digite sua senha atual: ");
+                scanf("%s", &senha);
+                strcat(auxsenha, caminhosenha);
+                strcat(auxsenha, senha);
+                strcat(auxsenha, "\\");
+                strcat(auxsenha, senha);
+                strcat(auxsenha, ".txt");
+                strcat(auxlogin, caminhologin);
+                strcat(auxlogin, login);
+                strcat(auxlogin, ".txt");
+                if(validarAdmin(auxlogin, auxsenha) == true){
+                    printf("\nDigite a nova senha: ");
+                    scanf("%s", &novasenha);
+                    printf("\nConfirme a nova senha: ");
+                    scanf("%s", &novasenha1);
+                    if(strcmp(novasenha, novasenha1) == 0){
+                        strcat(criarcaminhonovasenha, "mkdir system-admins\\senhas\\");
+                        strcat(criarcaminhonovasenha, novasenha);
+                        strcat(criarcaminhonovasenha, "\\");
+                        strcat(criarcaminhonovasenha, novasenha);
+                        system(criarcaminhonovasenha);
+                        strcat(auxnovasenha, "system-admins\\senhas\\");
+                        strcat(auxnovasenha, novasenha);
+                        strcat(auxnovasenha, "\\");
+                        strcat(auxnovasenha, novasenha);
+                        strcat(auxnovasenha, ext);
+                        trocasenha = fopen(auxnovasenha, "w");
+                        fclose(trocasenha);
+                        remove(auxsenha);
+                        printf("\nSenha alterada com sucesso!");
+                        pause();
+                        goto iniciar;
+                        break;
+                    }else{
+                        printf("\nA senha digitada é diferente da confirmação de senha. Processo interrompido!");
+                        pause();
+                        goto iniciar;
+                    }
+                }else{
+                    printf("\nUsuario ou senha não confere.");
+                }
+                printf("\nDeseja cancelar a operação? [0 - NAO / 1 - SIM]: ");
+                scanf("%d", &errata);
+                if(errata == 0){
+                    printf("Procedimento cancelado pelo usuário.");
+                    pause();
+                    break;
+                }
+            }
+            goto iniciar;
 }
