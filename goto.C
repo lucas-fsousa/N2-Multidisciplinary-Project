@@ -5,9 +5,40 @@
 #include <stdbool.h> // Biblioteca para utilizar retornos booleanos
 #include <locale.h> // Biblioteca para usar acentos no programa
 
-// Funcao para confirmação de cadastro
+// Velidar usuario admin
+bool validarAdmin(char login[11], char senha[16]){
+    FILE *verifadm;
+    verifadm = fopen(login, "r");
+    if(verifadm == NULL){
+        fclose(verifadm);
+        return false;
+    }else{
+        fclose(verifadm);
+        verifadm = fopen(senha, "r");
+        if(verifadm == NULL){
+            return false;
+        }else{
+            fclose(verifadm);
+            return true;
+        }
+    }
+}
 
+// Criar login do usuario
+int criarnumusuario(long long num){
+    long long aux;
+    aux = num % 10000;
+    if(aux > 9999 || aux < 1000){
+        return -1;
+    }else{
+        return aux;
+    }
+    return aux;
+}
+
+// Funcao para confirmação de cadastro
 char confirmacadastro(char nomePs[35], char nomeMa[35], char idade[3], char sex[10], char cpf[12], char endereco[35], char telcont[12], char ctps[12], char dipl[10], char convenio[12]){
+    //Informará na tela do usuario todas as informações de cadastro que foram utilizadas.
     printf("\n ------------------------------------------\n");
     printf("  -- REVISAO DE INFORMACOES DO CADASTRO --\n");
     printf("\n  NOME: %s", nomePs);
@@ -34,16 +65,21 @@ char confirmacadastro(char nomePs[35], char nomeMa[35], char idade[3], char sex[
 
 // Funcao para validar um TELEFONE de contato
 bool validaTEL(long long valor){
+    // Declaração de variaveis
     int contadig = 0, resto;
+    // Enquanto o valor digitado não for 0 a estrutura de repetição repetira o processo de quebra do numero.
     while(valor != 0){
         resto = valor % 10;
         valor = valor / 10;
         contadig++;
     }
+    /* Validação condicional será verdadeiro se quantidade de digitos for igual a 11.
+    Caso o numero seja inferior ou superior a 11, este será considerado inválido.
+    */
     if (contadig == 11){
-        return true;
+        return true; // Retorna valor verdadeiro se o numero tiver 11 digitos.
     }else{
-        return false;
+        return false; // Retorna falso se houver menos de 11 digitos ou mais de 11 digitos no numero telefonico.
     }
 }
 
@@ -79,6 +115,9 @@ bool validaCPF(long long cpf_entrada){
     }
     verificador = (d1 * 10) + d2; // Calculo do digito verificador;
     validar_cpf = CPF*100+verificador; // concatena o digito verificador com a numeração do CPF
+    /* Se o CPF digitado tiver o digito verificador igual ao que foi encontrado no processo de calculo,
+    este CPF será valido, caso contrário será considerado um CPF inválido.
+    */
     if(validar_cpf == cpf_entrada){
         return true;
     }else{
@@ -91,7 +130,7 @@ void pause(){
     char pausar[3];
     printf("\nPressione qualquer tecla para continuar...\n");
     scanf("%c", &pausar);
-    getchar();
+    getchar(); // Aguarda o usuario digitar algo ou telcar enter;
 }
 
 // Funcao de limpar tela
@@ -112,7 +151,7 @@ int gerarOS(){
             num *= rand() % 100; // Num recebera ele mesmo multiplicado pelo numero aleatório gerado
         }
     }
-    return num;
+    return num; // Retorna o valor final de num.
 }
 
 // Funcao que le as informacoes no bloco de texto.
@@ -131,7 +170,7 @@ char leitura(char ler[70]){
 }
 
 char cadastrar(char initcadastro[70], char nome[40], char idadeString[5], char sexo[15], char endereco[40], char cpf[16], char telcont[20]){
-    FILE *file;
+    FILE *file; // Declara uma variavel do tipo FILE com um ponteiro para file.
     file = fopen(initcadastro, "a"); // Abre o arquivo para adicionar valores.
 
     //Acrescentando informaçoes no arquivo de texto.
@@ -153,16 +192,48 @@ char cadastrar(char initcadastro[70], char nome[40], char idadeString[5], char s
     fputs("\nTELEFONE DE CONTATO: ", file);
     fputs(telcont, file);
     fputs("\n----------------------------------------------------", file);
-    fclose(file);
+    fclose(file); // Fecha o arquivo de texto.
 }
 
 // Codigo principal
 int main(void){
+    /*O login será a sigla de 3 digitos da clinica e os 4 ultimos digitos do CPF do colaborador
+    Senha provisória é o CPF do usuario até que seja realizada a devida alteração.*/
+    int cc = 0;
+    while(cc != -1){
+        char login[8] = "", senha[12] = "", caminhologin[50] = "system-admins\\logins\\", caminhosenha[50] = "system-admins\\senhas\\";
+        char auxlogin[34] = "", auxsenha[38] = "";
+        printf("LOGIN -> ");
+        scanf("%s", &login);
+        // Caoncatenação de string login
+        strcat(auxlogin, caminhologin);
+        strcat(auxlogin, login);
+        strcat(auxlogin, ".txt");
+        printf("SENHA -> ");
+        scanf("%s", &senha);
+        // Caoncatenação de string senha
+        strcat(auxsenha, caminhosenha);
+        strcat(auxsenha, senha);
+        strcat(auxsenha, ".txt");
+        printf("\nLOGIN>>> %s", auxlogin);
+        printf("\nSENHA>>>> %s", auxsenha);
+        // Verificação de adminstração do sistema.
+        if(validarAdmin(auxlogin, auxsenha) == true){
+            break;
+        }
+        if(cc == 2){
+            printf("Numero de tentativas de login esgotadas. Tente novamente mais tarde.");
+            pause();
+            exit(0);
+        }
+        printf("\nUsuario ou senha inválidos. Tente novamente.\n");
+        cc++;
+    }
     iniciar:
     setlocale(LC_ALL,""); // código para setar os acentos no programa
     // Variaveis globais.
     FILE *file;
-    char ext[5] = ".txt";
+    char ext[5] = ".txt", sigla[4] = "CPU";
     int idade, aux;
         limpatela();
         printf("**********************************************\n");
@@ -170,7 +241,7 @@ int main(void){
         printf("**********************************************\n\n");
         int resp;
         printf("[1] - Cadastros Gerais.\n\n[2] - Consultas Gerais.\n\n[3] - Reclamacoes e elogios.\n\n[4] - Relatorios.\n\n[5] - Abrir chamado para a equipe de TI");
-        printf("\n\n[0] - >> Sair <<\n\n");
+        printf("\n\n[9] - Alterar senha de usuario.\n\n[0] - >> Sair <<\n\n");
         printf("Resposta -> ");
         scanf("%d", &resp); // Comando de entrada responsavel por guardar a resposta na variavel "resp"
         // Bloco de escolha
@@ -215,22 +286,25 @@ int main(void){
         if (resp == 1){
             system("mkdir funcionarios\\");
             char cadastroFunc[50] = "", idadeString[5] = "", cpf[15] = "", telefonecontato[15] = "", nome[40] = ""; //Declaracao de variavel local
-            char sexo[10] = "", endereco[60] = "", ctps[15] = "";
+            char sexo[10] = "", endereco[60] = "", ctps[15] = "", ciarlogin[7] = "", auxlogin[7] = "";
             int contador = 1, confirma; //Declaracao de variavel local
             char *eptr; //Declaracao de variavel local
             long long recebecpf, recebetel; //Declaracao de variavel local
 			limpatela(); // Limpa a tela
-			//Entrada de dados do usuario.
-            printf("Idade: ");
-            scanf("%d", &idade);
             // validação de idade para cadastro
-            if (idade < 21 || idade > 65){
-            // Entrada de dados do usuario
-                printf("\nEste colaborador não possui idade que se encontre no padrão para cadastro de funcionarios!.\n");
-                pause();
-                goto cadastros;
+            while(contador !=0){
+                //Entrada de dados do usuario.
+                printf("Idade: ");
+                scanf("%s", &idadeString);
+                idade = atoi(idadeString); // Converte uma string para um inteiro.
+                if (idade < 21 || idade > 65){
+                // Entrada de dados do usuario
+                    printf("\nEste colaborador não possui idade que se encontre no padrão para cadastro de funcionarios!.\n");
+                    pause();
+                }else{
+                    break;
+                }
             }
-            itoa(idade, idadeString, 3); // Converte um inteiro para String.
             // Bloco cadastro com entrada de dados do usuario
             printf("\nNome do funcionario: ");
             scanf("%s", &nome);
@@ -255,8 +329,6 @@ int main(void){
                 recebecpf = strtoll(cpf, &eptr, 10);
                 if(validaCPF(recebecpf) == false){
                     printf("\nCPF inválido. Tenve novamente.");
-                }else{
-                    break;
                 }
             }
             printf("\nEndereco: ");
@@ -284,7 +356,6 @@ int main(void){
                 pause();
                 goto cadastros;
             }
-            itoa(idade, idadeString, 5); // Converte um inteiro para String.
             strcat(cadastroFunc, "funcionarios\\");
             strcat(cadastroFunc, cpf); // Concatena o cpf no cadastro
             strcat(cadastroFunc, ext); // Concatena o cpf com a extensão txt no cadastro;
@@ -311,9 +382,16 @@ int main(void){
             char *eptr; //Declaracao de variavel local
             long long recebecpf, recebetel; //Declaracao de variavel local
 			//Entrada de dados do usuario.
-            printf("Idade: ");
-            scanf("%d", &idade);
-            itoa(idade, idadeString, 5); // Converte um inteiro para String.
+			while(contador != 0){
+                printf("Idade: ");
+                scanf("%s", &idadeString);
+                idade = atoi(idadeString); // Converte uma string para um inteiro.
+                if(idade < 0 && idade >= 150){
+                    printf("\nidade inválida. Tente novamente.\n");
+                }else{
+                    break;
+                }
+			}
             // Bloco cadastro com entrada de dados do usuario
             printf("\nNome do paciente: ");
             scanf("%s", &nome);
@@ -401,16 +479,19 @@ int main(void){
             pause(); // Pausa a tela para que o usuario seja capaz de visualizar as informaçoes;
             goto iniciar; // Direciona o usuario para tela de inicio
         }else if (resp == 3){
+            system("mkdir system-admins\\logins");
+            system("mkdir system-admins\\senhas");
             system("mkdir funcionarios\\");
             char idadeString[5] = "", cpf[15] = "", telefonecontato[15] = "", nome[40] = ""; //Declaracao de variavel local
-            char sexo[10] = "", endereco[60] = "", ctps[15] = "", cadastromed[50] = "", diploma[20] = ""; //Declaracao de variavel local;
+            char sexo[10] = "", endereco[60] = "", ctps[15] = "", cadastromed[50] = "", diploma[20] = "", login[25] = "", auxlogin[25] = "", senha[35] = ""; //Declaracao de variavel local;
             int contador = 1, confirma; //Declaracao de variavel local
             char *eptr; //Declaracao de variavel local
             long long recebecpf, recebetel; //Declaracao de variavel local
 			limpatela(); // Limpa a tela
 			//Entrada de dados do usuario.
             printf("Idade: ");
-            scanf("%d", &idade);
+            scanf("%s", &idadeString);
+            idade = atoi(idadeString); // Converte uma string para um inteiro.
             // validação de idade para cadastro
             if (idade < 21 || idade > 65){
             // Entrada de dados do usuario
@@ -418,7 +499,6 @@ int main(void){
                 pause();
                 goto cadastros;
             }
-            itoa(idade, idadeString, 5); // Converte um inteiro para String.
             // Bloco cadastro com entrada de dados do usuario
             printf("\nNome do funcionario: ");
             scanf("%s", &nome);
@@ -444,6 +524,11 @@ int main(void){
                 if(validaCPF(recebecpf) == false){
                     printf("\nCPF inválido. Tenve novamente.");
                 }else{
+                    char temp[10] = "";
+                    aux = criarnumusuario(recebecpf);
+                    itoa(aux, temp, 10);
+                    strcat(auxlogin, sigla);
+                    strcat(auxlogin, temp);
                     break;
                 }
             }
@@ -465,6 +550,8 @@ int main(void){
             printf("\nID do certificado de medicina: ");
             scanf("%s", &diploma);
             confirmacadastro(nome, "N/A", idadeString, sexo, cpf, endereco, telefonecontato, ctps, diploma, "N/A");
+            printf("\nDeseja finalizar o cadastro?[0 - NAO / 1 - SIM]: ");
+            scanf("%d", &confirma);
             if(confirma == 0){
                 printf("Cadastro cancelado.\n");
                 pause();
@@ -486,6 +573,20 @@ int main(void){
             fputs("\nTIPO: MEDICO", file);
             fputs("\n----------------------------------------------------", file);
             fclose(file); // Fecha o arquivo
+
+            //CRIANDO LOGIN
+            strcat(login, "system-admins\\logins\\");
+            strcat(login, auxlogin);
+            strcat(login, ext);
+            file = fopen(login, "w");
+            fclose(file);
+            // CRIANDO SENHA PADRAO
+            strcat(senha, "system-admins\\senhas\\");
+            strcat(senha, cpf);
+            strcat(senha, ext);
+            file = fopen(senha, "w");
+            fclose(file);
+
             printf("\nMedico cadastrado com sucesso!\n"); // Fim do cadastro médico
             pause(); // Pausa a tela para que o usuario visualize as informações.
             goto iniciar; // Direciona o usuario para a tela de inicio.
