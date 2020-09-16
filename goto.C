@@ -947,9 +947,8 @@ int main(void){
         scanf("%d", &resp);
 
         // Declaração de variavel local
-        int tipofalha;
-		char sistemaafetado[35], resumofalha[255], localfalha[30], resplocal;
-
+        int tipofalha, resplocal;
+		char sistemaafetado[35], resumofalha[255], localfalha[30];
 		// Bloco condicional
         limpatela();
         if (resp == 1){
@@ -967,9 +966,9 @@ int main(void){
             }else if(tipofalha == 2){
 				printf("\nLocal da falha: ");
 				scanf("%s", &localfalha);
-				printf("\nAfetou algum sistema? [S/N]: ");
-				scanf("%s", &resplocal);
-				if (resplocal == 's' || resplocal == 'S'){
+				printf("\nAfetou algum sistema? [0 - NAO / 1 - SIM]: ");
+				scanf("%d", &resplocal);
+				if (resplocal == 1){
 					printf("Sistema afetado: ");
 					scanf("%s", &sistemaafetado);
 				}
