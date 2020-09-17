@@ -171,6 +171,7 @@ bool leitura(char ler[70]){
     return true;
 }
 
+// Funcao para cadastro de informacos basicas do usuario/paciente
 char cadastrar(char initcadastro[70], char nome[40], char idadeString[5], char sexo[15], char endereco[40], char cpf[16], char telcont[20]){
     FILE *file; // Declara uma variavel do tipo FILE com um ponteiro para file.
     file = fopen(initcadastro, "a"); // Abre o arquivo de texto com que fora passado como paramentro na função para que seja possivel adicionar valores.
@@ -207,7 +208,7 @@ int main(void){
     Senha provisória é o CPF do usuario até que seja realizada a devida alteração.*/
     // Variaveis globais.
     FILE *file;
-    char ext[5] = ".txt", sigla[4] = "CPU", caminhologin[50] = "system-admins\\logins\\", caminhosenha[65] = "system-admins\\senhas\\";
+    char ext[5] = ".txt", sigla[4] = "CP", caminhologin[50] = "system-admins\\logins\\", caminhosenha[65] = "system-admins\\senhas\\";
     int idade, aux;
     bool admin, usuario;
     int cc = 0;
@@ -390,6 +391,14 @@ int main(void){
             strcat(cadastroFunc, "funcionarios\\");
             strcat(cadastroFunc, cpf); // Concatena o cpf no cadastro
             strcat(cadastroFunc, ext); // Concatena o cpf com a extensão txt no cadastro;
+            file = fopen(cadastroFunc, "r"); // Abre um arquivo de texto em modo leitura
+            if(file != NULL){ // Verifica se o colaborador já está cadastrado.
+                printf("\nEste colaborador já se encontra cadastrado em nosso banco de funcionários. Impossivel prosseguir.");
+                fclose(file); // Fecha o arquivo de texto caso tenha sido aberto.
+                pause(); // Pausa a tela para o usuario.
+                goto cadastros; // Direciona o usuario para a tela de cadastros.
+            }
+            fclose(file);// Fecha o arquivo de texto aberto.
             //Acrescentando informaçoes basicas de cadastro no arquivo de texto.
             cadastrar(cadastroFunc, nome, idadeString, sexo, endereco, cpf, telefonecontato);
             //Acrescentando demais informacoes no cadastro.
@@ -515,6 +524,14 @@ int main(void){
             strcat(cadastroPac, "pacientes\\");
             strcat(cadastroPac, cpf); // Concatena o cpf no cadastro
             strcat(cadastroPac, ext); // Concatena o cpf com a extensão txt no cadastro;
+            file = fopen(cadastroPac, "r"); // Abre um arquivo de texto em modo leitura
+            if(file != NULL){ // Verifica se o colaborador já está cadastrado.
+                printf("\nEste paciente já se encontra cadastrado em nosso banco cadastros. Impossivel prosseguir.");
+                fclose(file); // Fecha o arquivo de texto caso tenha sido aberto.
+                pause(); // Pausa a tela para o usuario.
+                goto cadastros; // Direciona o usuario para a tela de cadastros.
+            }
+            fclose(file);// Fecha o arquivo de texto aberto.
             //Acrescentando informaçoes basicas de cadastro no arquivo de texto.
             cadastrar(cadastroPac, nome, idadeString, sexo, endereco, cpf, telefonecontato);
             //Acrescentando demais informacoes no cadastro.
@@ -627,6 +644,14 @@ int main(void){
             strcat(cadastromed, "funcionarios\\");
             strcat(cadastromed, cpf); // Concatena o cpf no cadastro
             strcat(cadastromed, ext); // Concatena o cpf com a extensão txt no cadastro;
+            file = fopen(cadastromed, "r"); // Abre um arquivo de texto em modo leitura
+            if(file != NULL){ // Verifica se o colaborador já está cadastrado.
+                printf("\nEste colaborador já se encontra cadastrado em nosso banco de funcionários. Impossivel prosseguir.");
+                fclose(file); // Fecha o arquivo de texto caso tenha sido aberto.
+                pause(); // Pausa a tela para o usuario.
+                goto cadastros; // Direciona o usuario para a tela de cadastros.
+            }
+            fclose(file);// Fecha o arquivo de texto aberto.
             //Acrescentando informaçoes basicas de cadastro no arquivo de texto.
             cadastrar(cadastromed, nome, idadeString, sexo, endereco, cpf, telefonecontato);
             //Acrescebtabdi demais informações
@@ -906,36 +931,6 @@ int main(void){
             goto reclamacoes;
         }
 
-//TELA - ABA DE RELATORIOS
-    relatorios:
-        limpatela();
-        printf("**********************************************\n");
-        printf("*      BEM VINDO A AREA DE RELATORIOS!       *\n");
-        printf("**********************************************\n\n");
-        printf("[1] - Gerar relatorio de consultas do dia.\n\n[2] - Gerar relatiorio de vendas do dia.\n\n[3] - Gerar relatorio folha ponto do dia.\n\n");
-        printf("[4] - Gerar todos os relatorios.\n\n[5] - Exportar relatorio mensal para uma planilha eletronica.\n\n[6] - Consultar relatorio(s) em tela.");
-        printf("\n\n[0] - Voltar ao menu inicial\n\n");
-        printf("Resposta -> ");
-        scanf("%d", &resp);
-
-        //Bloco condicional
-        if (resp == 1){
-
-        }else if (resp == 2){
-
-        }else if (resp == 3){
-
-        }else if (resp == 4){
-
-        }else if (resp == 5){
-
-        }else if (resp == 6){
-
-        }else if (resp == 0){
-            goto iniciar;
-        }else{
-            goto relatorios;
-        }
     tichamados:
         limpatela();
         printf("**********************************************\n");
