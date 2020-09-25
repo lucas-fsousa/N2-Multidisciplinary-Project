@@ -8,6 +8,12 @@
 #include <conio.h>
 #include <ctype.h>
 
+//Funcao para limpar o buffer do teclado
+void lb(void){
+    char x; // Declaração de variavel do tipo char
+    while((x = getchar()) != '\n' && x != EOF); // Enquanto x for diferente de ENTE(\n) e diferente do final da leitura de um arquivo (EOF) ele pegará as informações
+}
+
 // Função para realizar a leitura de uma senha.
 char** lersenha(char senha[9]){
     char digito_senha; // Declaração de variavel do tipo char
@@ -28,16 +34,11 @@ char** lersenha(char senha[9]){
     return &senha; // Retorna o endereço da senha
 }
 
-//Funcao para limpar o buffer do teclado
-void lb(void){
-    char x; // Declaração de variavel do tipo char
-    while((x = getchar()) != '\n' && x != EOF); // Enquanto x for diferente de ENTE(\n) e diferente do final da leitura de um arquivo (EOF) ele pegará as informações
-}
-
 // Funcao cria senha e login padrao
-void createloginsenha(char creatediretlogin[50], char creatediretsenha[50], char infologin[60], char infosenha[75],char loginass[60], char cpf[12]){
+void createloginsenha(char creatediretlogin[50], char creatediretsenha[50],char loginass[60], char cpf[12]){
     //Concatenação para criação de login e senha
     //CRIANDO LOGIN
+    char infologin[60] = "", infosenha[75]= "";
     FILE *file; // Declaração de variavel do tipo FILE
     strcat(creatediretlogin, loginass); // Concatena a informação da variavel loginass na variavel creatediretlogin
     system(creatediretlogin); // Cria o diretório de login na pasta especificada
@@ -45,7 +46,7 @@ void createloginsenha(char creatediretlogin[50], char creatediretsenha[50], char
     strcat(creatediretsenha, "\\"); // Concatena a barra de separação de diretórios do windows na variavel createdirectsenha
     strcat(creatediretsenha, cpf); // Concatena o CPF para criação da senha padrão na variavel createdirectsenha
     system(creatediretsenha); // Cria o diretório da senha padrão
-    strcat(infologin, "system-admins\\logins\\"); // Concatena o caminho da pasta que conterá o login
+    strcat(infologin, "system-moderadores\\logins\\"); // Concatena o caminho da pasta que conterá o login
     strcat(infologin, loginass); // Concatena a variavel de login
     strcat(infologin, "\\"); // Concatena a variavel de login
     strcat(infologin, loginass); // Concatena a variavel de login
@@ -53,7 +54,7 @@ void createloginsenha(char creatediretlogin[50], char creatediretsenha[50], char
     file = fopen(infologin, "w"); // Cria o arquivo de login
     fclose(file); // fecha o arquivo de login
     // CRIANDO SENHA PADRAO
-    strcat(infosenha, "system-admins\\logins\\"); // Concatena o caminho da pasta que contera o login e senha
+    strcat(infosenha, "system-moderadores\\logins\\"); // Concatena o caminho da pasta que contera o login e senha
     strcat(infosenha, loginass); // Concatena o CPF do usuario para a criação da pasta
     strcat(infosenha, "\\"); // Adiciona a barra de separação de diretorios
     strcat(infosenha, cpf); // Concatena o CPF para criação de senha padrão
@@ -149,12 +150,7 @@ bool validaCPF(long long cpf_entrada){
     int n1 , n2 , n3 , n4 , n5 , n6 , n7 , n8 , n9, d1 , d2, verificador; //Declaração de variaveis
     long long CPF, validar_cpf; //Declaração de variaveis
     int contadig = 0, resto; // Declaração de variaveis
-    while(cpf_entrada != 0){ // Enquanto o valor digitado não for 0 a estrutura de repetição repetira o processo de quebra do numero.
-        resto = cpf_entrada % 10; // pega o resto da divisão inteira de valor por 10
-        cpf_entrada = cpf_entrada / 10; // divide o valor de entrada por 10
-        contadig++; // Contador recebe +1 no final da operação
-    }
-    if(contadig == 11){
+    if(cpf_entrada >999999){
         CPF = cpf_entrada / 100; // Pega apenas os 9 digitos do CPF sem os digitos verificadores
         // Processo de quebra do numero do CPF para pegar os digitos separadamente
         n1 = CPF /100000000;
@@ -278,7 +274,7 @@ int main(void){
     system("mkdir sugerir-reclamar-elogiar\\SUGESTAO\\");
     system("mkdir funcionarios\\"); // Cria a pasta de funcionarios
     system("mkdir pacientes\\"); // Cria a pasta de pacientes
-    system("mkdir system-admins\\logins\\"); // Cria a pasta de logins
+    system("mkdir system-moderadores\\logins\\"); // Cria a pasta de logins para moderadores do sistema
     system("mkdir agendamentos\\concluidos\\"); // Cria a pasta de agendamentos e agendamentos concluidos
     system("mkdir pacientes\\"); // Cria a pasta de pacientes
     system("mkdir relatorios\\"); // Cria a pasta de relatorios
@@ -296,7 +292,7 @@ int main(void){
     Senha provisória é o CPF do usuario até que seja realizada a devida alteração.*/
     //Variaveis globais de login
     bool admin = false, usuario = false; // declaracao de variavel global
-    char identificacao_menu[7] = "", caminhologin[65] = "system-admins\\logins\\", caminhosenha[75] = "system-admins\\logins\\"; // Declaração de variavel global
+    char identificacao_menu[7] = "", caminhologin[65] = "system-moderadores\\logins\\", caminhosenha[75] = "system-moderadores\\logins\\"; // Declaração de variavel global
     int cc = 0;
     while(cc != -1){ // Entrará em um loop infinito até que uma das opções de login sejam atendidas.
         char login[7] ,log[7] = "", auxlog[60] = "", auxsen[60] = "", senha[9] = ""; // Declaração de variavel local
@@ -340,7 +336,6 @@ int main(void){
         cc++; // Contador de tentativas
     }//
     iniciar: // Ponto de salto do GOTO
-        lb(); // Limpa o buffer do teclado
         // DECLARACAO DE VARIAVEIS GLOBAIS PARA USO GERAL
         FILE *file; // Declaracao de variavel do tipo FILE
         int contador = 1, confirma, idade, aux, os, numos; //Declaracao de variavel GLOBAL do tipo inteiro
@@ -350,7 +345,7 @@ int main(void){
         char nomemae[40] = "", numconvenio[11] = "", cons_recl_sugs_elo[15] = "", categoria[11] = "", resenha[255] = "", verificaPendencia[50] = "agendamentos\\";
         char sexo[10] = "", endereco[60] = "", ctps[11] = "", idadeString[3] = "", cpf[12] = "", nome[40] = "";
         char login[60] = "", senha[60] = "" ,auxsenha[60] = "", auxlogin[60] = "";
-        char criapastalogin[50] = "mkdir system-admins\\logins\\", criapastasenha[50] = "mkdir system-admins\\logins\\", caminho_recl_sugs_elo[62] = "sugerir-reclamar-elogiar\\";;
+        char criapastalogin[50] = "mkdir system-moderadores\\logins\\", criapastasenha[50] = "mkdir system-moderadores\\logins\\", caminho_recl_sugs_elo[62] = "sugerir-reclamar-elogiar\\";;
         char data[11] = "", hora[9] = "", cadastroOS[53] = "", verificapaciente[50] = "", consultaficha[50] = "", frase[500] = "", baixaOS[40] = "";
         char *eptr; //Declaracao de variavel ponteiro tipo char
         //
@@ -528,7 +523,8 @@ int main(void){
             fputs("\n      TIPO.............................: FUNCIONARIO", file);
             fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
             fclose(file); // Fecha o arquivo de texto
-            createloginsenha(criapastalogin, criapastasenha, login, senha, auxlogin, cpf);
+            createloginsenha(criapastalogin, criapastasenha, auxlogin, cpf);
+            pause();
             system("msg * COLABORADOR CADASTRADO COM SUCESSO!"); // Apresenta uma POP UP com uma mensagem para o usuario
             goto iniciar; // Direciona o usuario para a tela inicial.
         }else if(strcmp(resp, "A2") == 0 || strcmp(resp, "a2") == 0){
@@ -574,6 +570,7 @@ int main(void){
             while(contador != 0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
                printf("\n   ESCOLHA O SEXO DO COLABORADOR [0 - MASCULINO / 1 - FEMININO]........: ");
                 scanf("%d", &aux);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 if(aux == 1){ // Validar um sexo padrão.
                     strcat(sexo, "FEMININO");
@@ -634,6 +631,7 @@ int main(void){
             confirmacadastro(nome, "N/A", idadeString, sexo, cpf, endereco, telefonecontato, ctps, diploma, "N/A"); // Mostra na tela as informações do cadastro para que o usuario posssa confirma-las.
             printf("\n   DESEJA FINALIZAR O CADASTRO DO COLABORADOR? [0 - NÃO / 1 - SIM].....: ");
             scanf("%d", &confirma);
+            lb(); // Limpa o buffer do teclado
             if(confirma == 0){
                 system("msg * CADASTRO CANCELADO PELO USUARIO"); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para a tela inicial
@@ -661,7 +659,7 @@ int main(void){
             fputs("\n      TIPO.............................: MEDICO", file);
             fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
             fclose(file); // Fecha o arquivo
-            createloginsenha(criapastalogin, criapastasenha, login, senha, auxlogin, cpf);
+            createloginsenha(criapastalogin, criapastasenha, auxlogin, cpf);
             system("msg * MEDICO CADASTRADO COM SUCESSO!\n"); // Apresenta uma POP UP com uma mensagem para o usuario
             goto iniciar; // Direciona o usuario para a tela de de inicio.
         }else if(strcmp(resp, "A3") == 0 || strcmp(resp, "a3") == 0){
@@ -677,6 +675,7 @@ int main(void){
 			while(contador != 0){
                 printf("\n   ENTRE COM A IDADE DO PACIENTE....................................: ");
                 scanf("%d", &idade);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 itoa(idade, idadeString, 10); // Converter um inteiro para string
                 if(idade < 0 && idade >= 150){
@@ -697,6 +696,7 @@ int main(void){
             while(contador != 0){
                 printf("\n   POSSUI PLANO DE SAUDE(CONVENIO MEDICO)? [0 - NÃO / 1 - SIM]......: ");
                 scanf("%d", &aux);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 if(aux == 1){
                     printf("\n   IDENTIFICACAO - CARTAO CONVENIO..................................: ");
@@ -716,6 +716,7 @@ int main(void){
                     // Validar um sexo padrão.
                 printf("\n   INFORME O SEXO DO PACIENTE [0 - MASCULINO / 1 - FEMININO]........: ");
                 scanf("%d", &aux);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 if(aux == 1){
                     strcat(sexo, "FEMININO");
@@ -749,6 +750,7 @@ int main(void){
                 // Validar a entrada de um telefone de contato
                 printf("\n   INFORME O TELEFONE DE CONTATO COM O DDD(SEM ESPACOS E SEM O ZERO): ");
                 scanf("%s", &telefonecontato);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 recebetel = strtoll(telefonecontato, &eptr, 10);
                 if(validaTEL(recebetel) == false){
@@ -762,6 +764,7 @@ int main(void){
             confirmacadastro(nome,nomemae,idadeString,sexo,cpf,endereco,telefonecontato,ctps,"N/A",numconvenio);
             printf("\n   DESEJA FINALIZAR O CADASTRO DO PACIENTE? [0 - NÃO / 1 - SIM].....: ");
             scanf("%d", &confirma);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
             if(confirma == 0){
                 system("msg * CADASTRO CANCELADO PELO USUARIO"); // Apresenta uma POP UP com uma mensagem para o usuario
@@ -969,7 +972,7 @@ int main(void){
                 lform(); // Linha formatada
                 if (aux == 1){
                     //Arquivo movido para pasta de conclusão final
-                    strcat(baixaOS, "agendamentos\\concluidos\\"); // Concatena o caminho de agendamentos concluidos na variavel de baixaOS
+                    strcat(baixaOS, "agendamentos\\concluidos\\AG"); // Concatena o caminho de agendamentos concluidos na variavel de baixaOS
                     strcat(baixaOS, digitoOS); // Concatena o que foi digitado pelo usuario na variavel de dar baixa
                     strcat(baixaOS, ext); // concatena a extensão .txt
                     file = fopen(baixaOS, "a"); // realiza a abertura do arquivo
@@ -1172,12 +1175,12 @@ int main(void){
                     lb(); // Limpa o buffer do teclado
                     lform(); // Apresenta uma mensagem na tela do usuario
                     if(strcmp(novasenha, novasenha1) == 0){
-                        strcat(criarcaminhonovasenha, "mkdir system-admins\\logins\\"); // Concatena o comando de criação de novas pastas e o caminho da pasta de login na variavel caminho da senha nova
+                        strcat(criarcaminhonovasenha, "mkdir system-moderadores\\logins\\"); // Concatena o comando de criação de novas pastas e o caminho da pasta de login na variavel caminho da senha nova
                         strcat(criarcaminhonovasenha, loginn); // Concatena o login digitado na variavel novasenha
                         strcat(criarcaminhonovasenha, "\\"); // Concatena o separador de diretorios do Windows na variavel novasenha
                         strcat(criarcaminhonovasenha, novasenha); // Acrescenta a nova senha do usuario na variavel criarcaminho nova senha
                         system(criarcaminhonovasenha); // Cria a pasta de arquiivo com a nova senha
-                        strcat(auxnovasenha, "system-admins\\logins\\"); // concatena o caminho do login na variavel auxiliar da nova senha
+                        strcat(auxnovasenha, "system-moderadores\\logins\\"); // concatena o caminho do login na variavel auxiliar da nova senha
                         strcat(auxnovasenha, loginn); // concatena o login digitado pelo usuario na variavel auxiliar novasenha
                         strcat(auxnovasenha, "\\"); // Concatena o separador de diretorios do windows na variavel auxiliar da nova senha
                         strcat(auxnovasenha, novasenha); // Concatena a novasenha na variavel auxiliar da nova senha
