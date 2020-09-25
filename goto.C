@@ -5,20 +5,47 @@
 #include <stdbool.h> // Biblioteca para utilizar retornos booleanos
 #include <locale.h> // Biblioteca para usar a linguagem local incluindo acentos.
 #include <windows.h> // Biblioteca para usar funcionalidades especificas do windows
+#include <conio.h>
+#include <ctype.h>
+
+// Função para realizar a leitura de uma senha.
+char** lersenha(char senha[9]){
+    char digito_senha; // Declaração de variavel do tipo char
+    int cont = 0; // Declaração de variavel do tipo inteiro
+    do{
+        digito_senha = getch(); // A variavel digito_senha receberá o digito informado pelo usuario
+        if(isprint(digito_senha)){ // Verifica se o caractere acrescentado pelo usuario pode ser imprimido na tela
+            senha[cont] = digito_senha; // A senha recebe o caractere digitado pelo usuario se este puder ser imprimido
+            cont++; // Contador recebe +1
+            printf("*"); // Se o digito for imprimivel será apresentado o asterisco na tela do usuario
+        }else if(digito_senha == 8 && cont){ // Verifica se o digito foi 8, este é o valor char de BACKSPACE na tabela ASCII
+            senha[cont]='\0';
+            cont--; // Contador recebe -1
+            printf("\b \b");  // Apaga 1 Caractere que foi apresentado na tela(apagará 1 asterisco)
+        }
+    }while(digito_senha!=13); // Enquanto o digito que o usuario informou for diferente de 13, este é o valor char de ENTER na tabela ASCII
+    senha[cont]='\0';
+    return &senha; // Retorna o endereço da senha
+}
+
+//Funcao para limpar o buffer do teclado
+void lb(void){
+    char x; // Declaração de variavel do tipo char
+    while((x = getchar()) != '\n' && x != EOF); // Enquanto x for diferente de ENTE(\n) e diferente do final da leitura de um arquivo (EOF) ele pegará as informações
+}
 
 // Funcao cria senha e login padrao
-
 void createloginsenha(char creatediretlogin[50], char creatediretsenha[50], char infologin[60], char infosenha[75],char loginass[60], char cpf[12]){
     //Concatenação para criação de login e senha
     //CRIANDO LOGIN
     FILE *file; // Declaração de variavel do tipo FILE
-    strcat(creatediretlogin, loginass);
-    system(creatediretlogin);
-    strcat(creatediretsenha, loginass);
-    strcat(creatediretsenha, "\\");
-    strcat(creatediretsenha, cpf);
-    system(creatediretsenha);
-    strcat(infologin, "system-admins\\logins\\");
+    strcat(creatediretlogin, loginass); // Concatena a informação da variavel loginass na variavel creatediretlogin
+    system(creatediretlogin); // Cria o diretório de login na pasta especificada
+    strcat(creatediretsenha, loginass); // Concatena a informação da variavel loginas na variavel createdirectsenha
+    strcat(creatediretsenha, "\\"); // Concatena a barra de separação de diretórios do windows na variavel createdirectsenha
+    strcat(creatediretsenha, cpf); // Concatena o CPF para criação da senha padrão na variavel createdirectsenha
+    system(creatediretsenha); // Cria o diretório da senha padrão
+    strcat(infologin, "system-admins\\logins\\"); // Concatena o caminho da pasta que conterá o login
     strcat(infologin, loginass); // Concatena a variavel de login
     strcat(infologin, "\\"); // Concatena a variavel de login
     strcat(infologin, loginass); // Concatena a variavel de login
@@ -26,11 +53,11 @@ void createloginsenha(char creatediretlogin[50], char creatediretsenha[50], char
     file = fopen(infologin, "w"); // Cria o arquivo de login
     fclose(file); // fecha o arquivo de login
     // CRIANDO SENHA PADRAO
-    strcat(infosenha, "system-admins\\logins\\");
+    strcat(infosenha, "system-admins\\logins\\"); // Concatena o caminho da pasta que contera o login e senha
     strcat(infosenha, loginass); // Concatena o CPF do usuario para a criação da pasta
     strcat(infosenha, "\\"); // Adiciona a barra de separação de diretorios
     strcat(infosenha, cpf); // Concatena o CPF para criação de senha padrão
-    strcat(infosenha, "\\");
+    strcat(infosenha, "\\"); // Adiciona a barra de separação de diretorios
     strcat(infosenha, cpf); // Concatena o CPF para criação de senha padrão
     strcat(infosenha, ".txt"); // Concatena a extensão .txt
     file = fopen(infosenha, "w"); // Cria a senha padrão
@@ -103,8 +130,8 @@ void confirmacadastro(char nomePs[35], char nomeMa[35], char idade[3], char sex[
 bool validaTEL(long long valor){
     int contadig = 0, resto; // Declaração de variaveis
     while(valor != 0){ // Enquanto o valor digitado não for 0 a estrutura de repetição repetira o processo de quebra do numero.
-        resto = valor % 10;
-        valor = valor / 10;
+        resto = valor % 10; // pega o resto da divisão inteira de valor por 10
+        valor = valor / 10; // divide o valor de entrada por 10
         contadig++; // Contador recebe +1 no final da operação
     }
     /* Validação condicional será verdadeiro se quantidade de digitos for igual a 11.
@@ -121,38 +148,48 @@ bool validaTEL(long long valor){
 bool validaCPF(long long cpf_entrada){
     int n1 , n2 , n3 , n4 , n5 , n6 , n7 , n8 , n9, d1 , d2, verificador; //Declaração de variaveis
     long long CPF, validar_cpf; //Declaração de variaveis
-    CPF = cpf_entrada / 100; // Pega apenas os 9 digitos do CPF sem os digitos verificadores
-    // Processo de quebra do numero do CPF para pegar os digitos separadamente
-    n1 = CPF /100000000;
-    n2 = (CPF/10000000)%10;
-    n3 = (CPF/1000000)%10;
-    n4 = (CPF/100000)%10;
-    n5 = (CPF/10000)%10;
-    n6 = (CPF/1000)%10;
-    n7 = (CPF/100)%10;
-    n8 = (CPF/10)%10;
-    n9 = CPF%10;
-    // Processo de análise para encontar o primeiro digito verificador
-    d1 = ((n1*10)+(n2*9)+(n3*8)+(n4*7)+(n5*6)+(n6*5)+(n7*4)+(n8*3)+(n9*2))%11;
-    if(d1<2){ // Se o digito encontrado for menor que 2 este sempre receberá 0
-       d1 = 0;
-    }else{ // Se o digito encontrado for maior ou igual a 2, este será subtraido de 11(valor máximo da numeração de um CPF).
-        d1 = 11 - d1;
+    int contadig = 0, resto; // Declaração de variaveis
+    while(cpf_entrada != 0){ // Enquanto o valor digitado não for 0 a estrutura de repetição repetira o processo de quebra do numero.
+        resto = cpf_entrada % 10; // pega o resto da divisão inteira de valor por 10
+        cpf_entrada = cpf_entrada / 10; // divide o valor de entrada por 10
+        contadig++; // Contador recebe +1 no final da operação
     }
-    // Processo de análise para encontrar o segundo digito verificador
-    d2 = ((n1*11)+(n2*10)+(n3*9)+(n4*8)+(n5*7)+(n6*6)+(n7*5)+(n8*4)+(n9*3)+(d1*2))%11;
-    if(d2<2){ // Se o digito encontrado for menor que 2 este sempre receberá 0
-        d2 = 0;
-    }else{ // Se o digito encontrado for maior ou igual a 2, este será subtraido de 11(valor máximo da numeração de um CPF).
-        d2 = 11 - d2;
-    }
-    verificador = (d1 * 10) + d2; // Calculo do digito verificador;
-    validar_cpf = CPF*100+verificador; // concatena o digito verificador com a numeração do CPF
-    /* Se o CPF digitado tiver o digito verificador igual ao que foi encontrado no processo de calculo,
-    este CPF será valido, caso contrário será considerado um CPF inválido.
-    */
-    if(validar_cpf == cpf_entrada){
-        return true;
+    if(contadig == 11){
+        CPF = cpf_entrada / 100; // Pega apenas os 9 digitos do CPF sem os digitos verificadores
+        // Processo de quebra do numero do CPF para pegar os digitos separadamente
+        n1 = CPF /100000000;
+        n2 = (CPF/10000000)%10;
+        n3 = (CPF/1000000)%10;
+        n4 = (CPF/100000)%10;
+        n5 = (CPF/10000)%10;
+        n6 = (CPF/1000)%10;
+        n7 = (CPF/100)%10;
+        n8 = (CPF/10)%10;
+        n9 = CPF%10;
+        // Processo de análise para encontar o primeiro digito verificador
+        d1 = ((n1 * 10) + (n2 * 9) + (n3 * 8) + ( n4 * 7) + (n5 * 6) + (n6 * 5) + (n7 * 4) + (n8 * 3) + (n9 * 2)) % 11;
+        if(d1 < 2){ // Se o digito encontrado for menor que 2 este sempre receberá 0
+           d1 = 0;
+        }else{ // Se o digito encontrado for maior ou igual a 2, este será subtraido de 11(valor máximo da numeração de um CPF).
+            d1 = 11 - d1;
+        }
+        // Processo de análise para encontrar o segundo digito verificador
+        d2 = ((n1 * 11) + (n2 * 10) + (n3 * 9) + (n4 * 8) + (n5 * 7) + (n6 * 6) + (n7 * 5) + (n8 * 4) + (n9 * 3) + (d1 * 2)) % 11;
+        if(d2 < 2){ // Se o digito encontrado for menor que 2 este sempre receberá 0
+            d2 = 0;
+        }else{ // Se o digito encontrado for maior ou igual a 2, este será subtraido de 11(valor máximo da numeração de um CPF).
+            d2 = 11 - d2;
+        }
+        verificador = (d1 * 10) + d2; // Calculo do digito verificador;
+        validar_cpf = CPF * 100 + verificador; // concatena o digito verificador com a numeração do CPF
+        /* Se o CPF digitado tiver o digito verificador igual ao que foi encontrado no processo de calculo,
+        este CPF será valido, caso contrário será considerado um CPF inválido.
+        */
+        if(validar_cpf == cpf_entrada){ // Se o CPF digitado tiver o mesmo valor do CPF que foi validado, retornará verdadeiro
+            return true;
+        }else{ // Se a condição do IF não for verdadeira, sera retornado um valor booleano falso para o usuario
+            return false;
+        }
     }else{
         return false;
     }
@@ -185,7 +222,7 @@ int gerarOS(){
                 num *= rand() % 100; // Gera um numero aleatório onde Num recebera ele mesmo multiplicado pelo numero aleatório gerado
             }
         }
-        if(num != NULL || num != 0){
+        if(num != NULL && num != 0){ // Se o numero gerado for diferente de nulo d diferente de 0 a estrutura de repetição será interrompida.
             break;
         }
     }
@@ -262,13 +299,14 @@ int main(void){
     char identificacao_menu[7] = "", caminhologin[65] = "system-admins\\logins\\", caminhosenha[75] = "system-admins\\logins\\"; // Declaração de variavel global
     int cc = 0;
     while(cc != -1){ // Entrará em um loop infinito até que uma das opções de login sejam atendidas.
-        char login[10] = "", senha[12] = "", auxlog[34] = "", auxsen[48] = ""; // Declaração de variavel local
+        char login[7] ,log[7] = "", auxlog[60] = "", auxsen[60] = "", senha[9] = ""; // Declaração de variavel local
         printf("\n    LOGIN -> "); // Informa ao usuario para digitar o login
-        scanf("%s", &login); // Leitura da string login
+        scanf("%s", &log); // Leitura da string login temporaria
         printf("  --------------------------"); // Separador
         printf("\n    SENHA -> "); // Informa ao usuario para digitar a senha
-        scanf("%s", &senha); // Leitura da string senha
-        // Concatenação de string login
+        strcpy(login, log); // copia os dados da variavel de login temporaria para a variavel de login
+        lersenha(senha); // Faz a leitura da senha
+        lb(); // Limpa o buffer do teclado.
         strcat(auxlog, caminhologin); // Adiciona o caminho da pasta de login para a variavel auxiliar do login
         strcat(auxlog, login); // Adiciona o login na variavel auxiliar do login
         strcat(auxlog, "\\"); // Adiciona o login na variavel auxiliar do login
@@ -300,27 +338,27 @@ int main(void){
             exit(0); // Encerra o programa
         }
         cc++; // Contador de tentativas
-    }
+    }//
     iniciar: // Ponto de salto do GOTO
+        lb(); // Limpa o buffer do teclado
         // DECLARACAO DE VARIAVEIS GLOBAIS PARA USO GERAL
         FILE *file; // Declaracao de variavel do tipo FILE
         int contador = 1, confirma, idade, aux, os, numos; //Declaracao de variavel GLOBAL do tipo inteiro
         // DECLARAÇÃO DE VARIAVEIS GLOBAIS DO TIPO CHAR
         char ext[5] = ".txt", sigla[3] = "CT", sg[3] = "", rlos[15] = "", consultarOS[50] = "", digitoOS[25] = "", auxiliarOS[53] = "", OS[15] = "";
-        char cadastromed[50] = "", cadastroFunc[50] = "", cadastroPac[50] = "", diploma[20] = "", telefonecontato[15] = "";
-        char nomemae[40] = "", numconvenio[25] = "", cons_recl_sugs_elo[15] = "", categoria[11] = "", resenha[255] = "", verificaPendencia[50] = "agendamentos\\";
-        char sexo[10] = "", endereco[60] = "", ctps[15] = "", idadeString[5] = "", cpf[15] = "", nome[40] = "";
-        char login[60] = "", senha[75] = "" ,auxsenha[60] = "", auxlogin[60] = "";
-        char criapastalogin[50] = "mkdir system-admins\\logins\\", criapastasenha[50] = "mkdir system-admins\\logins\\";
-        char data[11] = "", hora[9] = "", cadastroOS[53] = "", verificapaciente[50] = "";
+        char cadastro[50] = "", diploma[20] = "", telefonecontato[15] = "", resultadobusca;
+        char nomemae[40] = "", numconvenio[11] = "", cons_recl_sugs_elo[15] = "", categoria[11] = "", resenha[255] = "", verificaPendencia[50] = "agendamentos\\";
+        char sexo[10] = "", endereco[60] = "", ctps[11] = "", idadeString[3] = "", cpf[12] = "", nome[40] = "";
+        char login[60] = "", senha[60] = "" ,auxsenha[60] = "", auxlogin[60] = "";
+        char criapastalogin[50] = "mkdir system-admins\\logins\\", criapastasenha[50] = "mkdir system-admins\\logins\\", caminho_recl_sugs_elo[62] = "sugerir-reclamar-elogiar\\";;
+        char data[11] = "", hora[9] = "", cadastroOS[53] = "", verificapaciente[50] = "", consultaficha[50] = "", frase[500] = "", baixaOS[40] = "";
         char *eptr; //Declaracao de variavel ponteiro tipo char
         //
         long long recebecpf, recebetel; //Declaracao de variavel long long(inteiro)
-        char caminho_recl_sugs_elo[62] = "sugerir-reclamar-elogiar\\"; // Declaração de variavel local
         limpatela(); // Limpa a tela do usuario
         char resp[3] = ""; // Declaração de variavel local
         system("mode 122,62");
-        printf("\n                                                 ***********************                        [ %d:%d ] - [%d/%d/%d]\n",data_hora_atual->tm_hour, data_hora_atual->tm_min, data_hora_atual->tm_mday, data_hora_atual->tm_mon+1, data_hora_atual->tm_year+1900);
+        printf("\n                                                 ***********************              SÃO [ %d:%d ] HOJE É [%d/%d/%d]\n",data_hora_atual->tm_hour, data_hora_atual->tm_min, data_hora_atual->tm_mday, data_hora_atual->tm_mon+1, data_hora_atual->tm_year+1900);
         printf("  _______________________________________________*                     *________________________________________________\n");
         printf("  _______________________________________________>    ABA PRINCIPAL    <________________________________________________\n");
         printf("                                                 *                     *                                                \n");
@@ -362,6 +400,7 @@ int main(void){
         printf("  **********************************************************************************************************************\n\n");
         printf("  RESPOSTA --> ");
         scanf("%s", &resp);
+        lb(); // Limpa o buffer do teclado
         if(strcmp(resp, "A1") == 0 || strcmp(resp, "a1") == 0){
 			limpatela(); // Limpa a tela
 			printf("\n ************************************************************************************************************************");
@@ -372,10 +411,11 @@ int main(void){
                 goto iniciar; // Direciona o usuario para tela inicial.
 			}
             // validação de idade para cadastro
-            while(contador !=0){
+            while(contador !=0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
                 //Entrada de dados do usuario.
                 printf("\n   ENTRE COM A IDADE DO COLABORADOR....................................: ");
                 scanf("%s", &idadeString);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 idade = atoi(idadeString); // Converte uma string para um inteiro.
                 if (idade < 21 || idade > 65){
@@ -386,71 +426,78 @@ int main(void){
                     lform(); // Linha formatada
                     printf("\n   PARA CANCELAR DIGITE 0 OU 1 PARA CONTINUAR: ");
                     scanf("%d", &confirma);
+                    lb(); // Limpa o buffer do teclado
                     lform(); // Linha formatada
                     if(confirma == 0){
-                        goto iniciar;
+                        goto iniciar; // Direciona o usuario para o menu iniciar
                     }else{
                         continue;
                     }
                 }else{
-                    break;
+                    break; // Encerra o looping
                 }
             }
             // Bloco cadastro com entrada de dados do usuario
             printf("\n   ENTRE COM O NOME DO COLABORADOR.....................................: ");
-            scanf("%s", &nome);
+            scanf("%[^\n]", &nome); // Faz a leitura da string
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
-            while(contador != 0){
+            while(contador != 0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
                printf("\n   ESCOLHA O SEXO DO COLABORADOR [0 - MASCULINO / 1 - FEMININO]........: ");
                 scanf("%d", &aux);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 if(aux == 1){ // Validar um sexo padrão.
                     strcat(sexo, "FEMININO");
-                    break;
+                    break; // Encerra o looping
                 }else if(aux == 0){ // Validar um sexo padrão.
                     strcat(sexo, "MASCULINO");
-                    break;
+                    break; // Encerra o looping
                 }else{ // Validar retorna um erro caso a opção escolhida não seja 1 ou 0.
                     printf("\n   ALTERNATIVA INVALIDA. TENTE NOVAMENTE!\n");
                     lform(); // Linha formatada
                 }
             }
-            while(contador != 0){
+            while(contador != 0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
                 // Validar a entrada de um CPF
                 printf("\n   ENTRE COM O CPF DO COLABORADOR......................................: ");
                 scanf("%s", &cpf);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 recebecpf = strtoll(cpf, &eptr, 10);
                 if(validaCPF(recebecpf) == false){
                     printf("\n   CPF INVALIDO. TENTE NOVAMENTE!\n");
                     lform(); // Linha formatada
-                }else{
-                    char temp[10] = "";
-                    aux = criarnumusuario(recebecpf);
-                    itoa(aux, temp, 10);
-                    strcat(auxlogin, sigla);
-                    strcat(auxlogin, temp);
-                    break;
+                }else{ // Se o CPF for válido será declarada uma variavel temporaria para receber um determinado valor
+                    char temp[10] = ""; // Declaração de variavel temporaria
+                    aux = criarnumusuario(recebecpf); // a variavel auxiliar recebera o numero de usuario de acordo com o CPF digitado
+                    itoa(aux, temp, 10); // Converte o valor inteiro para string
+                    strcat(auxlogin, sigla); // Concatena a sigla da empresa a variavel de login
+                    strcat(auxlogin, temp); // Concatena o valor da variavel temporaria para criar um login de usuario
+                    break; // encerra o looping
                 }
             }
             printf("\n   DIGITE O ENDERECO DE LOCALIZACAO DO COLABORADOR.....................: ");
-            scanf("%s", &endereco);
+            scanf("%[^\n]", &endereco);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
-            while(contador != 0){
+            while(contador != 0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
                 // Validar a entrada de um telefone de contato
                 printf("\n   INFORME O TELEFONE DE CONTATO COM O DDD(SEM ESPACOS E SEM O ZERO)...: ");
                 scanf("%s", &telefonecontato);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 recebetel = strtoll(telefonecontato, &eptr, 10);
                 if(validaTEL(recebetel) == false){
                     printf("\n    TELEFONE INCORRETO, FAVOR TENTAR NOVAMENTE!\n");
                     lform(); // Linha formatada
                 }else{
-                    break;
+                    break; // Encerra o looping
                 }
             }
             printf("\n   INFORME O ID - CARTEIRA DE TRABALHO.................................: ");
             scanf("%s", &ctps);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
             // Revisão de informações no cadastro.
             confirmacadastro(nome,"N/A",idadeString,sexo,cpf,endereco,telefonecontato,ctps,"N/A","N/A");
@@ -461,10 +508,10 @@ int main(void){
                 system("msg * CADASTRO CANCELADO PELO USUARIO."); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para a tela inicial.
             }
-            strcat(cadastroFunc, "funcionarios\\");
-            strcat(cadastroFunc, cpf); // Concatena o cpf no cadastro
-            strcat(cadastroFunc, ext); // Concatena o cpf com a extensão txt no cadastro;
-            file = fopen(cadastroFunc, "r"); // Abre um arquivo de texto em modo leitura
+            strcat(cadastro, "funcionarios\\"); // Concatena o caminho da pasta de funcionarios no cadastro de funcionario
+            strcat(cadastro, cpf); // Concatena o cpf no cadastro
+            strcat(cadastro, ext); // Concatena o cpf com a extensão txt no cadastro;
+            file = fopen(cadastro, "r"); // Abre um arquivo de texto em modo leitura
             if(file != NULL){ // Verifica se o colaborador já está cadastrado.
                 system("msg * COLABORADOR JA CADASTRADO NO BANCO DE FUNCIONARIOS INTERNOS. CADASTRO CANCELADO PELO SISTEMA!"); // Apresenta uma POP UP com uma mensagem para o usuario
                 fclose(file); // Fecha o arquivo de texto caso tenha sido aberto.
@@ -472,9 +519,9 @@ int main(void){
             }
             fclose(file);// Fecha o arquivo de texto aberto.
             //Acrescentando informaçoes basicas de cadastro no arquivo de texto.
-            cadastrar(cadastroFunc, nome, idadeString, sexo, endereco, cpf, telefonecontato);
+            cadastrar(cadastro, nome, idadeString, sexo, endereco, cpf, telefonecontato);
             //Acrescentando demais informacoes no cadastro.
-            file = fopen(cadastroFunc, "a");
+            file = fopen(cadastro, "a");
             fputs("\n      CARTEIRA DE TRABALHO.............: ", file);
             fputs(ctps, file);
             fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
@@ -494,10 +541,11 @@ int main(void){
                 goto iniciar; // Direciona o usuario para tela inicial.
 			}
             // validação de idade para cadastro
-            while(contador !=0){
+            while(contador !=0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
                 //Entrada de dados do usuario.
                 printf("\n   ENTRE COM A IDADE DO COLABORADOR....................................: ");
                 scanf("%s", &idadeString);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 idade = atoi(idadeString); // Converte uma string para um inteiro.
                 if (idade < 21 || idade > 65){
@@ -510,84 +558,90 @@ int main(void){
                     scanf("%d", &confirma);
                     lform(); // Linha formatada
                     if(confirma == 0){
-                        goto iniciar;
-                    }else{
+                        goto iniciar; // Direciona o usuario para o menu iniciar
+                    }else{ // Se a condição do if for diferente de 0 continuará a aplicação normamente.
                         continue;
                     }
-                }else{
-                    break;
+                }else{ // Se o colaborador tiver idade entre 21 e 65, o looping será interrompido
+                    break; // Interrompe um looping
                 }
             }
             // Bloco cadastro com entrada de dados do usuario
             printf("\n   ENTRE COM O NOME DO COLABORADOR.....................................: ");
-            scanf("%s", &nome);
+            scanf("%[^\n]", &nome);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
-            while(contador != 0){
+            while(contador != 0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
                printf("\n   ESCOLHA O SEXO DO COLABORADOR [0 - MASCULINO / 1 - FEMININO]........: ");
                 scanf("%d", &aux);
                 lform(); // Linha formatada
                 if(aux == 1){ // Validar um sexo padrão.
                     strcat(sexo, "FEMININO");
-                    break;
+                    break; // Interrompe o looping
                 }else if(aux == 0){ // Validar um sexo padrão.
                     strcat(sexo, "MASCULINO");
-                    break;
+                    break; // interrompe o looping
                 }else{ // Validar retorna um erro caso a opção escolhida não seja 1 ou 0.
                     printf("\n   ALTERNATIVA INVALIDA. TENTE NOVAMENTE!");
                     lform(); // Linha formatada
                 }
             }
-            while(contador != 0){
+            while(contador != 0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
                 // Validar a entrada de um CPF
                 printf("\n   ENTRE COM O CPF DO COLABORADOR......................................: ");
                 scanf("%s", &cpf);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 recebecpf = strtoll(cpf, &eptr, 10);
                 if(validaCPF(recebecpf) == false){
                     printf("\n   CPF INVALIDO. TENTE NOVAMENTE!\n");
                     lform(); // Linha formatada
                 }else{
-                    char temp[10] = "";
-                    aux = criarnumusuario(recebecpf);
-                    itoa(aux, temp, 10);
-                    strcat(auxlogin, sigla);
-                    strcat(auxlogin, temp);
-                    break;
+                    char temp[10] = ""; // Cria uma variavel temporaria do tipo char
+                    aux = criarnumusuario(recebecpf); // A variavel auxiliar recebera o numero gerado pela função com base nos digitos do CPF
+                    itoa(aux, temp, 10); // Faz a conversão do numero inteiro contido na variavel auxiliar para um valor string na variavel temporaria do tipo char
+                    strcat(auxlogin, sigla); // Concatena a sigla da empresa na variavel de login
+                    strcat(auxlogin, temp); // Concatena o valor da variavel temporaria no login para criar o user login
+                    break; // Encerra o looping
                 }
             }
             printf("\n   DIGITE O ENDERECO DE LOCALIZACAO DO COLABORADOR.....................: ");
-            scanf("%s", &endereco);
+            scanf("%[^\n]", &endereco);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
-            while(contador != 0){
+            while(contador != 0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
                 // Validar a entrada de um telefone de contato
                 printf("\n   INFORME O TELEFONE DE CONTATO COM O DDD(SEM ESPACOS E SEM O ZERO)...: ");
                 scanf("%s", &telefonecontato);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 recebetel = strtoll(telefonecontato, &eptr, 10);
                 if(validaTEL(recebetel) == false){
                     printf("\n    TELEFONE INCORRETO, FAVOR TENTAR NOVAMENTE!\n");
                     lform(); // Linha formatada
                 }else{
-                    break;
+                    break; // Encerra o looping
                 }
             }
             printf("\n   INFORME O ID - CARTEIRA DE TRABALHO.................................: ");
             scanf("%s", &ctps);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
             printf("\n   ID DO CERTIFICADO DE MEDICINA.......................................: ");
             scanf("%s", &diploma);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
-            confirmacadastro(nome, "N/A", idadeString, sexo, cpf, endereco, telefonecontato, ctps, diploma, "N/A");
+            confirmacadastro(nome, "N/A", idadeString, sexo, cpf, endereco, telefonecontato, ctps, diploma, "N/A"); // Mostra na tela as informações do cadastro para que o usuario posssa confirma-las.
             printf("\n   DESEJA FINALIZAR O CADASTRO DO COLABORADOR? [0 - NÃO / 1 - SIM].....: ");
             scanf("%d", &confirma);
             if(confirma == 0){
                 system("msg * CADASTRO CANCELADO PELO USUARIO"); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para a tela inicial
             }
-            strcat(cadastromed, "funcionarios\\");
-            strcat(cadastromed, cpf); // Concatena o cpf no cadastro
-            strcat(cadastromed, ext); // Concatena o cpf com a extensão txt no cadastro;
-            file = fopen(cadastromed, "r"); // Abre um arquivo de texto em modo leitura
+            strcat(cadastro, "funcionarios\\"); // Concatena a pasta de funcionarios na variavel cadastro
+            strcat(cadastro, cpf); // Concatena o cpf no cadastro
+            strcat(cadastro, ext); // Concatena o cpf com a extensão txt no cadastro;
+            file = fopen(cadastro, "r"); // Abre um arquivo de texto em modo leitura
             if(file != NULL){ // Verifica se o colaborador já está cadastrado.
                 system("msg * COLABORADOR JA CADASTRADO NO BANCO DE FUNCIONARIOS. CADASTRO CANCELADO PELO SISTEMA."); // Apresenta uma POP UP com uma mensagem para o usuario
                 fclose(file); // Fecha o arquivo de texto caso tenha sido aberto.
@@ -595,9 +649,9 @@ int main(void){
             }
             fclose(file);// Fecha o arquivo de texto aberto.
             //Acrescentando informaçoes basicas de cadastro no arquivo de texto.
-            cadastrar(cadastromed, nome, idadeString, sexo, endereco, cpf, telefonecontato);
+            cadastrar(cadastro, nome, idadeString, sexo, endereco, cpf, telefonecontato);
             //Acrescebtabdi demais informações
-            file = fopen(cadastromed, "a"); // Abre o arquivo de texto
+            file = fopen(cadastro, "a"); // Abre o arquivo de texto
             fputs("\n      CARTEIRA DE TRABALHO.............: ", file);
             fputs(ctps, file);
             fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
@@ -633,10 +687,12 @@ int main(void){
 			}
             // Bloco cadastro com entrada de dados do usuario
             printf("\n   ENTRE COM O NOME DO PACIENTE.....................................: ");
-            scanf("%s", &nome);
+            scanf("%[^\n]", &nome);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
             printf("\n   ENTRE COM O NOME DA MAE DO PACIENTE..............................: ");
-            scanf("%s", &nomemae);
+            scanf("%[^\n]", &nomemae);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
             while(contador != 0){
                 printf("\n   POSSUI PLANO DE SAUDE(CONVENIO MEDICO)? [0 - NÃO / 1 - SIM]......: ");
@@ -644,7 +700,8 @@ int main(void){
                 lform(); // Linha formatada
                 if(aux == 1){
                     printf("\n   IDENTIFICACAO - CARTAO CONVENIO..................................: ");
-                    scanf("%s", &numconvenio);
+                    scanf("%[^\n]", &numconvenio);
+                    lb(); // Limpa o buffer do teclado
                     lform(); // Linha formatada
                     break;
                 }else if(aux == 0){
@@ -657,7 +714,7 @@ int main(void){
             }
             while(contador != 0){
                     // Validar um sexo padrão.
-                printf("\n   ESCOLHA O SEXO DO PACIENTE [0 - MASCULINO / 1 - FEMININO]........: ");
+                printf("\n   INFORME O SEXO DO PACIENTE [0 - MASCULINO / 1 - FEMININO]........: ");
                 scanf("%d", &aux);
                 lform(); // Linha formatada
                 if(aux == 1){
@@ -675,6 +732,7 @@ int main(void){
                 // Validar a entrada de um CPF
                 printf("\n   ENTRE COM O CPF DO PACIENTE......................................: ");
                 scanf("%s", &cpf);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 recebecpf = strtoll(cpf, &eptr, 10);
                 if(validaCPF(recebecpf) == false){
@@ -684,7 +742,8 @@ int main(void){
                 }
             }
             printf("\n   DIGITE O ENDERECO DE LOCALIZACAO DO PACIENTE.....................: ");
-            scanf("%s", &endereco);
+            scanf("%[^\n]", &endereco);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
             while(contador != 0){
                 // Validar a entrada de um telefone de contato
@@ -709,10 +768,10 @@ int main(void){
                 goto iniciar;
             }
             //Acrescentando demais informacoes no cadastro.
-            strcat(cadastroPac, "pacientes\\");
-            strcat(cadastroPac, cpf); // Concatena o cpf no cadastro
-            strcat(cadastroPac, ext); // Concatena o cpf com a extensão txt no cadastro;
-            file = fopen(cadastroPac, "r"); // Abre um arquivo de texto em modo leitura
+            strcat(cadastro, "pacientes\\");
+            strcat(cadastro, cpf); // Concatena o cpf no cadastro
+            strcat(cadastro, ext); // Concatena o cpf com a extensão txt no cadastro;
+            file = fopen(cadastro, "r"); // Abre um arquivo de texto em modo leitura
             if(file != NULL){ // Verifica se o colaborador já está cadastrado.
                 system("msg * ESTE PACIENTE JA CONSTA CADASTRADO NO BANCO DE CADASTROS. CADASTRO CANCELADO PELO SISTEMA!."); // Apresenta uma POP UP com uma mensagem para o usuario
                 fclose(file); // Fecha o arquivo de texto caso tenha sido aberto.
@@ -720,9 +779,9 @@ int main(void){
             }
             fclose(file);// Fecha o arquivo de texto aberto.
             //Acrescentando informaçoes basicas de cadastro no arquivo de texto.
-            cadastrar(cadastroPac, nome, idadeString, sexo, endereco, cpf, telefonecontato);
+            cadastrar(cadastro, nome, idadeString, sexo, endereco, cpf, telefonecontato);
             //Acrescentando demais informacoes no cadastro.
-            file = fopen(cadastroPac, "a");
+            file = fopen(cadastro, "a");
             fputs("\n      NOME DA MAE......................: ", file);
             fputs(nomemae, file);
             fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
@@ -745,6 +804,7 @@ int main(void){
             // Entrada de dados do usuario
             printf("\n   ENTRE COM O CPF DO PACIENTE......................................: ");
             scanf("%s", &cpf);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
             strcat(verificapaciente, cpf); // Concatena o cpf no cadastro
             strcat(verificapaciente, ext); // Concatena o cpf com a extensão txt no cadastro;
@@ -756,13 +816,16 @@ int main(void){
                 goto iniciar; // Direciona o usuario para a tela inicial
             }
             printf("\n   ENTRE COM O NOME DO PACIENTE.....................................: ");
-            scanf("%s", &nome);
+            scanf("%[^\n]", &nome);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
-            printf("\n   DATA DO AGENDAMENTO(FORMATO DD.MM.AAAA)..........................: ");
+            printf("\n   DATA DO AGENDAMENTO(FORMATO 01.01.2000)..........................: ");
             scanf("%s", &data);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
-            printf("\n   HORARIO DE AGENDAMENTO(FORMATO HH:MM:SS).........................: ");
+            printf("\n   HORARIO DE AGENDAMENTO(FORMATO 23:59:59).........................: ");
             scanf("%s", &hora);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
             printf("\n                                           -- CONFIRMACAO DE CADASTRO -- ");
             lform(); // Linha formatada
@@ -834,7 +897,6 @@ int main(void){
             }
         }else if(strcmp(resp, "A5") == 0 || strcmp(resp, "a5") == 0){
             limpatela(); // limpa a tela
-            char consultaficha[50] = "", cpf[12] = ""; //Declaração de variavel local
             FILE *file;
             printf("\n ************************************************************************************************************************");
 			printf("\n *                                            CONSULTA DE FUNCIONARIOS                                                  *");
@@ -862,7 +924,6 @@ int main(void){
             goto iniciar;// Direciona o usuario para o menu inicial
         }else if(strcmp(resp, "A6") == 0 || strcmp(resp, "a6") == 0){
             limpatela(); // limpa a tela
-            char consultaPac[50] = "", frase[500] = "", cpf[12] = ""; //Declaração de variavel local
             printf("\n ************************************************************************************************************************");
 			printf("\n *                                              CONSULTA DE PACIENTES                                                   *");
 			printf("\n ************************************************************************************************************************\n\n");
@@ -870,10 +931,10 @@ int main(void){
             printf("   CPF A SER CONSULTADO..........................: ");
             scanf("%s", &cpf);
             lform(); // Linha formatada
-            strcat(consultaPac, "pacientes\\"); // Concatena o caminho da pasta de pacientes na variavel de consulta
-            strcat(consultaPac, cpf); // concatena o cpf digitado na variavel de consulta
-            strcat(consultaPac, ext); // Concatena a extensao .txt
-            file = fopen(consultaPac, "r"); // Verifica se o arquivo existe
+            strcat(consultaficha, "pacientes\\"); // Concatena o caminho da pasta de pacientes na variavel de consulta
+            strcat(consultaficha, cpf); // concatena o cpf digitado na variavel de consulta
+            strcat(consultaficha, ext); // Concatena a extensao .txt
+            file = fopen(consultaficha, "r"); // Verifica se o arquivo existe
             if(file == NULL){ // Se o arquivo não existir, o cliente nao esta cadastrado
                 system("msg * CADASTRO NAO LOCALIZADO!"); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona ao menu de consultas
@@ -887,18 +948,17 @@ int main(void){
             goto iniciar; // Direciona o usuario para o menu iniciar.
         }else if(strcmp(resp, "A7") == 0 || strcmp(resp, "a7") == 0){
             limpatela();
-            char consultarOS[50] = "", digitoOS[25] = "", baixaOS[40] = "", resultadobusca; // Declaracao da variavel local
             printf("\n ************************************************************************************************************************");
 			printf("\n *                                             CONSULTA DE AGENDAMENTO                                                  *");
 			printf("\n ************************************************************************************************************************\n\n");
             // Entrada de dados DO USUARIO
             printf("\n   DIGITE O NUMERO DA OS DO AGENDAMENTO CLINICO.............: ");
-            scanf("%s", &digitoOS);
+            scanf("%s", &digitoOS); // Faz a leitura dos dados digitados pelo usuario e armazena na variavel digitoOS
             //Concatenacao de strings
-            strcat(consultarOS, "agendamentos\\AG");
-            strcat(consultarOS, digitoOS);
-            strcat(consultarOS, ext);
-            resultadobusca = leitura(consultarOS);
+            strcat(consultarOS, "agendamentos\\AG"); // Concatena o caminho do agendamento na variavel consultarOS
+            strcat(consultarOS, digitoOS); // Concatena o que foi digitado pelo usuario na variavel de consultarOS
+            strcat(consultarOS, ext); // Concatena a extensão .txt
+            resultadobusca = leitura(consultarOS); // Realiza a leitura da ordem de serviço
             // Condicao de verificacao
             if(resultadobusca == false){
                 system("msg * ORDEM DE SERVICO NAO LOCALIZADA. VERIFIQUE OS AGENDAMENTOS EM HISTORICO."); // Apresenta uma POP UP com uma mensagem para o usuario
@@ -909,18 +969,18 @@ int main(void){
                 lform(); // Linha formatada
                 if (aux == 1){
                     //Arquivo movido para pasta de conclusão final
-                    strcat(baixaOS, "agendamentos\\concluidos\\");
-                    strcat(baixaOS, digitoOS);
-                    strcat(baixaOS, ext);
-                    file = fopen(baixaOS, "a");
+                    strcat(baixaOS, "agendamentos\\concluidos\\"); // Concatena o caminho de agendamentos concluidos na variavel de baixaOS
+                    strcat(baixaOS, digitoOS); // Concatena o que foi digitado pelo usuario na variavel de dar baixa
+                    strcat(baixaOS, ext); // concatena a extensão .txt
+                    file = fopen(baixaOS, "a"); // realiza a abertura do arquivo
                     fputs("\n      STATUS......................................: CONCLUIDO!", file);
                     fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fclose(file);
-                    remove(consultarOS);
+                    fclose(file); // fecha o arquivo
+                    remove(consultarOS); // Apaga o arquivo de agendamentos pendentes e o move para agendamentos concluidos
                     system("msg * SOLICITACAO CONCLUIDA COM SUCESSO!"); // Apresenta uma POP UP com uma mensagem para o usuario
                 }
             }
-            goto iniciar;
+            goto iniciar; // Direciona o usuario para o menu iniciar
         }else if(strcmp(resp, "A8") == 0 || strcmp(resp, "a8") == 0){
             limpatela(); // limpa a tela para o usuario
             printf("\n ************************************************************************************************************************");
@@ -929,6 +989,7 @@ int main(void){
             //Entrada de dados do usuario
             printf("   ENTRE COM O NUMERO DA OS DE AGENDAMENTO EM HISTORICO.............: ");
             scanf("%s", &digitoOS);
+            lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
             //Concatenacao de informacoes
             strcat(consultarOS, "agendamentos\\concluidos\\AG");
@@ -972,7 +1033,7 @@ int main(void){
                 goto iniciar;
             }
             printf("\n\n\n   EM ATE 255 CARACTERES DESCREVA 0(A)%s..: ",categoria);
-            scanf("%s", &resenha); // Faz a leitura do que o usuario digitar e armazena na variavel resenha
+            scanf("%[^\n]", &resenha); // Faz a leitura do que o usuario digitar e armazena na variavel resenha
             lform(); // Linha formatada
             printf("\n   REVISE AS INFORMACOES! PARA PROSSEGUIR TECLE [0 - PARA CANCELAR / 1 - PARA CONCLUIR]: ");
             scanf("%d", &aux); // Faz a leitura dos dados digitados pelo usuario
@@ -988,7 +1049,7 @@ int main(void){
                 itoa(os, rlos, 10); // Converte um inteiro para String
                 strcat(caminho_recl_sugs_elo, categoria); // Acrescenta uma pasta
                 strcat(caminho_recl_sugs_elo, "\\"); // Acrescenta a barra divisora de diretorios
-                strcat(caminho_recl_sugs_elo, sg);
+                strcat(caminho_recl_sugs_elo, sg); // Acrescenta a sigla da solicitação na variavel de caminho
                 strcat(caminho_recl_sugs_elo, rlos); // Concatena o caminho com o nome do arquivo.
                 strcat(caminho_recl_sugs_elo, ext); // Concatena a extensao
                 file = fopen(caminho_recl_sugs_elo, "a"); // Abre o arquivo de texto.
@@ -1005,7 +1066,7 @@ int main(void){
                 printf("\n   %s REGISTRADO(A) COM SUCESSO!\n", categoria);
                 lform(); // Linha formatada
                 pause(); // Pausa a tela para o usuario
-                goto iniciar;
+                goto iniciar; // Direciona o usuario para o menu iniciar
             }else{ // Se as alternativas não forem 1 ou 0 será retornado um erro ao usuario informando o cancelamento da solicitacao
                 system("msg * ALTERNATIVA INVALIDA. CADASTRO CANCELADO PELO SISTEMA"); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para a tela inicial
@@ -1035,13 +1096,14 @@ int main(void){
             }
             printf("\n   ENTRE COM A ORDEM DE SERVICO.........................: ");
             scanf("%s", &cons_recl_sugs_elo);
+            lb(); // Limpa o buffer do teclado
             lform(); // LINHA FORMATADA
             strcat(caminho_recl_sugs_elo, categoria); // Acrescenta uma pasta
             strcat(caminho_recl_sugs_elo, "\\"); // Acrescenta a barra divisora de diretorios
             strcat(caminho_recl_sugs_elo, sg); // Concatena a sigla da solicitacao
             strcat(caminho_recl_sugs_elo, cons_recl_sugs_elo); // Concatena o caminho com o nome do arquivo.
             strcat(caminho_recl_sugs_elo, ext); // Concatena a extensao
-            file = fopen(caminho_recl_sugs_elo, "r");
+            file = fopen(caminho_recl_sugs_elo, "r"); // Abre o arquivo de texto em modo de leitura
             if(file == NULL){
                 system("msg * SOLICITACAO CONCLUIDA SEM SUCESSO POR ORDEM DE SERVICO NAO LOCALIZADA. TENTE NOVAMENTE!"); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para a tela de inicio
@@ -1060,6 +1122,8 @@ int main(void){
             goto iniciar; // Direciona o usuario para o menu inicial
         }else if(strcmp(resp, "AE") == 0 || strcmp(resp, "ae") == 0){
             goto iniciar; // Direciona o usuario para o menu inicial
+        }else if(strcmp(resp, "AF") == 0 || strcmp(resp, "af") == 0){
+            goto iniciar; // Direciona o usuario para o menu inicial
         }else if(strcmp(resp, "B1") == 0 || strcmp(resp, "b1") == 0){
             goto moduser; // Direciona o usuario para o ponto inicial com oportunidade de mudar o usuario.
         }else if(strcmp(resp, "A0") == 0 || strcmp(resp, "a0") == 0){
@@ -1067,20 +1131,24 @@ int main(void){
             lform(); // Linha formatada
             exit(0); // Encerra a aplicação e sai do sistema.
         }else if(strcmp(resp, "B0") == 0 || strcmp(resp, "b0") == 0){
-            char senhaa[16] = "", novasenha[16] = "", novasenha1[16] = "", auxnovasenha[48] = "", loginn[9] = "";
+            char senhaa[9] = "", novasenha[16] = "", novasenha1[9] = "", auxnovasenha[48] = "", loginn[7] = "";
             char criarcaminhonovasenha[62] = "", deletarsenhaantiga[62] = "";
+            char logtemp[7] = "", temp01[9] = "", temp02[9] = "";
             FILE *trocasenha; // Declaracao de variavel local do tipo FILE
             limpatela(); // Limpa a tela do usuario
             if(admin == true){
                 system("msg * OPERACAO NAO PERMITIDA. CANCELAMENTO EXECUTADO COM SUCESSO!");
-                goto iniciar;
+                goto iniciar; // Direciona o usuario para o menu iniciar
             }
-            while(contador != 0){
+            while(contador != 0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
                 printf("\n   DIGITE O USER LOGIN: ");
-                scanf("%s", &loginn);
+                scanf("%s", &logtemp);
+                strcpy(loginn, logtemp);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Apresenta uma mensagem na tela do usuario
                 printf("\n   PARA CONTINUAR DIGITE A SENHA DE USUARIO ATUAL: ");
-                scanf("%s", &senhaa);
+                lersenha(senhaa);
+                lb(); // Limpa o buffer do teclado
                 lform(); // Apresenta uma mensagem na tela do usuario
                 strcat(auxsenha, caminhosenha); // Adiciona o caminho da pasta de senha para a variavel auxiliar de senha
                 strcat(auxsenha, loginn); // Adiciona a senha na variavel auxiliar da senha para criar um novo diretório
@@ -1089,33 +1157,35 @@ int main(void){
                 strcat(auxsenha, "\\"); // Acrescenta a barra correspondente a separação de diretórios na variavel auxliar da senha
                 strcat(auxsenha, senhaa);  // Adiciona a senha na variavel auxiliar da senha para criar um novo arquivo de senha
                 strcat(auxsenha, ".txt"); // Adiciona a extensão .txt
-                strcat(auxlogin, caminhologin);
-                strcat(auxlogin, loginn);
-                strcat(auxlogin, "\\");
-                strcat(auxlogin, loginn);
-                strcat(auxlogin, ".txt");
-                if(validarAdmin(auxlogin, auxsenha) == true){
-                    printf("\n   DIGITE A NOVA SENHA: ");
-                    scanf("%s", &novasenha);
+                strcat(auxlogin, caminhologin); // Adiciona o caminho de login na variavel auxiliar do login
+                strcat(auxlogin, loginn); // Adiciona o login digitado na variavel auxiliar do login
+                strcat(auxlogin, "\\"); // Adiciona o separador de diretorios do windows
+                strcat(auxlogin, loginn); // ADiciona o login digitado na variavel auxiliar do login
+                strcat(auxlogin, ".txt"); // inclui a extensão .txt na variavel auxiliar do login
+                if(validarAdmin(auxlogin, auxsenha) == true){ // faz a validação do admin para confirmar cadastro exsistente
+                    printf("\n   DIGITE A NOVA SENHA COM ATE 8 CARACTERES: ");
+                    lersenha(novasenha);
+                    lb(); // Limpa o buffer do teclado
                     lform(); // Apresenta uma mensagem na tela do usuario
                     printf("\n   CONFIRME A NOVA SENHA: ");
-                    scanf("%s", &novasenha1);
+                    lersenha(novasenha1);
+                    lb(); // Limpa o buffer do teclado
                     lform(); // Apresenta uma mensagem na tela do usuario
                     if(strcmp(novasenha, novasenha1) == 0){
-                        strcat(criarcaminhonovasenha, "mkdir system-admins\\logins\\");
-                        strcat(criarcaminhonovasenha, loginn);
-                        strcat(criarcaminhonovasenha, "\\");
-                        strcat(criarcaminhonovasenha, novasenha);
+                        strcat(criarcaminhonovasenha, "mkdir system-admins\\logins\\"); // Concatena o comando de criação de novas pastas e o caminho da pasta de login na variavel caminho da senha nova
+                        strcat(criarcaminhonovasenha, loginn); // Concatena o login digitado na variavel novasenha
+                        strcat(criarcaminhonovasenha, "\\"); // Concatena o separador de diretorios do Windows na variavel novasenha
+                        strcat(criarcaminhonovasenha, novasenha); // Acrescenta a nova senha do usuario na variavel criarcaminho nova senha
                         system(criarcaminhonovasenha); // Cria a pasta de arquiivo com a nova senha
-                        strcat(auxnovasenha, "system-admins\\logins\\");
-                        strcat(auxnovasenha, loginn);
-                        strcat(auxnovasenha, "\\");
-                        strcat(auxnovasenha, novasenha);
-                        strcat(auxnovasenha, "\\");
-                        strcat(auxnovasenha, novasenha);
-                        strcat(auxnovasenha, ext);
-                        trocasenha = fopen(auxnovasenha, "w");
-                        fclose(trocasenha);
+                        strcat(auxnovasenha, "system-admins\\logins\\"); // concatena o caminho do login na variavel auxiliar da nova senha
+                        strcat(auxnovasenha, loginn); // concatena o login digitado pelo usuario na variavel auxiliar novasenha
+                        strcat(auxnovasenha, "\\"); // Concatena o separador de diretorios do windows na variavel auxiliar da nova senha
+                        strcat(auxnovasenha, novasenha); // Concatena a novasenha na variavel auxiliar da nova senha
+                        strcat(auxnovasenha, "\\"); // Concatena o separador de diretorios do windows na variavel auxiliar da nova senha
+                        strcat(auxnovasenha, novasenha); // Concatena a novasenha na variavel auxiliar da nova senha
+                        strcat(auxnovasenha, ext); // concatena a extensao .txt na variavel auxiliar nova senha
+                        trocasenha = fopen(auxnovasenha, "w"); // faz a abertura do arquivo em modo de escrita para criação da nova senha
+                        fclose(trocasenha); // fecha o arquivo de texto nova senha
                         remove(auxsenha); // Exclui a senha antiga
                         system("msg * SENHA ALTERADA COM SUCESSO!"); // Apresenta uma mensagem na tela do usuario
                         goto iniciar; // Direciona o usuario para a tela inicial.
