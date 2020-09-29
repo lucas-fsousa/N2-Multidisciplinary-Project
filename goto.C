@@ -7,6 +7,9 @@
 #include <windows.h> // Biblioteca para usar funcionalidades especificas do windows
 #include <conio.h>
 #include <ctype.h>
+
+// Função que fará a concatenação das informaçõs e adicionara no bloco de notas para a criação de uma OS.
+void concatena_string(char tipasta[35], char titratados[45], char OS[15], char categoria[25], char id[7], char informe[25], char detalhar[255]);
 //Funcao para incluir a data e hora nas solicitações / agendamentos
 void incluirdatahora(char cm[50]);
 //Funcao para limpar o buffer do teclado
@@ -39,17 +42,17 @@ bool leitura(char ler[70]);
 char cadastrar(char initcadastro[70], char nome[40], char idadeString[5], char sexo[15], char endereco[40], char cpf[16], char telcont[20]);
 
 int main(void){
-    system("msg * AGUARDE! INICIALIZANDO TAREFAS...");
     system("mode 15,1 && color 15"); // Muda o tamanho do terminal para 15 colunas e 1 linha e a cor para fundo azul e letras roxas
+    system("msg * AGUARDE! INICIALIZANDO TAREFAS..."); // Mostra uma POP-UP com uma mensagem para o usuario.
     system("mkdir sugerir-reclamar-elogiar\\ELOGIO\\");
     system("mkdir sugerir-reclamar-elogiar\\RECLAMACAO\\");
-    system("mkdir sugerir-reclamar-elogiar\\SUGESTAO\\");
-    system("mkdir funcionarios\\"); // Cria a pasta de funcionarios
-    system("mkdir pacientes\\"); // Cria a pasta de pacientes
-    system("mkdir system-moderadores\\logins\\"); // Cria a pasta de logins para moderadores do sistema
-    system("mkdir agendamentos\\concluidos\\"); // Cria a pasta de agendamentos e agendamentos concluidos
-    system("mkdir ti-sistemas\\tratados\\"); // Cria a pasta de ti e sistemas
-    system("mkdir relatorios\\"); // Cria a pasta de relatorios
+    system("mkdir sugerir-reclamar-elogiar\\SUGESTAO\\ & attrib +h sugerir-reclamar-elogiar");
+    system("mkdir funcionarios\\ & attrib +h funcionarios"); // Cria a pasta de funcionarios
+    system("mkdir pacientes\\ & attrib +h pacientes"); // Cria a pasta de pacientes
+    system("mkdir system-moderadores\\logins\\ & attrib +h system-moderadores"); // Cria a pasta de logins para moderadores do sistema
+    system("mkdir agendamentos\\concluidos\\ & attrib +h agendamentos"); // Cria a pasta de agendamentos e agendamentos concluidos
+    system("mkdir ti-sistemas\\tratados\\ & attrib +h ti-sistemas"); // Cria a pasta de ti e sistemas
+    system("mkdir relatorios\\ & attrib +h relatorios"); // Cria a pasta de relatorios
     moduser: // ponto de salto para modificar o usuario / trocar login
     system("mode 30,6 && color 07"); // Seta o tamanho do terminal para 30 colunas e 6 linhas e a cor do terminal para o padrão
     struct tm *dataloc; //ponteiro para struct que armazena data e hora
@@ -106,25 +109,23 @@ int main(void){
             exit(0); // Encerra o programa
         }
         cc++; // Contador de tentativas
-    }//
+    }
     iniciar: // Ponto de salto do GOTO
+        limpatela(); // Limpa a tela do usuario
         // DECLARACAO DE VARIAVEIS GLOBAIS PARA USO GERAL
         FILE *file; // Declaracao de variavel do tipo FILE
         int contador = 1, confirma, idade, aux, os, numos; //Declaracao de variavel GLOBAL do tipo inteiro
         // DECLARAÇÃO DE VARIAVEIS GLOBAIS DO TIPO CHAR
         char ext[5] = ".txt", sigla[3] = "CT", sg[3] = "", rlos[15] = "", consultarOS[50] = "", digitoOS[25] = "", auxiliarOS[53] = "", OS[15] = "";
-        char cadastro[55] = "", diploma[20] = "", telefonecontato[15] = "", resultadobusca;
-        char nomemae[40] = "", numconvenio[11] = "", cons_recl_sugs_elo[15] = "", categoria[11] = "", resenha[255] = "", verificaPendencia[50] = "agendamentos\\";
-        char sexo[10] = "", endereco[60] = "", ctps[11] = "", idadeString[3] = "", cpf[12] = "", nome[40] = "";
-        char login[60] = "", senha[60] = "" ,auxsenha[60] = "", auxlogin[60] = "";
+        char cadastro[55] = "", telefonecontato[15] = "", resultadobusca, numconvenio[11] = "", categoria[11] = "", resenha[255] = "";
+        char sexo[10] = "", endereco[60] = "", ctps[11] = "", idadeString[3] = "", cpf[12] = "", nome[40] = "", data[11] = "", hora[9] = "";
+        char login[60] = "", senha[60] = "", auxsenha[60] = "", auxlogin[60] = "", cadastroOS[53] = "", consultaficha[50] = "", baixaOS[40] = "";
         char criapastalogin[50] = "mkdir system-moderadores\\logins\\", criapastasenha[50] = "mkdir system-moderadores\\logins\\", caminho_recl_sugs_elo[62] = "sugerir-reclamar-elogiar\\";
-        char data[11] = "", hora[9] = "", cadastroOS[53] = "", verificapaciente[60] = "pacientes\\", consultaficha[50] = "", frase[500] = "", baixaOS[40] = "";
         char *eptr; //Declaracao de variavel ponteiro tipo char
         //
         long long recebecpf, recebetel; //Declaracao de variavel long long(inteiro)
-        limpatela(); // Limpa a tela do usuario
-        char resp[3] = ""; // Declaração de variavel local
         system("mode 122,62");
+        char resp[3] = ""; // Declaração de variavel local
         printf("\n                                                 ***********************              SÃO [ %d:%d ] HOJE É [%d/%d/%d]\n",dataloc->tm_hour, dataloc->tm_min, dataloc->tm_mday, dataloc->tm_mon+1, dataloc->tm_year+1900);
         printf("  _______________________________________________*                     *________________________________________________\n");
         printf("  _______________________________________________>    ABA PRINCIPAL    <________________________________________________\n");
@@ -300,13 +301,14 @@ int main(void){
             goto iniciar; // Direciona o usuario para a tela inicial.
         }else if(strcmp(resp, "A2") == 0 || strcmp(resp, "a2") == 0){
 			limpatela(); // Limpa a tela
-			printf("\n ************************************************************************************************************************");
-			printf("\n *                                             CADASTRO DE MEDICOS                                                      *");
-			printf("\n ************************************************************************************************************************\n\n");
+			char diploma[20] = "";
 			if (admin == false){ // O usuario só poderá criar um novo cadastro de funcionário se houver permissão de administrador.
                 system(" msg * VOCE NAO POSSUI PRIVILEGIOS DE ADMINSTRADOR PARA EXECUTAR ESTA FUNCAO."); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para tela inicial.
 			}
+			printf("\n ************************************************************************************************************************");
+			printf("\n *                                             CADASTRO DE MEDICOS                                                      *");
+			printf("\n ************************************************************************************************************************\n\n");
             // validação de idade para cadastro
             while(contador !=0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
                 //Entrada de dados do usuario.
@@ -435,7 +437,7 @@ int main(void){
             goto iniciar; // Direciona o usuario para a tela de de inicio.
         }else if(strcmp(resp, "A3") == 0 || strcmp(resp, "a3") == 0){
             limpatela(); // Limpa a tela
-            char criapastapaciente[42] = "mkdir pacientes\\";
+            char criapastapaciente[42] = "mkdir pacientes\\", nomemae[40] = "";
             printf("\n ************************************************************************************************************************");
 			printf("\n *                                             CADASTRO DE PACIENTES                                                    *");
 			printf("\n ************************************************************************************************************************\n\n");
@@ -587,7 +589,7 @@ int main(void){
             }
             limpatela(); // Limpa a tela
             float valorconsulta;
-            char verificaconv[55] = "pacientes\\", svalorconsulta[10] = "";
+            char verificaconv[35] = "pacientes\\", verificapaciente[45] = "pacientes\\", svalorconsulta[10] = "";
             printf("\n ************************************************************************************************************************");
 			printf("\n *                                            CADASTRO DE AGENDAMENTOS                                                  *");
 			printf("\n ************************************************************************************************************************\n\n");
@@ -652,11 +654,11 @@ int main(void){
                 printf("\n   ORDEM DE SERVICO DO AGENDAMENTO.................: %d\n", numos); // informa o numero da ordem de serviço para o usuario
                 lform(); // Linha formatada
                 itoa(numos, OS, 10); // Converte inteiro para string
+                strcat(auxiliarOS, "agendamentos\\concluidos\\"); // Concatena o caminho da pasta onde sera armazenado a OS na varaivel auxiliaros
                 strcat(cadastroOS, "agendamentos\\"); // Concatena a pasta de armazenameto da OS
                 strcat(cadastroOS, "AG"); // Concatena a pasta de armazenamento da OS.
                 strcat(cadastroOS, OS); // Concatena o numero da OS na variavel de cadastro
                 strcat(cadastroOS, ext); // Concatena a extensao .txt na variavel de cadastrar a os
-                strcat(auxiliarOS, "agendamentos\\concluidos\\"); // Concatena o caminho da pasta onde sera armazenado a OS na varaivel auxiliaros
                 strcat(auxiliarOS, "AG"); // Concatena a pasta de armazenamento da OS.
                 strcat(auxiliarOS, OS); // Concatena o numero da ordem de servico na variavel auxiliaros
                 strcat(auxiliarOS, ext); // Concatena a extensão .txt na variavel auxiliaros
@@ -743,11 +745,12 @@ int main(void){
             pause(); // Pausa a tela para o usuario.
             goto iniciar;// Direciona o usuario para o menu inicial
         }else if(strcmp(resp, "A6") == 0 || strcmp(resp, "a6") == 0){
+            limpatela(); // limpa a tela
+            char frase[500] = "";
             if (admin == false && moderador == false){ // O usuario só poderá criar um novo cadastro de funcionário se houver permissão de administrador.
                 system("msg * VOCE NAO POSSUI PRIVILEGIOS SUFICIENTES PARA EXECUTAR ESTA FUNCAO."); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para tela inicial.
 			}
-            limpatela(); // limpa a tela
             printf("\n ************************************************************************************************************************");
 			printf("\n *                                              CONSULTA DE PACIENTES                                                   *");
 			printf("\n ************************************************************************************************************************\n\n");
@@ -818,11 +821,12 @@ int main(void){
             }
             goto iniciar; // Direciona o usuario para o menu iniciar
         }else if(strcmp(resp, "A8") == 0 || strcmp(resp, "a8") == 0){
+            limpatela(); // limpa a tela para o usuario
+            char verificaPendencia[50] = "agendamentos\\AG";
             if (admin == false && moderador == false){ // O usuario só poderá criar um novo cadastro de funcionário se houver permissão de administrador.
                 system("msg * VOCE NAO POSSUI PRIVILEGIOS SUFICIENTES PARA EXECUTAR ESTA FUNCAO."); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para tela inicial.
 			}
-            limpatela(); // limpa a tela para o usuario
             printf("\n ************************************************************************************************************************");
 			printf("\n *                                             AGENDAMENTO EM HISTORICO                                                 *");
 			printf("\n ************************************************************************************************************************\n\n");
@@ -847,9 +851,7 @@ int main(void){
             }
             fclose(verif); // fecha o arquivo de texto
             system("msg * ESTA OS DE AGENDAMENTO NAO EXISTE OU PODE ESTAR PENDENTE DE TRATAMENTO."); // Apresenta uma POP UP com uma mensagem para o usuario
-            lform(); // Linha formatada
-            pause(); // Pausa a tela para o usuario verificar as informacoes
-            goto iniciar;
+            goto iniciar; // DIreciona o usuario para o menu inicial
         }else if(strcmp(resp, "A9") == 0 || strcmp(resp, "a9") == 0){
             if (admin == false && moderador == false){ // O usuario só poderá criar um novo cadastro de funcionário se houver permissão de administrador.
                 system("msg * VOCE NAO POSSUI PRIVILEGIOS SUFICIENTES PARA EXECUTAR ESTA FUNCAO."); // Apresenta uma POP UP com uma mensagem para o usuario
@@ -860,9 +862,11 @@ int main(void){
 			printf("\n *                                      REGISTRAR RECLAMACAO/SUGESTAO/ELOGIOS                                           *");
 			printf("\n ************************************************************************************************************************\n\n");
             printf("\n   CATEGORIAS DISPONIVEIS...............................: [0 - SUGESTAO] [1 - RECLAMACAO] [2 - ELOGIO]");
+            system("msg * INFORME A CATEGORIA UTILIZANDO 0, 1 OU 2");
             lform(); // Linha formatada
             printf("\n   PARA PROSSEGUIR INFORME A CATEGORIA..................: ");
             scanf("%d", &aux);
+            lb(); // Limpa o buffer do teclado.
             lform(); // Linha formatada
             if(aux == 0){
                 strcat(categoria, "SUGESTAO");
@@ -877,55 +881,78 @@ int main(void){
                 system("msg * CATEGORIA INVALIDA. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar;
             }
-            printf("\n\n\n   EM ATE 255 CARACTERES DESCREVA 0(A)%s..: ",categoria);
-            scanf("%[^\n]", &resenha); // Faz a leitura do que o usuario digitar e armazena na variavel resenha
+            printf("\n   INFORME O CPF DO SOLICITANTE DO REGISTRO.............: ");
+            scanf("%s", cpf);
+            lb(); // Limpa o buffer do teclado.
             lform(); // Linha formatada
-            printf("\n   REVISE AS INFORMACOES! PARA PROSSEGUIR TECLE [0 - PARA CANCELAR / 1 - PARA CONCLUIR]: ");
-            scanf("%d", &aux); // Faz a leitura dos dados digitados pelo usuario
-            lform(); // Linha formatada
-            if(aux == 0){ // Se a opcao escolhida for zero, o cadastro sera interrompido
-                system("msg * CADASTRO CANCELADO PELO USUARIO!"); // Apresenta uma POP UP com uma mensagem para o usuario
-                goto iniciar; // Direciona o usuario para o menu iniciar
-            }else if(aux == 1){
-                srand(time(NULL));
-                os = gerarOS(); // Gera um numero aleatorio para a ordem de serviço
-                printf("\n   ORDEM DE SERVICO PARA %s.............................: %d\n", categoria, os);
+            recebecpf = strtoll(cpf, &eptr, 10);// Converte uma string em um inteiro
+            if(validaCPF(recebecpf) == true){
+                printf("\n\n\n   EM ATE 255 CARACTERES DESCREVA 0(A)%s..: ",categoria);
+                scanf("%[^\n]", &resenha); // Faz a leitura do que o usuario digitar e armazena na variavel resenha
+                lb(); // Limpa o buffer do teclado.
                 lform(); // Linha formatada
-                itoa(os, rlos, 10); // Converte um inteiro para String
-                strcat(caminho_recl_sugs_elo, categoria); // Acrescenta uma pasta
-                strcat(caminho_recl_sugs_elo, "\\"); // Acrescenta a barra divisora de diretorios
-                strcat(caminho_recl_sugs_elo, sg); // Acrescenta a sigla da solicitação na variavel de caminho
-                strcat(caminho_recl_sugs_elo, rlos); // Concatena o caminho com o nome do arquivo.
-                strcat(caminho_recl_sugs_elo, ext); // Concatena a extensao
-                file = fopen(caminho_recl_sugs_elo, "a"); // Abre o arquivo de texto.
-                // Acrescentando informacoes ao bloco de texto.
-                fputs("\n\n      CATEGORIA..............: ", file);
-                fputs(categoria, file);
-                fputs("\n  ----------------------------------------------------------------------------------------------------------------------", file);
-                fputs("\n      ORDEM DE SERVICO.......: ", file);
-                fputs(rlos, file);
-                fputs("\n  ----------------------------------------------------------------------------------------------------------------------", file);
-                fputs("\n\n\n      RESENHA................: ", file);
-                fputs(resenha, file);
-                fclose(file); // Fecha o arquivo de texto
-                printf("\n   %s REGISTRADO(A) COM SUCESSO!\n", categoria);
+                printf("\n   REVISE AS INFORMACOES! PARA PROSSEGUIR TECLE [0 - PARA CANCELAR / 1 - PARA CONCLUIR]: ");
+                scanf("%d", &aux); // Faz a leitura dos dados digitados pelo usuario
+                lb(); // Limpa o buffer do teclado.
                 lform(); // Linha formatada
-                pause(); // Pausa a tela para o usuario
-                goto iniciar; // Direciona o usuario para o menu iniciar
+                if(aux == 0){ // Se a opcao escolhida for zero, o cadastro sera interrompido
+                    system("msg * CADASTRO CANCELADO PELO USUARIO!"); // Apresenta uma POP UP com uma mensagem para o usuario
+                    goto iniciar; // Direciona o usuario para o menu iniciar
+                }else if(aux == 1){
+                    os = gerarOS(); // Gera um numero aleatorio para a ordem de serviço
+                    printf("\n   ORDEM DE SERVICO PARA %s.............................: %d\n", categoria, os);
+                    lform(); // Linha formatada
+                    itoa(os, rlos, 10); // Converte um inteiro para String
+                    strcat(caminho_recl_sugs_elo, categoria); // Acrescenta uma pasta
+                    strcat(caminho_recl_sugs_elo, "\\"); // Acrescenta a barra divisora de diretorios
+                    strcat(caminho_recl_sugs_elo, sg); // Acrescenta a sigla da solicitação na variavel de caminho
+                    strcat(caminho_recl_sugs_elo, rlos); // Concatena o caminho com o nome do arquivo.
+                    strcat(caminho_recl_sugs_elo, ext); // Concatena a extensao
+                    file = fopen(caminho_recl_sugs_elo, "a"); // Abre o arquivo de texto.
+                    // Acrescentando informacoes ao bloco de texto.
+                    fputs("\n\n      REGISTRO EM......................: ",file);
+                    fclose(file); // Fecha o arquivo de texto em aberto
+                    incluirdatahora(caminho_recl_sugs_elo); // Inclui a data e hora atual do sistema no bloco de texto
+                    file = fopen(caminho_recl_sugs_elo, "a"); // Abre o arquivo de texto.
+                    fputs("\n  ----------------------------------------------------------------------------------------------------------------------", file);
+                    fputs("\n      REGISTRADO POR...................: ", file);
+                    fputs(identificacao_menu, file);
+                    fputs("\n  ----------------------------------------------------------------------------------------------------------------------", file);
+                    fputs("\n      REGISTRO A PEDIDO DO CPF.........: ", file);
+                    fputs(cpf, file);
+                    fputs("\n  ----------------------------------------------------------------------------------------------------------------------", file);
+                    fputs("\n      CATEGORIA........................: ", file);
+                    fputs(categoria, file);
+                    fputs("\n  ----------------------------------------------------------------------------------------------------------------------", file);
+                    fputs("\n      ORDEM DE SERVICO.................: ", file);
+                    fputs(sg, file);
+                    fputs(rlos, file);
+                    fputs("\n  ----------------------------------------------------------------------------------------------------------------------", file);
+                    fputs("\n\n\n      RESENHA..........................: ", file);
+                    fputs(resenha, file);
+                    fclose(file); // Fecha o arquivo de texto
+                    system("msg * SOLICITACAO REGISTRADA COM SUCESSO!"); // Apresenta uma POP UP com uma mensagem para o usuario
+                    goto iniciar; // Direciona o usuario para o menu iniciar
+                }else{
+                    system("msg * ALTERNATIVA INVALIDA. CADASTRO CANCELADO PELO SISTEMA"); // Apresenta uma POP UP com uma mensagem para o usuario
+                    goto iniciar; // Direciona o usuario para a tela inicial
+                }
             }else{ // Se as alternativas não forem 1 ou 0 será retornado um erro ao usuario informando o cancelamento da solicitacao
-                system("msg * ALTERNATIVA INVALIDA. CADASTRO CANCELADO PELO SISTEMA"); // Apresenta uma POP UP com uma mensagem para o usuario
+                system("msg * CPF INVALIDO. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para a tela inicial
             }
         }else if(strcmp(resp, "AA") == 0 || strcmp(resp, "aa") == 0){
+            limpatela(); // Limpa a tela para o usuario
+            char cons_recl_sugs_elo[15] = "";
             if (admin == false && moderador == false){ // O usuario só poderá criar um novo cadastro de funcionário se houver permissão de administrador.
                 system("msg * VOCE NAO POSSUI PRIVILEGIOS SUFICIENTES PARA EXECUTAR ESTA FUNCAO."); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para tela inicial.
 			}
-            limpatela(); // Limpa a tela para o usuario
             printf("\n ************************************************************************************************************************");
 			printf("\n *                                      CONSULTAR RECLAMACAO/SUGESTAO/ELOGIOS                                           *");
 			printf("\n ************************************************************************************************************************\n\n");
             printf("\n   CATEGORIAS DISPONIVEIS...............................: [0 - SUGESTAO] [1 - RECLAMACAO] [2 - ELOGIO]");
+            system("msg * INFORME A CATEGORIA UTILIZANDO 0, 1 OU 2");
             lform(); // Linha formatada
             printf("\n   PARA PROSSEGUIR INFORME A CATEGORIA..................: ");
             scanf("%d", &aux); // Faz a leitura e armazena o vlaor digitado pelo usuario
@@ -959,24 +986,26 @@ int main(void){
             }
             fclose(file); // Fecha o arquivo de texto
             leitura(caminho_recl_sugs_elo); // Realiza a leitura do arquivo de texto
-            printf("\n\n");
+            printf("\n\n"); // Salta 2 linhas
             lform(); // Linha formatada
             pause(); //Pausa a tela para o usuario
             goto iniciar; // Direciona o usuario para o menu inicial
         }else if(strcmp(resp, "AB") == 0 || strcmp(resp, "ab") == 0){
             char infosistema[20] = "", tipasta[35] = "ti-sistemas\\TI", tipastatratados[45] = "ti-sistemas\\tratados\\TI"; // Declaração de variavel local
+            char modalidade[27] = ""; // Declaração de variavel local
             limpatela(); //Limpa a tela do usuario
             printf("\n ************************************************************************************************************************");
 			printf("\n *                                      REGISTRO DE CHAMADO INTERNO PARA O TI                                           *");
 			printf("\n ************************************************************************************************************************\n\n");
-			printf("   SELECIONE A MODALIDADE [0 - SISTEMA DEFEITUOSO] - [1 - PLANTA EXTERNA DANIFICADA] - [2 - TROCA DE EQUIPAMENTOS] \n");
+			printf("   MODALIDADES DISPONIVEIS PARA TRATAMENTO.......: [0 - SISTEMA DEFEITUOSO] - [1 - PLANTA EXTERNA DANIFICADA]\n");
 			lform(); // Linha formatada
-			system("msg * INFORME A MODALIDADE DA SOLICITACAO UTILIZANDO 0, 1 OU 2!");
+			system("msg * INFORME A MODALIDADE DA SOLICITACAO UTILIZANDO 0 OU 1!");
 			printf("\n   RESPOSTA -> ");
 			scanf("%d", &aux);
 			lb(); // Limpa o buffer do teclado.
 			lform(); // Linha formatada
 			if(aux == 0){
+                strcat(modalidade, "SISTEMA DEFEITUOSO"); // Concatena a falha reclamada
                 printf("\n   INFORME O NOME DO SISTEMA DANIFICADO: ");
                 scanf("%[^\n]", &infosistema);
                 lb(); // Limpa o buffer do teclado.
@@ -1001,61 +1030,54 @@ int main(void){
                     printf("\n   OS DE TRATAMENTO: %s\n", OS);
                     lform(); // Linha formatada
                     pause(); // Pausa a tela para o usuario
-                    lform(); // Linha formatada
-                    strcat(tipasta, OS); // Concatena o numero da OS com a localidade da pasta
-                    strcat(tipasta, ext); // Concatena a extensão arquivo
-                    strcat(tipastatratados, OS); // Concatena o numero da OS com a localidade da pasta
-                    strcat(tipastatratados, ext); // Concatena a extensão arquivo
-                    file = fopen(tipasta, "a"); // Abre o arquivo de texto em modo de edição
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      DATA - HORA DE ABERTURA.....................: ", file);
-                    fclose(file);
-                    incluirdatahora(tipasta); // Inclui a data de e hora atual dentro do arquivo a ser editado.
-                    file = fopen(tipasta, "a");
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      ORDEM DE SERICO.............................: TI", file);
-                    fputs(OS, file);
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      RESPONSAVEL PELA ABERTURA...................: ", file);
-                    fputs(identificacao_menu, file);
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      SISTEMA AFETADO.............................: ", file);
-                    fputs(infosistema, file);
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      RESENHA.....................................: ", file);
-                    fputs(resenha, file);
-                    fputs("\n\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fclose(file); // fecha o arquivo de texto
-                    file = fopen(tipastatratados, "a"); // Abre o arquivo de texto para OS concluida / historico
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      DATA - HORA DE ABERTURA.....................: ", file);
-                    fclose(file);
-                    incluirdatahora(tipastatratados); // Inclui a data de e hora atual dentro do arquivo a ser editado.
-                    file = fopen(tipastatratados, "a");
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      ORDEM DE SERICO.............................: TI", file);
-                    fputs(OS, file);
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      RESPONSAVEL PELA ABERTURA...................: ", file);
-                    fputs(identificacao_menu, file);
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      SISTEMA AFETADO.............................: ", file);
-                    fputs(infosistema, file);
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      RESENHA.....................................: ", file);
-                    fputs(resenha, file);
-                    fputs("\n\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fclose(file); // Fecha o arquivo de texto
+                    system("msg * SOLICITACAO CONCLUIDA COM SUCESSO!");
+                    concatena_string(tipasta, tipastatratados, OS, modalidade, identificacao_menu, infosistema, resenha); // Concatena as informações e cria a OS na pasta indicada
                 }
 			}else if(aux == 1){
-
-			}else if(aux == 2){
-
+                strcat(modalidade, "PLANTA EXTERNA DANIFICADA"); // Concatena a falha reclamada
+                printf("\n   AFETOU ALGUM SISTEMA?[0 - NAO / 1 - SIM]............: ");
+                scanf("%d", &aux);
+                lb(); // Limpa o buffer do teclado.
+                lform(); // Linha formatada
+                if(aux == 1){
+                    printf("\n   INFORME QUAL FOI O SISTEMA AFETADO..................: ");
+                    scanf("%[^\n]", &infosistema);
+                    lb(); // Limpa o buffer do teclado.
+                    lform(); // Linha formatada
+                }else if(aux == 0){
+                    strcat(infosistema, "N/A");
+                }else{
+                    system("msg * ALTERNATIVA INVALIDA! SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP com informações na tela do usuario.
+                    goto iniciar; // DIreciona o usuario para tela inicial
+                }
+                printf("\n   DESCREVA EM ATE 255 CARACTERES A FALHA E A LOCALIDADE DE OCORRENCIA DA MESMA.\n");
+                lform(); // Linha formatada
+                printf("\n   -> ");
+                scanf("%[^\n]", &resenha);
+                lb(); // Limpa o buffer do teclado.
+                lform(); // Linha formatada
+                printf("\n   REVISE AS INFORMACOES ANTES DE PROSSEGUIR.\n");
+                lform(); // Linha formatada
+                printf("\n   DESEJA CONCLUIR?[0 - NAO / 1 - SIM]: ");
+                scanf("%d", &confirma);
+                if(confirma == 0){
+                    system("msg * CANCELAMENTO EXECUTADO A PEDIDO DO USUARIO!"); // Apresenta uma POP-UP de mensagtem na tela do usuario
+                    goto iniciar; // Direciona o usuario para o menu iniciar
+                }else{
+                    lform(); // Linha formatada
+                    os = gerarOS(); // Gera a ordem de serviço
+                    itoa(os, OS, 10); // Converte um numero inteiro para STRING
+                    printf("\n   OS DE TRATAMENTO: %s\n", OS);
+                    lform(); // Linha formatada
+                    pause(); // Pausa a tela para o usuario
+                    system("msg * SOLICITACAO CONCLUIDA COM SUCESSO!");
+                    concatena_string(tipasta, tipastatratados, OS, modalidade, identificacao_menu, infosistema, resenha); // Concatena as informações e cria a OS na pasta indicada
+                }
 			}else{
                 system("msg * ALTERNATIVA INVALIDA. OPERACAO CANCELADA PELO SISTEMA, TENTE NOVAMENTE!"); // Apresenta uma POP-UP de mensagtem na tela do usuario
                 goto iniciar; // Direciona o usuario para o menu iniciar
 			}
-            goto iniciar; // Direciona o usuario para o menu inicial
+			goto iniciar; // Direciona o usuario para o menu iniciar.
         }else if(strcmp(resp, "AC") == 0 || strcmp(resp, "ac") == 0){
             limpatela();
             printf("\n ************************************************************************************************************************");
@@ -1074,7 +1096,7 @@ int main(void){
                 system("msg * ORDEM DE SERVICO NAO LOCALIZADA. VERIFIQUE OS CHAMADOS EM HISTORICO."); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario ao menu de consultas
             }else if(resultadobusca == true){
-                printf("\n   DESEJA DAR BAIXA NO CHAMADO? [0 - PARA NAO / 1 - PARA SIM]: ");
+                printf("\n\n   DESEJA DAR BAIXA NO CHAMADO? [0 - PARA NAO / 1 - PARA SIM]: ");
                 scanf("%d", &aux);
                 lform(); // Linha formatada
                 if (aux == 1){
@@ -1097,10 +1119,36 @@ int main(void){
             }
             goto iniciar; // Direciona o usuario para o menu iniciar
         }else if(strcmp(resp, "AD") == 0 || strcmp(resp, "ad") == 0){
+            limpatela(); // Limpa a tela do usuario
+            char verificaP[30] = "ti-sistemas\\TI";
             if (admin == false && moderador == false){ // O usuario só poderá criar um novo cadastro de funcionário se houver permissão de administrador.
                 system("msg * VOCE NAO POSSUI PRIVILEGIOS SUFICIENTES PARA EXECUTAR ESTA FUNCAO."); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para tela inicial.
 			}
+            printf("\n ************************************************************************************************************************");
+			printf("\n *                                CONSULTA DE CHAMADO INTERNO PARA O TI EM HISTORICO                                    *");
+			printf("\n ************************************************************************************************************************\n\n");
+            //Entrada de dados do usuario
+            printf("   ENTRE COM O NUMERO DA OS DE AGENDAMENTO EM HISTORICO.............: ");
+            scanf("%s", &digitoOS);
+            lb(); // Limpa o buffer do teclado
+            lform(); // Linha formatada
+            //Concatenacao de informacoes
+            strcat(consultarOS, "ti-sistemas\\tratados\\TI");
+            strcat(consultarOS, digitoOS);
+            strcat(consultarOS, ext);
+            strcat(verificaP, digitoOS);
+            strcat(verificaP, ext);
+            FILE *consultaP; // Declaração de variavel do tipo FILE
+            consultaP = fopen(verificaP, "r"); // Verifica se o arquivo exsiste na pasta indicada.
+            if(consultaP == NULL){
+                leitura(consultarOS); // Faz a leitura dos arquivos na pasta indicada
+                lform(); // Linha formatada
+                pause(); // Pausa a tela para o usuario visualizar as informacoes;
+                goto iniciar; // Direciona o usuario ao menu de consultas
+            }
+            fclose(consultaP); // fecha o arquivo de texto
+            system("msg * ESTA OS DE TRATAMENTO NAO EXISTE OU PODE ESTAR EM SENDO TRATADA AINDA."); // Apresenta uma POP UP com uma mensagem para o usuario
             goto iniciar; // Direciona o usuario para o menu inicial
         }else if(strcmp(resp, "AE") == 0 || strcmp(resp, "ae") == 0){
             goto iniciar; // Direciona o usuario para o menu inicial
@@ -1205,11 +1253,62 @@ int main(void){
 // |============================================================================================================================| //
 
 
-
-
+// Função que fará a concatenação das informaçõs e adicionara no bloco de notas para a criação de uma OS.
+void concatena_string(char tipasta[35], char titratados[45], char OS[15], char categoria[25], char id[7], char informe[25], char detalhar[255]){
+    FILE *file; // Variavel do tipo FILE
+    strcat(tipasta, OS); // Concatena o numero da OS com a localidade da pasta
+    strcat(tipasta, ".txt"); // Concatena a extensão arquivo
+    strcat(titratados, OS); // Concatena o numero da OS com a localidade da pasta
+    strcat(titratados, ".txt"); // Concatena a extensão arquivo
+    file = fopen(tipasta, "a"); // Abre o arquivo de texto em modo de edição
+    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fputs("\n      DATA - HORA DE ABERTURA.....................: ", file);
+    fclose(file);
+    incluirdatahora(tipasta); // Inclui a data de e hora atual dentro do arquivo a ser editado.
+    file = fopen(tipasta, "a");
+    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fputs("\n      ORDEM DE SERVICO............................: TI", file);
+    fputs(OS, file);
+    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fputs("\n      CHAMADO PARA................................: ", file);
+    fputs(categoria, file);
+    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fputs("\n      RESPONSAVEL PELA ABERTURA...................: ", file);
+    fputs(id, file);
+    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fputs("\n      SISTEMA AFETADO.............................: ", file);
+    fputs(informe, file);
+    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fputs("\n      RESENHA.....................................: ", file);
+    fputs(detalhar, file);
+    fputs("\n\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fclose(file); // fecha o arquivo de texto
+    file = fopen(titratados, "a"); // Abre o arquivo de texto para OS concluida / historico
+    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fputs("\n      DATA - HORA DE ABERTURA.....................: ", file);
+    fclose(file);
+    incluirdatahora(titratados); // Inclui a data de e hora atual dentro do arquivo a ser editado.
+    file = fopen(titratados, "a");
+    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fputs("\n      ORDEM DE SERVICO............................: TI", file);
+    fputs(OS, file);
+    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fputs("\n      CHAMADO PARA................................: ", file);
+    fputs(categoria, file);
+    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fputs("\n      RESPONSAVEL PELA ABERTURA...................: ", file);
+    fputs(id, file);
+    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fputs("\n      SISTEMA AFETADO.............................: ", file);
+    fputs(informe, file);
+    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fputs("\n      RESENHA.....................................: ", file);
+    fputs(detalhar, file);
+    fputs("\n\n  ------------------------------------------------------------------------------------------------------------------", file);
+    fclose(file); // Fecha o arquivo de texto
+}
 
 // Funcao para incluir data e hora dos agendamentos
-
 void incluirdatahora(char cm[50]){
     FILE *file; // Declaração de variavel do tipo FILE.
     struct tm *dataloc; //ponteiro para struct que armazena data e hora
@@ -1301,6 +1400,7 @@ void createloginsenha(char creatediretlogin[50], char creatediretsenha[50],char 
 void lform(){
     printf("\n  ----------------------------------------------------------------------------------------------------------------------\n");
 }
+
 // funcao para Validar usuario admin
 bool validarAdmin(char login[11], char senha[16]){
     FILE *verifadm; // Declaração de variavel ponteiro do tipo FILE
