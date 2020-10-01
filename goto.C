@@ -43,7 +43,7 @@ char cadastrar(char initcadastro[70], char nome[40], char idadeString[5], char s
 
 int main(void){
     //Cria as pastas do sistema e realiza o processo de ocultação das mesmas.
-    system("mode 15,1 && color 15"); // Muda o tamanho do terminal para 15 colunas e 1 linha e a cor para fundo azul e letras roxas
+    system("mode 15,1 && color 15 & title TELA DE LOGIN"); // Muda o tamanho do terminal para 15 colunas e 1 linha e a cor para fundo azul e letras roxas
     system("msg * AGUARDE! INICIALIZANDO TAREFAS..."); // Mostra uma POP-UP com uma mensagem para o usuario.
     system("mkdir sugerir-reclamar-elogiar\\ELOGIO\\");
     system("mkdir sugerir-reclamar-elogiar\\RECLAMACAO\\");
@@ -128,7 +128,7 @@ int main(void){
         FILE *file; // Declaracao de variavel do tipo FILE
         int contador = 0, confirma, idade, aux, os, numos; //Declaracao de variavel de uso geral do tipo inteiro
         // DECLARAÇÃO DE VARIAVEIS DE USO GERAL DO TIPO CHAR
-        char ext[5] = ".txt", sigla[3] = "CT", sg[3] = "", rlos[15] = "", consultarOS[50] = "", digitoOS[25] = "", auxiliarOS[53] = "", OS[15] = "";
+        char ext[5] = ".txt", sigla[3] = "", sg[3] = "", rlos[15] = "", consultarOS[50] = "", digitoOS[25] = "", auxiliarOS[53] = "", OS[15] = "";
         char cadastro[55] = "", telefonecontato[15] = "", resultadobusca, numconvenio[11] = "", categoria[11] = "", resenha[255] = "";
         char sexo[10] = "", endereco[60] = "", ctps[11] = "", idadeString[3] = "", cpf[12] = "", nome[40] = "", data[11] = "", hora[9] = "";
         char login[60] = "", senha[60] = "", auxsenha[60] = "", auxlogin[60] = "", cadastroOS[53] = "", consultaficha[50] = "", baixaOS[40] = "";
@@ -136,7 +136,7 @@ int main(void){
         char resp[3] = ""; // Declaração de variavel do tipo char para controle de respostas
         char *eptr; //Declaracao de variavel ponteiro tipo char
         long long recebecpf, recebetel; //Declaracao de variavel long long(inteiro)
-        system("mode 122,62"); // Modulariza o tamanho da tela para 122 colunas por 62 linhas.
+        system("mode 122,62 & title CENTRAL ADMINSTRATIVA"); // Modulariza o tamanho da tela para 122 colunas por 62 linhas.
 
         // MENU INICIAL QUE APARECERA PARA O USUARIO APOS A EXECUCAO DO SOFWARE
         printf("\n                                                 ***********************              SÃO [ %d:%d ] HOJE É [%d/%d/%d]\n",dataloc->tm_hour, dataloc->tm_min, dataloc->tm_mday, dataloc->tm_mon+1, dataloc->tm_year+1900);
@@ -154,7 +154,7 @@ int main(void){
         printf("  ______________________________________________________________________________________________________________________\n\n");
         printf("  **********************************************************************************************************************\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
-        printf("  * A1 - CADASTRAR UM NOVO FUNCIONARIO                            AC - CONSULTAR UM CHAMADO INTERNO EM HISTORICO - TI  *\n");
+        printf("  * A1 - CADASTRAR UM NOVO FUNCIONARIO/MEDICO                     AC - CONSULTAR UM CHAMADO INTERNO EM HISTORICO - TI  *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
         printf("  * A2 - CADASTRAR UM NOVO PACIENTE                               AD - GERAR RELATORIO DE DESEMPENHO DIARIO NA TELA    *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
@@ -168,7 +168,7 @@ int main(void){
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
         printf("  * A7 - CONSULTAR AGENDAMENTO EM HISTORICO                                                                            *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
-        printf("  * A8 - REGISTRAR RECLAMACAO/SUGESTAO/ELOGIO                                                                          *\n");
+        printf("  * A8 - REGISTRAR RECLAMACAO/SUGESTAO/ELOGIO                     DG - DANGER ZONE / DELETAR UM USUARIO DO SISTEMA     *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
         printf("  * A9 - CONSULTAR RECLAMACAO/SUGESTAO/ELOGIO                     B1 - LOGAR COM UM NOVO USUARIO                       *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
@@ -190,7 +190,7 @@ int main(void){
                 goto iniciar; // Direciona o usuario para tela inicial.
 			}
 			printf("\n ************************************************************************************************************************");
-			printf("\n *                                           CADASTRO DE FUNCIONARIO                                                    *");
+			printf("\n *                                         CADASTRO DE FUNCIONARIOS E MEDICOS                                           *");
 			printf("\n ************************************************************************************************************************\n\n");
             // validação de idade para cadastro
             for(contador = 0; contador < 3; contador++){ // inicia um looping com 3 tentativas para acertividade do que for solicitado.
@@ -268,6 +268,30 @@ int main(void){
                     printf("\n   CPF INVALIDO. TENTE NOVAMENTE!\n");
                     lform(); // Linha formatada
                 }else{ // Se o CPF for válido será declarada uma variavel temporaria para receber um determinado valor
+                    for(contador = 0; contador < 3; contador++){
+                        printf("\n   EQUIPES DISPONIVEIS PARA SELECAO....................................: [0 - CT] [1 - CE] [2 - CO]\n");
+                        lform(); // Linha formatada
+                        printf("\n   INFORME A QUAL EQUIPE PERTENCERA O COLABORADOR......................: ");
+                        scanf("%d", &aux);
+                        lb(); // Limpa o buffer do teclado
+                        lform(); // Linha formatada
+                        if(aux == 0 || aux == 1 || aux == 2){
+                            break; // Encerra a repetição
+                        }else{
+                            system("msg * UTILIZE UMA OPCAO VALIDA. TENTE 1, 2 OU 3!");
+                        }
+                        if(contador == 2){
+                            system("msg * NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
+                            goto iniciar; // Direciona o usuario para o menu iniciar;
+                        }
+                    }
+                    if(aux == 0){
+                        strcat(sigla, "CT");
+                    }else if(aux == 1){
+                        strcat(sigla, "CE");
+                    }else{
+                        strcat(sigla, "CO");
+                    }
                     char temp[10] = ""; // Declaração de variavel temporaria
                     aux = criarnumusuario(recebecpf); // a variavel auxiliar recebera o numero de usuario de acordo com o CPF digitado
                     itoa(aux, temp, 10); // Converte o valor inteiro para string
@@ -308,82 +332,79 @@ int main(void){
             lform(); // Linha formatada
             printf("\n   TIPOS DE COLABORADOR DISPONIVELS....................................: [0 - FUNCIONARIO] - [1 - MEDICO]\n");
             lform(); // Linha formatada
-            printf("\n   INFORME O TIPO DO COLABORADOR.......................................: ");
-            scanf("%d", &aux);
-            lb(); // Limpa o buffer do teclado
-            lform(); // Linha formatada
-            while(aux != 1 && aux != 0){
-                if(aux == 1){
-                    printf("\n   ID DO CERTIFICADO DE MEDICINA.......................................: ");
-                    scanf("%s", &diploma);
-                    lb(); // Limpa o buffer do teclado
-                    lform(); // Linha formatada
-                    confirmacadastro(nome, "N/A", idadeString, sexo, cpf, endereco, telefonecontato, ctps, diploma, "N/A"); // Mostra na tela as informações do cadastro para que o usuario posssa confirma-las.
-                    printf("\n   DESEJA FINALIZAR O CADASTRO DO COLABORADOR? [0 - NÃO / 1 - SIM].....: ");
-                    scanf("%d", &confirma);
-                    lb(); // Limpa o buffer do teclado
-                    if(confirma == 0){
-                        system("msg * CADASTRO CANCELADO PELO USUARIO"); // Apresenta uma POP UP com uma mensagem para o usuario
-                        goto iniciar; // Direciona o usuario para a tela inicial
-                    }
-                    cadastrar(cadastro, nome, idadeString, sexo, endereco, cpf, telefonecontato); //Acrescentando informaçoes basicas de cadastro no arquivo de texto utilizando a funcao cadastrar.
-                    //Acrescebtabdi demais informações
-                    file = fopen(cadastro, "a"); // Abre o arquivo de texto
-                    fputs("\n      CARTEIRA DE TRABALHO.............: ", file);
-                    fputs(ctps, file);
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      CERTIFICACAO DIPLOMA MEDICO......: ", file);
-                    fputs(diploma, file);
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      TIPO.............................: MEDICO", file);
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fclose(file); // Fecha o arquivo
-                    createloginsenha(criapastalogin, criapastasenha, auxlogin, cpf); // Cria o login e senha do usuario que foi cadastrado
-                    system("msg * MEDICO CADASTRADO COM SUCESSO!\n"); // Apresenta uma POP UP com uma mensagem para o usuario
-                    goto iniciar; // Direciona o usuario para a tela de de inicio.
-                }else if(aux == 0){
-                    // Revisão de informações no cadastro.
-                    confirmacadastro(nome,"N/A",idadeString,sexo,cpf,endereco,telefonecontato,ctps,"N/A","N/A"); // Chama a função para apresentar as informações na tela para o usuario
-                    printf("\n   DESEJA FINALIZAR O CADASTRO DO COLABORADOR? [0 - NÃO / 1 - SIM].....: ");
-                    scanf("%d", &confirma);
-                    lform(); // Linha formatada
-                    if(confirma == 0){
-                        system("msg * CADASTRO CANCELADO PELO USUARIO."); // Apresenta uma POP UP com uma mensagem para o usuario
-                        goto iniciar; // Direciona o usuario para a tela inicial.
-                    }
-                    strcat(cadastro, "funcionarios\\"); // Concatena o caminho da pasta de funcionarios no cadastro de funcionario
-                    strcat(cadastro, cpf); // Concatena o cpf no cadastro
-                    strcat(cadastro, ext); // Concatena o cpf com a extensão txt no cadastro;
-                    file = fopen(cadastro, "r"); // Abre um arquivo de texto em modo leitura
-                    if(file != NULL){ // Verifica se o colaborador já está cadastrado.
-                        system("msg * COLABORADOR JA CADASTRADO NO BANCO DE FUNCIONARIOS INTERNOS. CADASTRO CANCELADO PELO SISTEMA!"); // Apresenta uma POP UP com uma mensagem para o usuario
-                        fclose(file); // Fecha o arquivo de texto caso tenha sido aberto.
-                        goto iniciar; // Direciona o usuario para a tela inicial.
-                    }
-                    fclose(file);// Fecha o arquivo de texto aberto.
-                    //Acrescentando informaçoes basicas de cadastro no arquivo de texto utilizando a funcao cadastrar.
-                    cadastrar(cadastro, nome, idadeString, sexo, endereco, cpf, telefonecontato);
-                    //Acrescentando demais informacoes no cadastro.
-                    file = fopen(cadastro, "a");
-                    fputs("\n      CARTEIRA DE TRABALHO.............: ", file);
-                    fputs(ctps, file);
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fputs("\n      TIPO.............................: FUNCIONARIO", file);
-                    fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
-                    fclose(file); // Fecha o arquivo de texto
-                    createloginsenha(criapastalogin, criapastasenha, auxlogin, cpf); // Cria o login e a senha do usuario que foi cadastrado
-                    system("msg * COLABORADOR CADASTRADO COM SUCESSO!"); // Apresenta uma POP UP com uma mensagem para o usuario
-                    goto iniciar; // Direciona o usuario para a tela inicial.
+            for(contador = 0; contador < 3; contador++){
+                printf("\n   INFORME O TIPO DO COLABORADOR.......................................: ");
+                scanf("%d", &aux);
+                lb(); // Limpa o buffer do teclado
+                lform(); // Linha formatada
+                if(aux == 0 || aux == 1){
+                    break;
                 }else{
-                    system("msg * ALTERNATIVA INVALIDA. TENTE NOVAMENTE"); // Apresenta uma POP-UP informativa na tela do usuario
+                    system("msg * OPCAO INVALIDA. TENTE DIGITAR 0 OU 1!");
                 }
-            printf("\n   INFORME O TIPO DO COLABORADOR.......................................: ");
-            scanf("%d", &aux);
-            lb(); // Limpa o buffer do teclado
-            lform(); // Linha formatada
+                if(contador == 2){
+                    system("msg * NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
+                    goto iniciar; // Direciona o usuario para o menu iniciar;
+                }
             }
-            goto iniciar; // Direciona o usuario para o menu iniciar
-
+            if(aux == 1){
+                printf("\n   ID DO CERTIFICADO DE MEDICINA.......................................: ");
+                scanf("%s", &diploma);
+                lb(); // Limpa o buffer do teclado
+                lform(); // Linha formatada
+                confirmacadastro(nome, "N/A", idadeString, sexo, cpf, endereco, telefonecontato, ctps, diploma, "N/A"); // Mostra na tela as informações do cadastro para que o usuario posssa confirma-las.
+                printf("\n   DESEJA FINALIZAR O CADASTRO DO COLABORADOR? [0 - NÃO / 1 - SIM].....: ");
+                scanf("%d", &confirma);
+                lb(); // Limpa o buffer do teclado
+                if(confirma == 0){
+                    system("msg * CADASTRO CANCELADO PELO USUARIO"); // Apresenta uma POP UP com uma mensagem para o usuario
+                    goto iniciar; // Direciona o usuario para a tela inicial
+                }
+                cadastrar(cadastro, nome, idadeString, sexo, endereco, cpf, telefonecontato); //Acrescentando informaçoes basicas de cadastro no arquivo de texto utilizando a funcao cadastrar.
+                //Acrescebtabdi demais informações
+                file = fopen(cadastro, "a"); // Abre o arquivo de texto
+                fputs("\n      CARTEIRA DE TRABALHO.............: ", file);
+                fputs(ctps, file);
+                fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+                fputs("\n      CERTIFICACAO DIPLOMA MEDICO......: ", file);
+                fputs(diploma, file);
+                fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+                fputs("\n      LOGIN CORPORATIVO................: ", file);
+                fputs(auxlogin, file);
+                fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+                fputs("\n      TIPO.............................: MEDICO", file);
+                fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+                fclose(file); // Fecha o arquivo
+                createloginsenha(criapastalogin, criapastasenha, auxlogin, cpf); // Cria o login e senha do usuario que foi cadastrado
+                system("msg * MEDICO CADASTRADO COM SUCESSO!\n"); // Apresenta uma POP UP com uma mensagem para o usuario
+                goto iniciar; // Direciona o usuario para a tela de de inicio.
+            }else if(aux == 0){
+                // Revisão de informações no cadastro.
+                confirmacadastro(nome,"N/A",idadeString,sexo,cpf,endereco,telefonecontato,ctps,"N/A","N/A"); // Chama a função para apresentar as informações na tela para o usuario
+                printf("\n   DESEJA FINALIZAR O CADASTRO DO COLABORADOR? [0 - NÃO / 1 - SIM].....: ");
+                scanf("%d", &confirma);
+                lform(); // Linha formatada
+                if(confirma == 0){
+                    system("msg * CADASTRO CANCELADO PELO USUARIO."); // Apresenta uma POP UP com uma mensagem para o usuario
+                    goto iniciar; // Direciona o usuario para a tela inicial.
+                }
+                //Acrescentando informaçoes basicas de cadastro no arquivo de texto utilizando a funcao cadastrar.
+                cadastrar(cadastro, nome, idadeString, sexo, endereco, cpf, telefonecontato);
+                //Acrescentando demais informacoes no cadastro.
+                file = fopen(cadastro, "a");
+                fputs("\n      CARTEIRA DE TRABALHO.............: ", file);
+                fputs(ctps, file);
+                fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+                fputs("\n      LOGIN CORPORATIVO................: ", file);
+                fputs(auxlogin, file);
+                fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+                fputs("\n      TIPO.............................: FUNCIONARIO", file);
+                fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
+                fclose(file); // Fecha o arquivo de texto
+                createloginsenha(criapastalogin, criapastasenha, auxlogin, cpf); // Cria o login e a senha do usuario que foi cadastrado
+                system("msg * COLABORADOR CADASTRADO COM SUCESSO!"); // Apresenta uma POP UP com uma mensagem para o usuario
+                goto iniciar; // Direciona o usuario para a tela inicial.
+            }
         }else if(strcmp(resp, "A2") == 0 || strcmp(resp, "a2") == 0){
             limpatela(); // Limpa a tela
             char criapastapaciente[42] = "mkdir pacientes\\", nomemae[40] = "";
@@ -1358,6 +1379,83 @@ int main(void){
                 }
             }
             goto iniciar; // Direciona o usuario para o menu inicial
+        }else if(strcmp(resp, "DG") == 0 || strcmp(resp, "dg") == 0){
+            char searchlog[35] = "system-moderadores\\logins\\", searchcolab[35] = "funcionarios\\";
+            limpatela(); // Limpa a tela do usuario
+            if(admin == false){
+                system("msg * VOCE NAO POSSUI PRIVILEGIOS PARA EXECUTAR ESSA FUNCAO!");
+                goto iniciar; // Direciona o usuario para o menu iniciar
+            }
+            printf("\n ************************************************************************************************************************");
+            printf("\n *                                      DANGER ZONE - EXCLUIR UM USUARIO DO SISTEMA                                     *");
+            printf("\n ************************************************************************************************************************\n\n");
+            for(contador = 0; contador < 3; contador++){
+                char searchcolab[35] = "funcionarios\\";
+                printf("\n   ENTRE COM O CPF DO COLABORADOR.....................: ");
+                scanf("%s", &cpf);
+                lb(); // Limpa o buffer do teclado
+                lform(); // Linha formatada
+                strcat(searchcolab, cpf);
+                strcat(searchcolab, ".txt");
+                file = fopen(searchcolab, "r");
+                if(file != NULL){
+                    fclose(file);
+                    break;
+                }else{
+                    fclose(file);
+                    system("msg * COLABORADOR NAO LOCALIZADO. TENTE NOVAMENTE!");
+                }
+                if(contador == 2){
+                    system("msg * NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
+                    goto iniciar; // Direciona o usuario para o menu iniciar;
+                }
+            }
+            for(contador = 0; contador < 3; contador++){
+                char searchlog[35] = "system-moderadores\\logins\\";
+                printf("\n   ENTRE COM O LOGIN DO COLABORADOR...................: ");
+                scanf("%s", &login);
+                lb(); // Limpa o buffer do teclado
+                lform(); // Linha formatada
+                strcat(searchlog, login);
+                strcat(searchlog, "\\");
+                strcat(searchlog, login);
+                strcat(searchlog, ".txt");
+                file = fopen(searchlog, "r");
+                if(file != NULL){
+                    fclose(file);
+                    break;
+                }else{
+                    fclose(file);
+                    system("msg * LOGIN INCORRETO OU INEXISTENTE. TENTE NOVAMENTE!");
+                }
+                if(contador == 2){
+                    system("msg * NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
+                    goto iniciar; // Direciona o usuario para o menu iniciar;
+                }
+            }
+            printf("\n   APOS A CONCLUSAO NAO HA COMO REVERTER O PROCESSO. DESEJA REALMENTE PROSSEGUIR? [0 - NAO / 1 - SIM]: ");
+            scanf("%d", &aux);
+            lb(); // Limpa o buffer do teclado
+            lform(); // Linha formatada
+            if(aux == 0){
+                system("msg * SOLICITACAO CANCELADA A PEDIDO DO USUARIO.");
+                goto iniciar;
+            }else if(aux == 1){
+                char delfunc[45] = "del /Q ", dellog[45] = "del /Q /F /S ";
+                //Concatenação de strings para deletar o usuario do sistema.
+                strcat(dellog, searchlog);
+                strcat(dellog, login);
+                system(dellog);
+                limpatela(); // Limpa a tela do usuario
+                strcat(delfunc, searchcolab);
+                system(delfunc);
+                limpatela(); // Limpa a tela do usuario
+                system("msg * SOLICITACAO CONCLUIDA COM SUCESSO!");
+                goto iniciar;
+            }else{
+                system("msg * ALTERNATIVA INVALIDA. SOLICITACAO CANCELADA PELO SISTEMA.");
+                goto iniciar; // Direciona o usuario para o menu iniciar;
+            }
         }else{
             system("msg * ALTERNATIVA INVALIDA. TENTE NOVAMENTE!");
             goto iniciar; // Direciona o usuario para o menu inicial
@@ -1372,7 +1470,7 @@ int main(void){
 // |============================================================================================================================| //
 
 
-// Função que fará a concatenação das informaçõs e adicionara no bloco de notas para a criação de uma OS.
+// Função que fará a concatenação das informaçõs e adicionara no bloco de notas para a criação de uma OS PARA O TI.
 void concatena_string(char tipasta[35], char titratados[45], char OS[15], char categoria[25], char id[7], char informe[25], char detalhar[255]){
     FILE *file; // Variavel do tipo FILE
     strcat(tipasta, OS); // Concatena o numero da OS com a localidade da pasta
