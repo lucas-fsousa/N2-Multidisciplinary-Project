@@ -47,13 +47,13 @@ int main(void){
     system("msg * AGUARDE! INICIALIZANDO TAREFAS..."); // Mostra uma POP-UP com uma mensagem para o usuario.
     system("mkdir sugerir-reclamar-elogiar\\ELOGIO\\");
     system("mkdir sugerir-reclamar-elogiar\\RECLAMACAO\\");
-    system("mkdir sugerir-reclamar-elogiar\\SUGESTAO\\ & attrib +h sugerir-reclamar-elogiar");
-    system("mkdir funcionarios\\ & attrib +h funcionarios"); // Cria a pasta de funcionarios
-    system("mkdir pacientes\\ & attrib +h pacientes"); // Cria a pasta de pacientes
-    system("mkdir system-moderadores\\logins\\ & attrib +h system-moderadores"); // Cria a pasta de logins para moderadores do sistema
-    system("mkdir agendamentos\\concluidos\\ & attrib +h agendamentos"); // Cria a pasta de agendamentos e agendamentos concluidos
-    system("mkdir ti-sistemas\\tratados\\ & attrib +h ti-sistemas"); // Cria a pasta de ti e sistemas
-    system("mkdir relatorios\\ & attrib +h relatorios"); // Cria a pasta de relatorios
+    system("mkdir sugerir-reclamar-elogiar\\SUGESTAO\\ & attrib -h sugerir-reclamar-elogiar");
+    system("mkdir funcionarios\\ & attrib -h funcionarios"); // Cria a pasta de funcionarios
+    system("mkdir pacientes\\ & attrib -h pacientes"); // Cria a pasta de pacientes
+    system("mkdir system-moderadores\\logins\\ & attrib -h system-moderadores"); // Cria a pasta de logins para moderadores do sistema
+    system("mkdir agendamentos\\concluidos\\ & attrib -h agendamentos"); // Cria a pasta de agendamentos e agendamentos concluidos
+    system("mkdir ti-sistemas\\tratados\\ & attrib -h ti-sistemas"); // Cria a pasta de ti e sistemas
+    system("mkdir relatorios\\ & attrib -h relatorios"); // Cria a pasta de relatorios
 
     moduser: // ponto de salto para modificar o usuario / trocar login
         system("mode 30,6 && color 07"); // Seta o tamanho do terminal para 30 colunas e 6 linhas e a cor do terminal para o padrão
@@ -70,8 +70,9 @@ int main(void){
         Senha provisória é o CPF do usuario até que seja realizada a devida alteração.*/
 
         //Variaveis globais de login
-        bool admin = false, moderador = false; // declaracao de variavel do tipo booleano
+        bool admin = false, moderador = false, trocar_senha_padrao = false; // declaracao de variavel do tipo booleano
         char identificacao_menu[7] = "", caminhologin[65] = "system-moderadores\\logins\\", caminhosenha[75] = "system-moderadores\\logins\\"; // Declaração de variavel global
+        char verificarsenhapadrao[65] = "system-moderadores\\logins\\";
         int cc; // Declaração de variavel contadora do tipo inteiro
 
         for(cc = 0; cc < 3; cc++){ // Entrará em um loop infinito até que uma das opções de login sejam atendidas.
@@ -109,6 +110,12 @@ int main(void){
             }else if(validarAdmin(auxlog, auxsen) == true){ // Verifica se o usuario é um usuario válido para liberar acesso ao uso da ferramenta
                 moderador = true; // Atribuição de valor booleano verdadeiro a variavel usuario
                 strcat(identificacao_menu, login); // Concatena o login para mostar no menu inicial
+                // Concatenação de verificação da senha padrao
+                strcat(verificarsenhapadrao, login);
+                strcat(verificarsenhapadrao, "\\");
+                strcat(verificarsenhapadrao, senha);
+                strcat(verificarsenhapadrao, "\\");
+                strcat(verificarsenhapadrao, "true.txt");
                 break; // Encerra o looping
             }else{ // Se nenhum das alternativas anteriores for válida, uma mensagem de erro será exibida para o usuario.
                 system("msg * USUARIO OU SENHA INVALIDOS. TENTE NOVAMENTE!"); // Apresenta uma POP UP com uma mensagem para o usuario
@@ -137,9 +144,18 @@ int main(void){
         char *eptr; //Declaracao de variavel ponteiro tipo char
         long long recebecpf, recebetel; //Declaracao de variavel long long(inteiro)
         system("mode 122,62 & title CENTRAL ADMINSTRATIVA"); // Modulariza o tamanho da tela para 122 colunas por 62 linhas.
-
+        //Verifica se o usuario já realizou a troca da senha padrao
+        file = fopen(verificarsenhapadrao, "r");
+        if((admin == false && moderador == true) && file != NULL){
+            trocar_senha_padrao = true;
+            fclose(file);
+            system("msg * A CENTRAL DE SEGURANCA DA INFORMACAO ADVERTE. PARA A SUA SEGURANCA SERA NECESSARIO REALIZAR A TROCA DA SENHA PADRAO UTILIZANDO O COMANDO B0!");
+        }else{
+            fclose(file);
+            trocar_senha_padrao = false;
+        }
         // MENU INICIAL QUE APARECERA PARA O USUARIO APOS A EXECUCAO DO SOFWARE
-        printf("\n                                                 ***********************              SÃO [ %d:%d ] HOJE É [%d/%d/%d]\n",dataloc->tm_hour, dataloc->tm_min, dataloc->tm_mday, dataloc->tm_mon+1, dataloc->tm_year+1900);
+        printf("\n                                                 ***********************                            HOJE É [%d/%d/%d]\n", dataloc->tm_mday, dataloc->tm_mon+1, dataloc->tm_year+1900);
         printf("  _______________________________________________*                     *________________________________________________\n");
         printf("  _______________________________________________>    ABA PRINCIPAL    <________________________________________________\n");
         printf("                                                 *                     *                                                \n");
@@ -154,11 +170,11 @@ int main(void){
         printf("  ______________________________________________________________________________________________________________________\n\n");
         printf("  **********************************************************************************************************************\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
-        printf("  * A1 - CADASTRAR UM NOVO FUNCIONARIO/MEDICO                     AC - CONSULTAR UM CHAMADO INTERNO EM HISTORICO - TI  *\n");
+        printf("  * A1 - CADASTRAR UM NOVO FUNCIONARIO/MEDICO                     AD - GERAR RELATORIO DE DESEMPENHO DIARIO NA TELA    *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
-        printf("  * A2 - CADASTRAR UM NOVO PACIENTE                               AD - GERAR RELATORIO DE DESEMPENHO DIARIO NA TELA    *\n");
+        printf("  * A2 - CADASTRAR UM NOVO PACIENTE                               AE - EXPORTAR RELATORIO DE DESEMPENHO PARA O EXCEL   *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
-        printf("  * A3 - CADASTAR UMA ORDEM DE AGENDAMENTO                        AE - EXPORTAR RELATORIO DE DESEMPENHO PARA O EXCEL   *\n");
+        printf("  * A3 - CADASTAR UMA ORDEM DE AGENDAMENTO                                                                             *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
         printf("  * A4 - CONSULTAR O CADASTRO DE UM MEDICO/FUNCIONARIO                                                                 *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
@@ -168,13 +184,15 @@ int main(void){
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
         printf("  * A7 - CONSULTAR AGENDAMENTO EM HISTORICO                                                                            *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
-        printf("  * A8 - REGISTRAR RECLAMACAO/SUGESTAO/ELOGIO                     DG - DANGER ZONE / DELETAR UM USUARIO DO SISTEMA     *\n");
+        printf("  * A8 - REGISTRAR RECLAMACAO/SUGESTAO/ELOGIO                                                                          *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
-        printf("  * A9 - CONSULTAR RECLAMACAO/SUGESTAO/ELOGIO                     B1 - LOGAR COM UM NOVO USUARIO                       *\n");
+        printf("  * A9 - CONSULTAR RECLAMACAO/SUGESTAO/ELOGIO                     DG - DANGER ZONE / DELETAR UM USUARIO DO SISTEMA     *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
-        printf("  * AA - REGISTRAR UM CHAMADO INTERNO - TI                        B0 - TROCAR SENHA DE USUARIO                         *\n");
+        printf("  * AA - REGISTRAR UM CHAMADO INTERNO - TI                        B1 - LOGAR COM UM NOVO USUARIO                       *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
-        printf("  * AB - CONSULTAR UM CHAMADO INTERNO - TI                        A0 - PARA SAIR DO SISTEMA ->                 [SAIDA] *\n");
+        printf("  * AB - CONSULTAR UM CHAMADO INTERNO - TI                        B0 - TROCAR SENHA DE USUARIO                         *\n");
+        printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
+        printf("  * AC - CONSULTAR UM CHAMADO INTERNO EM HISTORICO - TI           A0 - PARA SAIR DO SISTEMA ->  ->  ->  ->  -> [SAIDA] *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
         printf("  **********************************************************************************************************************\n\n");
         printf("  RESPOSTA --> ");
@@ -402,6 +420,8 @@ int main(void){
                 fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
                 fclose(file); // Fecha o arquivo de texto
                 createloginsenha(criapastalogin, criapastasenha, auxlogin, cpf); // Cria o login e a senha do usuario que foi cadastrado
+                file = fopen(verificarsenhapadrao, "w"); // Abre o arquivo de texto e Cria o verificador da senha padrao
+                fclose(file); // Fecha o arquivo de texto
                 system("msg * COLABORADOR CADASTRADO COM SUCESSO!"); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para a tela inicial.
             }
@@ -1301,7 +1321,7 @@ int main(void){
             // DECLARACAO DE VARIAVEIS
             char senhaa[9] = "", novasenha[16] = "", novasenha1[9] = "", auxnovasenha[48] = "", loginn[7] = "";
             char criarcaminhonovasenha[62] = "", deletarsenhaantiga[62] = "";
-            char logtemp[7] = "", temp01[9] = "", temp02[9] = "";
+            char logtemp[7] = "", temp01[9] = "", temp02[9] = "", caminhosenha[75] = "system-moderadores\\logins\\";
             FILE *trocasenha; // Declaracao de variavel local do tipo FILE
             limpatela(); // Limpa a tela do usuario
             // INICIO DO PROCEDIMENTO
@@ -1309,6 +1329,7 @@ int main(void){
                 system("msg * OPERACAO NAO PERMITIDA. CANCELAMENTO EXECUTADO COM SUCESSO!");
                 goto iniciar; // Direciona o usuario para o menu iniciar
             }
+            contador = 1;
             while(contador != 0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
                 // Tratamento de entrada de dados
                 printf("\n   DIGITE O USER LOGIN: ");
@@ -1333,6 +1354,7 @@ int main(void){
                 strcat(auxlogin, "\\"); // Adiciona o separador de diretorios do windows
                 strcat(auxlogin, loginn); // ADiciona o login digitado na variavel auxiliar do login
                 strcat(auxlogin, ".txt"); // inclui a extensão .txt na variavel auxiliar do login
+
                 if(validarAdmin(auxlogin, auxsenha) == true){ // faz a validação do admin para confirmar cadastro exsistente
                     printf("\n   DIGITE A NOVA SENHA COM ATE 8 CARACTERES: ");
                     lersenha(novasenha);
@@ -1340,7 +1362,6 @@ int main(void){
                     lform(); // Apresenta uma mensagem na tela do usuario
                     printf("\n   CONFIRME A NOVA SENHA: ");
                     lersenha(novasenha1);
-                    lb(); // Limpa o buffer do teclado
                     lform(); // Apresenta uma mensagem na tela do usuario
                     if(strcmp(novasenha, novasenha1) == 0){
                         //CONCATENACAO DE STRINGS
@@ -1360,6 +1381,7 @@ int main(void){
                         trocasenha = fopen(auxnovasenha, "w"); // faz a abertura do arquivo em modo de escrita para criação da nova senha
                         fclose(trocasenha); // fecha o arquivo de texto nova senha
                         remove(auxsenha); // Exclui a senha antiga
+                        remove(verificarsenhapadrao); // Remove o verificador da senha padrao
                         system("msg * SENHA ALTERADA COM SUCESSO!"); // Apresenta uma mensagem na tela do usuario
                         goto iniciar; // Direciona o usuario para a tela inicial.
                     }else{
@@ -1586,7 +1608,7 @@ char** lersenha(char senha[9]){
 void createloginsenha(char creatediretlogin[50], char creatediretsenha[50],char loginass[60], char cpf[12]){
     //Concatenação para criação de login e senha
     //CRIANDO LOGIN
-    char infologin[60] = "", infosenha[75]= "";
+    char infologin[60] = "", infosenha[75]= "", verificasenhapadrao[45] = "";
     FILE *file; // Declaração de variavel do tipo FILE
     strcat(creatediretlogin, loginass); // Concatena a informação da variavel loginass na variavel creatediretlogin
     system(creatediretlogin); // Cria o diretório de login na pasta especificada
@@ -1611,6 +1633,15 @@ void createloginsenha(char creatediretlogin[50], char creatediretsenha[50],char 
     strcat(infosenha, ".txt"); // Concatena a extensão .txt
     file = fopen(infosenha, "w"); // Cria a senha padrão
     fclose(file); // Fecha o arquivo
+
+    //CONCATENACAO DO VERIFICADOR PADRAO DA SENHA.
+    strcat(verificasenhapadrao, "system-moderadores\\logins\\");
+    strcat(verificasenhapadrao, loginass);
+    strcat(verificasenhapadrao, "\\");
+    strcat(verificasenhapadrao, cpf);
+    strcat(verificasenhapadrao, "\\true.txt");
+    file = fopen(verificasenhapadrao, "w"); // Abre o arquivo de texto e Cria o verificador da senha padrao
+    fclose(file); // Fecha o arquivo de texto
 }
 
 // Funcao para apresentar uma linha formatada
