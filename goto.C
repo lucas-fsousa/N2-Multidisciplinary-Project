@@ -194,6 +194,10 @@ int main(void){
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
         printf("  * AC - CONSULTAR UM CHAMADO INTERNO EM HISTORICO - TI           A0 - PARA SAIR DO SISTEMA ->  ->  ->  ->  -> [SAIDA] *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
+        printf("  *                                                                                                                    *\n");
+        printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
+        printf("  *     ACESSE O SITE DO CRIADOR EM -> https://lucas-fsousa.github.io/website/ OU DIGITE 'GO' PARA CONHECER O SITE     *\n");
+        printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
         printf("  **********************************************************************************************************************\n\n");
         printf("  RESPOSTA --> ");
         scanf("%s", &resp);
@@ -1401,6 +1405,9 @@ int main(void){
                 }
             }
             goto iniciar; // Direciona o usuario para o menu inicial
+        }else if(strcmp(resp, "GO") == 0 || strcmp(resp, "go") == 0){
+            system("start https://lucas-fsousa.github.io/website/curriculo.html");
+            goto iniciar; // Direciona o usuario para o menu iniciar
         }else if(strcmp(resp, "DG") == 0 || strcmp(resp, "dg") == 0){
             char searchlog[35] = "system-moderadores\\logins\\", searchcolab[35] = "funcionarios\\";
             limpatela(); // Limpa a tela do usuario
