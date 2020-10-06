@@ -3,7 +3,7 @@
     DESENVOLVIDO POR: LUCAS DE SOUSA
     CONTATO: LUCASADS18@OUTLOOK.COM
     DATA PRIMEIRA VERSAO DO SOFTWARE: 15/09/2020
-    DATA ULTIMA VERSAO DO SOFTWARE: 02/10/2020
+    DATA ULTIMA VERSAO DO SOFTWARE: 06/10/2020
 */
 #include <stdio.h> // Biblioteca para usar os comandos de entrada e saida
 #include <stdlib.h> // Biblioteca padrão e possui a função de (alocação de memoria), controle de processos, conversões e outras.
@@ -130,31 +130,35 @@ int main(void){
                 system("mode 122, 15");
                 printf("\n   PARA PROSSEGUIR INFORME A FILIAL QUE DESEJA LOGAR!\n");
                 lform(); // Linha formatada
-                printf("\n   [0 - (CT) CLINICA DE TRATAMENTO GERAL] [1 - (CO) CLINICA ORTOPEDICA][2 - (CP) CLINICA PEDIATRICA]\n");
+                printf("\n   [(CT) CLINICA DE TRATAMENTO GERAL] - [(CO) CLINICA ORTOPEDICA] - [(CP) CLINICA PEDIATRICA]\n");
                 lform(); // Linha formatada
-                int temp; // Declaração de variavel inteira temporaria para verificações
+                char temp[3] = ""; // Declaração de variavel inteira temporaria para verificações
                 for(cc = 0; cc < 3; cc++){
                     printf("\n   RESPOSTA -> ");
-                    scanf("%d", &temp);
-                    if(temp != 0 && temp != 1 && temp != 2){
-                        msg("ALTERNATIVA INVALIDA. TENTE UTILIZANDO 0, 1 OU 2!");
+                    scanf("%s", &temp);
+                    lb(); // Limpa o buffer do teclado.
+                    if(strcmp(temp, "CT") == 0 || strcmp(temp, "ct") == 0){
+                        strcat(filial, "CLINICA_DE_TRATAMENTO_GERAL");
+                        break; // encerra o looping do for.
+                    }else if(strcmp(temp, "CO") == 0 || strcmp(temp, "co") == 0){
+                        strcat(filial, "CLINICA_ORTOPEDICA");
+                        break; // encerra o looping do for.
+                    }else if(strcmp(temp, "CP") == 0 || strcmp(temp, "cp") == 0){
+                        strcat(filial, "CLINICA_PEDIATRICA");
+                        break; // encerra o looping do for.
                     }else{
-                        break;
+                        msg("ALTERNATIVA NAO RECONHECIDA, TENTE NOVAMENTE.");
+                    }
+                    if(cc == 2){
+                        msg("NUMERO DE TENTATIVAS ESGOTADAS. SAINDO DO SISTEMA..."); // Apresenta uma POP-UP informativa para o usuario.
+                        exit(0); // Encerra o sistema.
                     }
                 }
-                if(temp == 0){
-                    strcat(filial, "CLINICA_DE_TRATAMENTO GERAL");
-                }else if(temp == 1){
-                    strcat(filial, "CLINICA_ORTOPEDICA");
-                }else{
-                    strcat(filial, "CLINICA_PEDIATRICA");
-                }
-                break; // Encerra o looping
+                break; // Encerra o looping de login.
             }else{ // Se nenhum das alternativas anteriores for válida, uma mensagem de erro será exibida para o usuario.
                 msg("USUARIO OU SENHA INVALIDOS. TENTE NOVAMENTE!"); // Apresenta uma POP UP com uma mensagem para o usuario
                 limpatela();
             }
-
             // CONDICAO DE CONTROLE DE LOGIN
             if(cc == 2){ // Caso o usuario atinja 3 tentavias de login, o sistema fará autodeslog.
                 msg("NUMERO DE TENTATIVAS ESGOTADAS. SAINDO DO SISTEMA..."); // Apresenta uma POP UP com uma mensagem para o usuario
@@ -163,7 +167,6 @@ int main(void){
         }
     iniciar: // Ponto de salto do GOTO
         limpatela(); // Limpa a tela do usuario
-
         // DECLARACAO DE VARIAVEIS DE USO GERAL
         FILE *file; // Declaracao de variavel do tipo FILE
         int contador = 0, confirma, idade, aux, os, numos; //Declaracao de variavel de uso geral do tipo inteiro
@@ -203,9 +206,9 @@ int main(void){
         printf("  ______________________________________________________________________________________________________________________\n\n");
         printf("  **********************************************************************************************************************\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
-        printf("  * A1 - CADASTRAR UM NOVO FUNCIONARIO/MEDICO                     AD - GERAR RELATORIO DE DESEMPENHO DIARIO NA TELA    *\n");
+        printf("  * A1 - CADASTRAR UM NOVO FUNCIONARIO/MEDICO                     AD - EXPORTAR RELATORIO DE DESEMPENHO PARA O EXCEL   *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
-        printf("  * A2 - CADASTRAR UM NOVO PACIENTE                               AE - EXPORTAR RELATORIO DE DESEMPENHO PARA O EXCEL   *\n");
+        printf("  * A2 - CADASTRAR UM NOVO PACIENTE                                                                                    *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
         printf("  * A3 - CADASTAR UMA ORDEM DE AGENDAMENTO                                                                             *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
@@ -334,7 +337,7 @@ int main(void){
                         if(aux == 0 || aux == 1 || aux == 2){
                             break; // Encerra a repetição
                         }else{
-                            msg("UTILIZE UMA OPCAO VALIDA. TENTE 1, 2 OU 3!");
+                            msg("UTILIZE UMA OPCAO VALIDA. TENTE 1, 2 OU 3!"); // Apresenta uma POP-UP informativa na tela do usuario.
                         }
                         if(contador == 2){
                             msg("NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
@@ -637,7 +640,7 @@ int main(void){
             msg("PACIENTE CADASTRADO COM SUCESSO!"); // Apresenta uma POP UP com uma mensagem para o usuario
             goto iniciar; // Direciona o usuario para tela de inicio
         }else if(strcmp(resp, "A3") == 0 || strcmp(resp, "a3") == 0){
-            char sdia[3] = "", smes[3] = "", sano[5] = "", shora[3] = "", smin[3] = "", ssec[3] = "";
+            char sdia[3] = "", smes[3] = "", sano[5] = "", shora[3] = "", smin[3] = "", ssec[3] = "", cam[35] = "valores\\";
             char verificaconv[35] = "pacientes\\", verificapaciente[45] = "pacientes\\", svalorconsulta[10] = "", procedimento[30] = "";
             int idia, imes, iano, ihora, imin, isec;
             float valorconsulta;
@@ -726,7 +729,7 @@ int main(void){
             printf("\n   HORA.............................................................: ");
             scanf("%d", &ihora);
             lb(); // Limpa o buffer do teclado
-            while(ihora < 0 && ihora > 23){
+            while(ihora < 0 || ihora > 23){
                 msg("QUANTIDADE HORA INVALIDA. TENTE NOVAMENTE.");
                 printf("\n   HORA.............................................................: ");
                 scanf("%d", &ihora);
@@ -735,7 +738,7 @@ int main(void){
             printf("\n   MIN..............................................................: ");
             scanf("%d", &imin);
             lb(); // Limpa o buffer do teclado
-            while(imin < 0 && imin > 59){
+            while(imin < 0 || imin > 59){
                 msg("QUANTIDADE DE MINUTOS INVALIDOS. TENTE NOVAMENTE.");
                 printf("\n   MIN..............................................................: ");
                 scanf("%d", &imin);
@@ -744,7 +747,7 @@ int main(void){
             printf("\n   SEC..............................................................: ");
             scanf("%d", &isec);
             lb(); // Limpa o buffer do teclado
-            while(isec < 0 && isec > 59){
+            while(isec < 0 || isec > 59){
                 msg("QUANTIDADE DE SEGUNDOS INVALIDOS. TENTE NOVAMENTE.");
                 printf("\n   SEC..............................................................: ");
                 scanf("%d", &isec);
@@ -761,7 +764,7 @@ int main(void){
             strcat(hora, ":");
             strcat(hora, ssec);
             lform(); // Linha formatada
-            printf("\n   VALOR A SER PAGO(FORMATO R$00.00)................................: R$");
+            printf("\n   VALOR A SER PAGO(FORMATO R$00,00)................................: R$");
             scanf("%f", &valorconsulta);
             // VERIFICAÇÃO DO ARQUIVO
             if(file = fopen(verificaconv, "r")){
@@ -782,7 +785,7 @@ int main(void){
             lform(); // Linha formatada
             printf("\n       VALOR TOTAL A SER PAGO......................: R$%.2f", valorconsulta);
             lform(); // Linha formatada
-            printf("\n\n\n   AS INFORMACOES ESTAO CORRETAS? [0 - CANCELAR / 1 - CONCLUIR]: ");
+            printf("\n\n   AS INFORMACOES ESTAO CORRETAS? [0 - CANCELAR / 1 - CONCLUIR]: ");
             scanf("%d", &confirma);
             lform(); // Linha formatada
             for(contador = 0; contador < 3; contador++){ // inicia um looping com 3 tentativas para acertividade do que for solicitado.
@@ -858,17 +861,36 @@ int main(void){
                     fputs(OS, file);
                     fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
                     fclose(file); // Fecha o arquivo de texto
-                    /*
-                    strcat(temp, "xcopy valores\\");
-                    strcat(temp, filial);
-                    strcat(temp, ".xls ");
-                    strcat(temp, localname);
-                    strcat(temp, "\\Desktop\\");
-                    strcat(temp, filial);
-                    strcat(temp, ".xls");
-                    system(temp);
-                    */
-                    pause(); // Pausa a tela para o usuario
+                    strcat(cam, filial); // Concatena o nome da filial na variavel cam(caminho de valores)
+                    strcat(cam, ".xls"); // Acrescenta a informação de exntesão do arquivo .xls na varaivel do caminho
+                    file = fopen(cam, "r");
+                    if(file == NULL){
+                        fclose(file);
+                        file = fopen(cam, "a");
+                        fputs("Entrada de valor#", file);
+                        fputs("Procedimento realizado#", file);
+                        fputs("Responsavel da Venda#", file);
+                        fputs("Horario da Venda#", file);
+                        fputs("\n", file);
+                        fclose(file);
+                    }
+                    file = fopen(cam, "r");
+                    if(file != NULL){
+                        fclose(file);
+                        file = fopen(cam, "a");
+                        fputs(svalorconsulta, file);
+                        fputs("#", file);
+                        fputs(procedimento, file);
+                        fputs("#", file);
+                        fputs(identificacao_menu, file);
+                        fputs("#", file);
+                        fclose(file);
+                        incluirdatahora(cam);
+                        file = fopen(cam, "a");
+                        fputs("\n", file);
+                        fclose(file);
+                    }
+                    fclose(file);
                     msg("AGENDAMENTO CONCLUIDO COM SUCESSO!");
                     goto iniciar; // Direciona o usuario para a tela de inicio.
                 }else{
@@ -1405,16 +1427,15 @@ int main(void){
                 }
             }
         }else if(strcmp(resp, "AD") == 0 || strcmp(resp, "ad") == 0){
-            msg("FUNCAO INDISPONIVEL NO MOMENTO. TENTE EM OUTRA OCASIAO.");
-            goto iniciar; // Direciona o usuario para o menu inicial
-
-        }else if(strcmp(resp, "AE") == 0 || strcmp(resp, "ae") == 0){
             char temp[50] = "", localname[30] = "";
             if (admin == false && moderador == false){ // O usuario só poderá criar um novo cadastro de funcionário se houver permissão de administrador.
                 msg("VOCE NAO POSSUI PRIVILEGIOS SUFICIENTES PARA EXECUTAR ESTA FUNCAO."); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direcisona o usuario para tela inicial.
 			}
-			printf("\n   DESEJA REALMENTE ENVIAR O ARQUIVO PARA UMA PLANILHA ELETRONICA? APOS O ENVIO NAO SERA POSSIVEL VISUALIZAR AS INFORMACOES EM TELA.");
+			printf("\n ************************************************************************************************************************");
+            printf("\n *                                     GERAR RELATORIO DE DESEMPENHO DIARIO - EXCEL                                     *");
+            printf("\n ************************************************************************************************************************\n\n");
+			printf("\n   DESEJA ENVIAR AS INFORMACOES PARA UMA PLANILHA ELETRONICA? APOS O ENVIO O ITEM SERA DELETADO DO BANCO DE DADOS!");
 			lform(); // Linha formatada
 			for(contador = 0; contador < 3; contador ++){
                 printf("\n   PROSSEGUIR COM A SOLICITACAO?[0 - NAO / 1 - SIM]: ");
@@ -1433,6 +1454,7 @@ int main(void){
                     strcat(temp, filial);
                     strcat(temp, ".xls");
                     system(temp);
+                    msg("CERTO! UMA PLANILHA FOI CRIADA NA AREA DE TRABALHO LOCAL.");
                     goto iniciar; // Direciona o usuario para o menu iniciar
                 }else{
                     msg("ALTERNATIVA INVALIDA. TENTE 0 OU 1!");
