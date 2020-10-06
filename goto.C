@@ -53,7 +53,7 @@ char cadastrar(char initcadastro[70], char nome[40], char idadeString[5], char s
 int main(void){
     //Cria as pastas do sistema e realiza o processo de ocultação das mesmas.
     system("mode 15,1 && color 15 & title TELA DE LOGIN"); // Muda o tamanho do terminal para 15 colunas e 1 linha e a cor para fundo azul e letras roxas
-    system("msg * AGUARDE! INICIALIZANDO TAREFAS..."); // Mostra uma POP-UP com uma mensagem para o usuario.
+    msg("AGUARDE! INICIALIZANDO TAREFAS..."); // Mostra uma POP-UP com uma mensagem para o usuario.
     system("mkdir sugerir-reclamar-elogiar\\ELOGIO\\");
     system("mkdir sugerir-reclamar-elogiar\\RECLAMACAO\\");
     system("mkdir sugerir-reclamar-elogiar\\SUGESTAO\\ & attrib +h sugerir-reclamar-elogiar");
@@ -609,7 +609,7 @@ int main(void){
             scanf("%d", &confirma);
             lform(); // Linha formatada
             if(confirma == 0){
-                system("msg * CADASTRO CANCELADO PELO USUARIO"); // Apresenta uma POP UP com uma mensagem para o usuario
+                msg("CADASTRO CANCELADO PELO USUARIO"); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar;
             }
             strcat(criapastapaciente, cpf);// CRIANDO CAMINHO DA PASTA COM INFORMACOES DO PACIENTE
@@ -637,15 +637,15 @@ int main(void){
             msg("PACIENTE CADASTRADO COM SUCESSO!"); // Apresenta uma POP UP com uma mensagem para o usuario
             goto iniciar; // Direciona o usuario para tela de inicio
         }else if(strcmp(resp, "A3") == 0 || strcmp(resp, "a3") == 0){
-            char sdia[3] = "", smes[3] = "", sano[5] = "";
-            int idia, imes, iano;
+            char sdia[3] = "", smes[3] = "", sano[5] = "", shora[3] = "", smin[3] = "", ssec[3] = "";
+            char verificaconv[35] = "pacientes\\", verificapaciente[45] = "pacientes\\", svalorconsulta[10] = "", procedimento[30] = "";
+            int idia, imes, iano, ihora, imin, isec;
+            float valorconsulta;
             if(admin == false && moderador == false){
                 msg("VOCE NAO POSSUI PRIVILEGIOS PARA EXECUTAR ESSA FUNCAO!"); // Apresenta uma popup na tela do usuario
                 goto iniciar; // Direciona o usuario para a tela inicial
             }
             limpatela(); // Limpa a tela
-            float valorconsulta;
-            char verificaconv[35] = "pacientes\\", verificapaciente[45] = "pacientes\\", svalorconsulta[10] = "", procedimento[30] = "";
             printf("\n ************************************************************************************************************************");
 			printf("\n *                                            CADASTRO DE AGENDAMENTOS                                                  *");
 			printf("\n ************************************************************************************************************************\n\n");
@@ -680,7 +680,6 @@ int main(void){
             lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
             printf("\n   ENTRE COM A DATA DO AGENDAMENTO.\n");
-            lform(); // Linha formatada
             printf("\n   DIA..............................................................: ");
             scanf("%d", &idia);
             while(idia <= 0 || idia > 31){
@@ -723,9 +722,44 @@ int main(void){
             strcat(data, "/");
             strcat(data, sano);
             lform(); // Linha formatada
-            printf("\n   HORARIO DE AGENDAMENTO(FORMATO 23:59:59).........................: ");
-            scanf("%s", &hora);
+            printf("\n   INFORME O HORARIO DO AGENDAMENTO\n");
+            printf("\n   HORA.............................................................: ");
+            scanf("%d", &ihora);
             lb(); // Limpa o buffer do teclado
+            while(ihora < 0 && ihora > 23){
+                msg("QUANTIDADE HORA INVALIDA. TENTE NOVAMENTE.");
+                printf("\n   HORA.............................................................: ");
+                scanf("%d", &ihora);
+                lb(); // Limpa o buffer do teclado
+            }
+            printf("\n   MIN..............................................................: ");
+            scanf("%d", &imin);
+            lb(); // Limpa o buffer do teclado
+            while(imin < 0 && imin > 59){
+                msg("QUANTIDADE DE MINUTOS INVALIDOS. TENTE NOVAMENTE.");
+                printf("\n   MIN..............................................................: ");
+                scanf("%d", &imin);
+                lb(); // Limpa o buffer do teclado
+            }
+            printf("\n   SEC..............................................................: ");
+            scanf("%d", &isec);
+            lb(); // Limpa o buffer do teclado
+            while(isec < 0 && isec > 59){
+                msg("QUANTIDADE DE SEGUNDOS INVALIDOS. TENTE NOVAMENTE.");
+                printf("\n   SEC..............................................................: ");
+                scanf("%d", &isec);
+                lb(); // Limpa o buffer do teclado
+            }
+            // Conversão de inteiros para strings.
+            itoa(ihora, shora, 10);
+            itoa(imin, smin, 10);
+            itoa(isec, ssec, 10);
+            //PROCESSO DE CONCATENACAO DE STRINGS
+            strcat(hora, shora);
+            strcat(hora, ":");
+            strcat(hora, smin);
+            strcat(hora, ":");
+            strcat(hora, ssec);
             lform(); // Linha formatada
             printf("\n   VALOR A SER PAGO(FORMATO R$00.00)................................: R$");
             scanf("%f", &valorconsulta);
@@ -824,6 +858,16 @@ int main(void){
                     fputs(OS, file);
                     fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
                     fclose(file); // Fecha o arquivo de texto
+                    /*
+                    strcat(temp, "xcopy valores\\");
+                    strcat(temp, filial);
+                    strcat(temp, ".xls ");
+                    strcat(temp, localname);
+                    strcat(temp, "\\Desktop\\");
+                    strcat(temp, filial);
+                    strcat(temp, ".xls");
+                    system(temp);
+                    */
                     pause(); // Pausa a tela para o usuario
                     msg("AGENDAMENTO CONCLUIDO COM SUCESSO!");
                     goto iniciar; // Direciona o usuario para a tela de inicio.
@@ -1322,7 +1366,7 @@ int main(void){
                 char verificaP[30] = "ti-sistemas\\TI";
                 FILE *consultaP; // Declaração de variavel do tipo FILE
                 if (admin == false && moderador == false){ // O usuario só poderá criar um novo cadastro de funcionário se houver permissão de administrador.
-                    system("msg * VOCE NAO POSSUI PRIVILEGIOS SUFICIENTES PARA EXECUTAR ESTA FUNCAO."); // Apresenta uma POP UP com uma mensagem para o usuario
+                    msg("VOCE NAO POSSUI PRIVILEGIOS SUFICIENTES PARA EXECUTAR ESTA FUNCAO."); // Apresenta uma POP UP com uma mensagem para o usuario
                     goto iniciar; // Direciona o usuario para tela inicial.
                 }
                 printf("\n ************************************************************************************************************************");
@@ -1402,7 +1446,7 @@ int main(void){
             goto moduser; // Direciona o usuario para o ponto inicial com oportunidade de mudar o usuario.
 
         }else if(strcmp(resp, "A0") == 0 || strcmp(resp, "a0") == 0){
-            system("msg * SAINDO DO SISTEMA.... ATE LOGO!");
+            msg("SAINDO DO SISTEMA.... ATE LOGO!");
             exit(0); // Encerra a aplicação e sai do sistema.
 
         }else if(strcmp(resp, "B0") == 0 || strcmp(resp, "b0") == 0){
