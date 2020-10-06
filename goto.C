@@ -117,6 +117,7 @@ int main(void){
             if(strcmp(senha, "1234") == 0 && (strcmp(login, "ADMIN") == 0 || strcmp(login, "admin") == 0)){ // Compara se o as informações digitadas são válidas, caso seja o usuario é reconhecido como admin
                 admin = true; // Atribuição de valor booleano verdadeiro a variavel admin
                 strcat(identificacao_menu, login); // Concatena o login para mostar no menu inicial
+                strcat(filial, "CLINICA_DE_TRATAMENTO_GERAL");
                 break; // Encerra o looping
             }else if(validarAdmin(auxlog, auxsen) == true){ // Verifica se o usuario é um usuario válido para liberar acesso ao uso da ferramenta
                 moderador = true; // Atribuição de valor booleano verdadeiro a variavel usuario
@@ -137,17 +138,18 @@ int main(void){
                     printf("\n   RESPOSTA -> ");
                     scanf("%s", &temp);
                     lb(); // Limpa o buffer do teclado.
+                    //Condicional de validação da entrada de dados
                     if(strcmp(temp, "CT") == 0 || strcmp(temp, "ct") == 0){
-                        strcat(filial, "CLINICA_DE_TRATAMENTO_GERAL");
+                        strcat(filial, "CLINICA_DE_TRATAMENTO_GERAL"); // Concatena a informação na variavel filial
                         break; // encerra o looping do for.
                     }else if(strcmp(temp, "CO") == 0 || strcmp(temp, "co") == 0){
-                        strcat(filial, "CLINICA_ORTOPEDICA");
+                        strcat(filial, "CLINICA_ORTOPEDICA"); // Concatena a informação na variavel filial
                         break; // encerra o looping do for.
                     }else if(strcmp(temp, "CP") == 0 || strcmp(temp, "cp") == 0){
-                        strcat(filial, "CLINICA_PEDIATRICA");
+                        strcat(filial, "CLINICA_PEDIATRICA"); // Concatena a informação na variavel filial
                         break; // encerra o looping do for.
                     }else{
-                        msg("ALTERNATIVA NAO RECONHECIDA, TENTE NOVAMENTE.");
+                        msg("ALTERNATIVA NAO RECONHECIDA, TENTE UTILIZAR CO - CT OU CP"); // Apresenta uma POP-UP informativa para o usuario.
                     }
                     if(cc == 2){
                         msg("NUMERO DE TENTATIVAS ESGOTADAS. SAINDO DO SISTEMA..."); // Apresenta uma POP-UP informativa para o usuario.
@@ -157,7 +159,7 @@ int main(void){
                 break; // Encerra o looping de login.
             }else{ // Se nenhum das alternativas anteriores for válida, uma mensagem de erro será exibida para o usuario.
                 msg("USUARIO OU SENHA INVALIDOS. TENTE NOVAMENTE!"); // Apresenta uma POP UP com uma mensagem para o usuario
-                limpatela();
+                limpatela(); // Limpa a tela do usuario
             }
             // CONDICAO DE CONTROLE DE LOGIN
             if(cc == 2){ // Caso o usuario atinja 3 tentavias de login, o sistema fará autodeslog.
@@ -344,6 +346,7 @@ int main(void){
                             goto iniciar; // Direciona o usuario para o menu iniciar;
                         }
                     }
+                    // Validação da entrada de dados e inclusão de informação na string sigla
                     if(aux == 0){
                         strcat(sigla, "CT");
                     }else if(aux == 1){
@@ -399,7 +402,7 @@ int main(void){
                 lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
                 if(aux == 0 || aux == 1){
-                    break;
+                    break; // encerra o looping for que está em andamento
                 }else{
                     msg("OPCAO INVALIDA. TENTE DIGITAR 0 OU 1!");
                 }
@@ -489,7 +492,7 @@ int main(void){
                 if(idade < 0 && idade >= 150){
                     printf("\n   IDADE INVALIDA. TENTE NOVAMENTE.\n");
                 }else{
-                    break;
+                    break; // encera o looping for em andamento.
                 }
                 if(contador == 2){
                     msg("NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
@@ -518,10 +521,10 @@ int main(void){
                     strupr(numconvenio); // Muda as letras para a condição UPPER(Maiuscula)
                     lb(); // Limpa o buffer do teclado
                     lform(); // Linha formatada
-                    break;
+                    break; // encera o looping for em andamento.
                 }else if(aux == 0){
                     strcat(numconvenio, "N/A");
-                    break;
+                    break; // encera o looping for em andamento.
                 }else{
                     printf("\n   ALTERNATVA INVALIDA. TENTE NOVAMENTE!\n");
                     lform(); // Linha formatada
@@ -539,10 +542,10 @@ int main(void){
                 lform(); // Linha formatada
                 if(aux == 1){
                     strcat(sexo, "FEMININO");
-                    break;
+                    break; // encera o looping for em andamento.
                 }else if(aux == 0){
                     strcat(sexo, "MASCULINO");
-                    break;
+                    break; // encera o looping for em andamento.
                 }else{
                     printf("\n   ALTERNATIVA INVALIDA. TENTE NOVAMENTE!\n");
                     lform(); // Linha formatada
@@ -576,7 +579,7 @@ int main(void){
                         goto iniciar; // Direciona o usuario para a tela de cadastros.
                     }
                     fclose(file);// Fecha o arquivo de texto aberto.
-                    break;
+                    break; // encera o looping for em andamento.
                 }
                 if(contador == 2){
                     msg("NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
@@ -599,11 +602,11 @@ int main(void){
                     printf("\n   TELEFONE INCORRETO, FAVOR TENTAR NOVAMENTE.\n");
                     lform(); // Linha formatada
                 }else{
-                    break;
+                    break; // encera o looping for em andamento.
                 }
                 if(contador == 2){
                     msg("NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
-                    goto iniciar; // Direciona o usuario para o menu iniciar;
+                    goto iniciar; // Direciona o usuario para o menu iniciar
                 }
             }
             // Revisão de informações no cadastro.
@@ -613,7 +616,7 @@ int main(void){
             lform(); // Linha formatada
             if(confirma == 0){
                 msg("CADASTRO CANCELADO PELO USUARIO"); // Apresenta uma POP UP com uma mensagem para o usuario
-                goto iniciar;
+                goto iniciar; // Direciona o usuario para o menu iniciar
             }
             strcat(criapastapaciente, cpf);// CRIANDO CAMINHO DA PASTA COM INFORMACOES DO PACIENTE
             system(criapastapaciente); // CRIA A PASTA COM AS INFORMACOES DO PACIENTE;
