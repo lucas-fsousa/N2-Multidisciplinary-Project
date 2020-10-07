@@ -50,13 +50,13 @@ bool leitura(char ler[70]);
 // Funcao para cadastro de informacos basicas do usuario/paciente
 char cadastrar(char initcadastro[70], char nome[40], char idadeString[5], char sexo[15], char endereco[40], char cpf[16], char telcont[20]);
 
-int main(void){
+int main(void){ // Inicio do código principal
     //Cria as pastas do sistema e realiza o processo de ocultação das mesmas.
     system("mode 15,1 && color 15 & title TELA DE LOGIN"); // Muda o tamanho do terminal para 15 colunas e 1 linha e a cor para fundo azul e letras roxas
     msg("AGUARDE! INICIALIZANDO TAREFAS..."); // Mostra uma POP-UP com uma mensagem para o usuario.
-    system("mkdir sugerir-reclamar-elogiar\\ELOGIO\\");
-    system("mkdir sugerir-reclamar-elogiar\\RECLAMACAO\\");
-    system("mkdir sugerir-reclamar-elogiar\\SUGESTAO\\ & attrib +h sugerir-reclamar-elogiar");
+    system("mkdir sugerir-reclamar-elogiar\\ELOGIO\\"); // Criação da pasta de elogios
+    system("mkdir sugerir-reclamar-elogiar\\RECLAMACAO\\"); // criação da pasta de reclamações
+    system("mkdir sugerir-reclamar-elogiar\\SUGESTAO\\ & attrib +h sugerir-reclamar-elogiar"); // criação da pasta de sugestões
     system("mkdir funcionarios\\ & attrib +h funcionarios"); // Cria a pasta de funcionarios
     system("mkdir pacientes\\ & attrib +h pacientes"); // Cria a pasta de pacientes
     system("mkdir system-moderadores\\logins\\ & attrib +h system-moderadores"); // Cria a pasta de logins para moderadores do sistema
@@ -866,35 +866,38 @@ int main(void){
                     fclose(file); // Fecha o arquivo de texto
                     strcat(cam, filial); // Concatena o nome da filial na variavel cam(caminho de valores)
                     strcat(cam, ".xls"); // Acrescenta a informação de exntesão do arquivo .xls na varaivel do caminho
-                    file = fopen(cam, "r");
-                    if(file == NULL){
-                        fclose(file);
-                        file = fopen(cam, "a");
+
+                    file = fopen(cam, "r"); // abre o arquivo do tipo .xls em modo de leitura
+                    if(file == NULL){ // verifica se o arquivo é nulo (se não existe)
+                        fclose(file); // fecha o arquivo se houver abertura
+                        file = fopen(cam, "a"); // Abreo arquivo do tipo .xls em modo de edição
+                        //Acrescentando informações no arquivo
                         fputs("Entrada de valor#", file);
                         fputs("Procedimento realizado#", file);
                         fputs("Responsavel da Venda#", file);
                         fputs("Horario da Venda#", file);
                         fputs("\n", file);
-                        fclose(file);
+                        fclose(file); //fecha o arquivo que foi aberto
                     }
-                    file = fopen(cam, "r");
-                    if(file != NULL){
-                        fclose(file);
-                        file = fopen(cam, "a");
+                    file = fopen(cam, "r"); // Inicia uma nova instancia do arquivo em modo de leitura
+                    if(file != NULL){ // verifica se o aarquivo existe
+                        fclose(file); // fecha o arquivo em modo de leitura
+                        file = fopen(cam, "a"); // abre o arquivo em modo de edição
+                        //Acrescentando informações no arquivo
                         fputs(svalorconsulta, file);
                         fputs("#", file);
                         fputs(procedimento, file);
                         fputs("#", file);
                         fputs(identificacao_menu, file);
                         fputs("#", file);
-                        fclose(file);
-                        incluirdatahora(cam);
-                        file = fopen(cam, "a");
-                        fputs("\n", file);
-                        fclose(file);
+                        fclose(file); // fecha o arquivo em aberto
+                        incluirdatahora(cam); // acrescenta informações de hora da função
+                        file = fopen(cam, "a"); // abre o arquivo em modo de edição
+                        fputs("\n", file); // inclui um salto de linha no arquivo
+                        fclose(file); // fecha o arquivo
                     }
-                    fclose(file);
-                    msg("AGENDAMENTO CONCLUIDO COM SUCESSO!");
+                    fclose(file); // fecha o arquivo se o mesmo estiver em aberto
+                    msg("AGENDAMENTO CONCLUIDO COM SUCESSO!"); // Apresenta uma POP UP com uma mensagem para o usuario
                     goto iniciar; // Direciona o usuario para a tela de inicio.
                 }else{
                     msg("ALTERNATIVA INVALIDA. CADASTRO CANCELADO PELO SISTEMA!"); // Apresenta uma POP UP com uma mensagem para o usuario
@@ -911,7 +914,6 @@ int main(void){
                 msg("VOCE NAO POSSUI PRIVILEGIOS SUFICIENTES PARA EXECUTAR ESTA FUNCAO."); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para tela inicial.
 			}
-            FILE *file;
             printf("\n ************************************************************************************************************************");
 			printf("\n *                                            CONSULTA DE FUNCIONARIOS                                                  *");
 			printf("\n ************************************************************************************************************************\n\n");
@@ -1024,19 +1026,21 @@ int main(void){
                     }
                     printf("\n   DESEJA REALIZAR UMA NOVA CONSULTA?[0 - NAO / 1 - SIM]: ");
                     scanf("%d", &aux);
+                    // Validação das informações de entrada
                     if(aux == 0){
-                        goto iniciar;
+                        goto iniciar; // direciona o usuario para o menu iniciar
                     }else if(aux == 1){
                         lb(); // Limpa o buffer do teclado
-                        continue;
+                        continue; // continua o tratamento sem interrupção
                     }else{
-                        msg("ALTERNATIVA INVALIDA. SOLICITACAO CANCELADA PELO SISTEMA!");
-                        goto iniciar;
+                        msg("ALTERNATIVA INVALIDA. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP UP com uma mensagem para o usuario
+                        goto iniciar; // direciona o usuario para o menu iniciar
                     }
                 }
             }
             goto iniciar; // Direciona o usuario para o menu iniciar
         }else if(strcmp(resp, "A7") == 0 || strcmp(resp, "a7") == 0){
+            FILE *verif; // Declaração de variavel do tipo FILE
             while(contador != 1){ // Inicia um looping infinito, pois a estrutura de repetição não possui variavel de incremeto em seu interior
                 limpatela(); // limpa a tela para o usuario
                 char verificaPendencia[50] = "agendamentos\\AG";
@@ -1058,8 +1062,8 @@ int main(void){
                 strcat(consultarOS, ext);
                 strcat(verificaPendencia, digitoOS);
                 strcat(verificaPendencia, ext);
-                FILE *verif; // Declaração de variavel do tipo FILE
                 verif = fopen(verificaPendencia, "r"); // Verifica se o arquivo exsiste na pasta indicada.
+                // Verifica se o arquivo existe
                 if(verif == NULL){
                     leitura(consultarOS); // Faz a leitura dos arquivos na pasta indicada
                     lform(); // Linha formatada
@@ -1070,11 +1074,12 @@ int main(void){
                 msg("ESTA OS DE AGENDAMENTO NAO EXISTE OU PODE ESTAR PENDENTE DE TRATAMENTO."); // Apresenta uma POP UP com uma mensagem para o usuario
                 printf("\n   DESEJA REALIZAR UMA NOVA CONSULTA?[0 - NAO / 1 - SIM]: ");
                 scanf("%d", &aux);
+                //Validação das informações de entrada
                 if(aux == 0){
                     goto iniciar; // Direciona o usuario para o menu iniciar
                 }else if(aux == 1){
                     lb(); // Limpa o buffer do teclado
-                    continue;
+                    continue; // Continua o tratamento sem interrupção
                 }else{
                     msg("ALTERNATIVA INVALIDA. SOLICITACAO CANCELADA PELO SISTEMA!");
                 }
@@ -1089,31 +1094,38 @@ int main(void){
 			printf("\n *                                      REGISTRAR RECLAMACAO/SUGESTAO/ELOGIOS                                           *");
 			printf("\n ************************************************************************************************************************\n\n");
             printf("\n   CATEGORIAS DISPONIVEIS...............................: [0 - SUGESTAO] [1 - RECLAMACAO] [2 - ELOGIO]");
-            msg("INFORME A CATEGORIA UTILIZANDO 0, 1 OU 2");
             lform(); // Linha formatada
-            printf("\n   PARA PROSSEGUIR INFORME A CATEGORIA..................: ");
-            scanf("%d", &aux);
-            lb(); // Limpa o buffer do teclado.
-            lform(); // Linha formatada
-            if(aux == 0){
-                strcat(categoria, "SUGESTAO");
-                strcat(sg, "SG");
-            }else if(aux == 1){
-                strcat(categoria, "RECLAMACAO");
-                strcat(sg, "RC");
-            }else if(aux == 2){
-                strcat(categoria, "ELOGIO");
-                strcat(sg, "EL");
-            }else{ // Se nenhuma das opcoes forem verdadeiras retornara um erro para o usuario
-                msg("CATEGORIA INVALIDA. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP UP com uma mensagem para o usuario
-                goto iniciar;
-            }
-            printf("\n   INFORME O CPF DO SOLICITANTE DO REGISTRO.............: ");
-            scanf("%s", cpf);
-            lb(); // Limpa o buffer do teclado.
-            lform(); // Linha formatada
-            recebecpf = strtoll(cpf, &eptr, 10);// Converte uma string em um inteiro
             for(contador = 0; contador < 3; contador++){
+                printf("\n   PARA PROSSEGUIR INFORME A CATEGORIA..................: ");
+                scanf("%d", &aux);
+                lb(); // Limpa o buffer do teclado.
+                lform(); // Linha formatada
+                if(aux == 0){
+                    strcat(categoria, "SUGESTAO");
+                    strcat(sg, "SG");
+                    break; // encerra o looping
+                }else if(aux == 1){
+                    strcat(categoria, "RECLAMACAO");
+                    strcat(sg, "RC");
+                    break; // encerra o looping
+                }else if(aux == 2){
+                    strcat(categoria, "ELOGIO");
+                    strcat(sg, "EL");
+                    break; // encerra o looping
+                }else{ // Se nenhuma das opcoes forem verdadeiras retornara um erro para o usuario
+                    msg("CATEGORIA INVALIDA. INFORME A CATEGORIA UTILIZANDO 0, 1 OU 2");// Apresenta uma POP UP com uma mensagem para o usuario
+                }
+                if(contador == 2){
+                    msg("NUMERO DE TENTATIVAS ESGOTADO. SOLICITACAO CANCELADA PELO SISTEMA."); // Apresenta uma POP UP com uma mensagem para o usuario
+                    goto iniciar; // direciona o usuario para o menu iniciar
+                }
+            }
+            for(contador = 0; contador < 3; contador++){
+                printf("\n   INFORME O CPF DO SOLICITANTE DO REGISTRO.............: ");
+                scanf("%s", cpf);
+                lb(); // Limpa o buffer do teclado.
+                lform(); // Linha formatada
+                recebecpf = strtoll(cpf, &eptr, 10);// Converte uma string em um inteiro
                 if(validaCPF(recebecpf) == true){
                     printf("\n\n\n   EM ATE 255 CARACTERES DESCREVA 0(A)%s..: ",categoria);
                     scanf("%[^\n]", &resenha); // Faz a leitura do que o usuario digitar e armazena na variavel resenha
@@ -1161,7 +1173,6 @@ int main(void){
                         fputs(resenha, file);
                         fclose(file); // Fecha o arquivo de texto
                         msg("SOLICITACAO REGISTRADA COM SUCESSO!"); // Apresenta uma POP UP com uma mensagem para o usuario
-                        pause(); // Pausa a tela para o usuario verificar as informações.
                         goto iniciar; // Direciona o usuario para o menu iniciar
                     }else{
                         msg("ALTERNATIVA INVALIDA. CADASTRO CANCELADO PELO SISTEMA"); // Apresenta uma POP UP com uma mensagem para o usuario
@@ -1174,15 +1185,10 @@ int main(void){
                     msg("NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
                     goto iniciar; // Direciona o usuario para o menu iniciar;
                 }
-                printf("\n   INFORME O CPF DO SOLICITANTE DO REGISTRO.............: ");
-                scanf("%s", cpf);
-                lb(); // Limpa o buffer do teclado.
-                lform(); // Linha formatada
-                recebecpf = strtoll(cpf, &eptr, 10);// Converte uma string em um inteiro
             }
         }else if(strcmp(resp, "A9") == 0 || strcmp(resp, "a9") == 0){
             limpatela(); // Limpa a tela para o usuario
-            char cons_recl_sugs_elo[15] = "";
+            char cons_recl_sugs_elo[15] = ""; // Declaração de variavel do tipo char.
             if (admin == false && moderador == false){ // O usuario só poderá criar um novo cadastro de funcionário se houver permissão de administrador.
                 msg("VOCE NAO POSSUI PRIVILEGIOS SUFICIENTES PARA EXECUTAR ESTA FUNCAO."); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para tela inicial.
@@ -1191,7 +1197,6 @@ int main(void){
 			printf("\n *                                      CONSULTAR RECLAMACAO/SUGESTAO/ELOGIOS                                           *");
 			printf("\n ************************************************************************************************************************\n\n");
             printf("\n   CATEGORIAS DISPONIVEIS...............................: [0 - SUGESTAO] [1 - RECLAMACAO] [2 - ELOGIO]");
-            msg("INFORME A CATEGORIA UTILIZANDO 0, 1 OU 2");
             lform(); // Linha formatada
             printf("\n   PARA PROSSEGUIR INFORME A CATEGORIA..................: ");
             scanf("%d", &aux); // Faz a leitura e armazena o vlaor digitado pelo usuario
@@ -1219,13 +1224,14 @@ int main(void){
             scanf("%s", &cons_recl_sugs_elo);
             lb(); // Limpa o buffer do teclado
             lform(); // LINHA FORMATADA
+            // Concatenação de informações
             strcat(caminho_recl_sugs_elo, categoria); // Acrescenta uma pasta
             strcat(caminho_recl_sugs_elo, "\\"); // Acrescenta a barra divisora de diretorios
             strcat(caminho_recl_sugs_elo, sg); // Concatena a sigla da solicitacao
             strcat(caminho_recl_sugs_elo, cons_recl_sugs_elo); // Concatena o caminho com o nome do arquivo.
             strcat(caminho_recl_sugs_elo, ext); // Concatena a extensao
             file = fopen(caminho_recl_sugs_elo, "r"); // Abre o arquivo de texto em modo de leitura
-            if(file == NULL){
+            if(file == NULL){ // Verifica se o arquivo existe
                 msg("SOLICITACAO CONCLUIDA SEM SUCESSO POR ORDEM DE SERVICO NAO LOCALIZADA. TENTE NOVAMENTE!"); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direciona o usuario para a tela de inicio
             }
@@ -1382,7 +1388,7 @@ int main(void){
                     continue;
                 }else{
                     msg("ALTERNATIVA INVALIDA. SOLICITACAO CANCELADA PELO SISTEMA!");
-                    goto iniciar;
+                    goto iniciar; // Direciona o usuario para o menu iniciar
                 }
             }
         }else if(strcmp(resp, "AC") == 0 || strcmp(resp, "ac") == 0){
@@ -1409,7 +1415,7 @@ int main(void){
                 strcat(verificaP, digitoOS);
                 strcat(verificaP, ext);
                 consultaP = fopen(verificaP, "r"); // Verifica se o arquivo exsiste na pasta indicada.
-                if(consultaP == NULL){
+                if(consultaP == NULL){ // Verifica a existência do arquivo
                     leitura(consultarOS); // Faz a leitura dos arquivos na pasta indicada
                     lform(); // Linha formatada
                     pause(); // Pausa a tela para o usuario visualizar as informacoes;
@@ -1425,8 +1431,8 @@ int main(void){
                     lb(); // Limpa o buffer do teclado
                     continue;
                 }else{
-                    msg("ALTERNATIVA INVALIDA. SOLICITACAO CANCELADA PELO SISTEMA!");
-                    goto iniciar;
+                    msg("ALTERNATIVA INVALIDA. SOLICITACAO CANCELADA PELO SISTEMA!");  // Apresenta uma POP UP com uma mensagem para o usuario
+                    goto iniciar; // Direciona o usuario para o menu iniciar
                 }
             }
         }else if(strcmp(resp, "AD") == 0 || strcmp(resp, "ad") == 0){
@@ -1582,13 +1588,13 @@ int main(void){
                 lform(); // Linha formatada
                 strcat(searchcolab, cpf);
                 strcat(searchcolab, ".txt");
-                file = fopen(searchcolab, "r");
-                if(file != NULL){
-                    fclose(file);
-                    break;
+                file = fopen(searchcolab, "r"); // abre o arquivo de texto em modo de leitura
+                if(file != NULL){ // Verifica a existência do arquivo
+                    fclose(file); // fecha o arquivo se aberto
+                    break; // encerra o looping
                 }else{
-                    fclose(file);
-                    msg("COLABORADOR NAO LOCALIZADO. TENTE NOVAMENTE!");
+                    fclose(file); // fecha o arquivo se aberto
+                    msg("COLABORADOR NAO LOCALIZADO. TENTE NOVAMENTE!"); // Apresenta uma POP-UP informativa na tela do usuario.
                 }
                 if(contador == 2){
                     msg("NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
@@ -1601,17 +1607,18 @@ int main(void){
                 scanf("%s", &login);
                 lb(); // Limpa o buffer do teclado
                 lform(); // Linha formatada
+                //Concatenação de informações
                 strcat(searchlog, login);
                 strcat(searchlog, "\\");
                 strcat(searchlog, login);
                 strcat(searchlog, ".txt");
-                file = fopen(searchlog, "r");
-                if(file != NULL){
-                    fclose(file);
-                    break;
+                file = fopen(searchlog, "r"); // abre o arquivo de texto em modo de leitura
+                if(file != NULL){ // Verifica se o arquivo existe
+                    fclose(file); // fecha o arquivo se aberto
+                    break; // encerra o looping
                 }else{
-                    fclose(file);
-                    msg("LOGIN INCORRETO OU INEXISTENTE. TENTE NOVAMENTE!");
+                    fclose(file); // fecha o arquivo se aberto
+                    msg("LOGIN INCORRETO OU INEXISTENTE. TENTE NOVAMENTE!"); // Apresenta uma POP-UP informativa na tela do usuario.
                 }
                 if(contador == 2){
                     msg("NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
@@ -1638,11 +1645,11 @@ int main(void){
                 msg("SOLICITACAO CONCLUIDA COM SUCESSO!");
                 goto iniciar;
             }else{
-                msg("ALTERNATIVA INVALIDA. SOLICITACAO CANCELADA PELO SISTEMA.");
+                msg("ALTERNATIVA INVALIDA. SOLICITACAO CANCELADA PELO SISTEMA."); // Apresenta uma POP-UP informativa na tela do usuario.
                 goto iniciar; // Direciona o usuario para o menu iniciar;
             }
         }else{
-            msg("ALTERNATIVA INVALIDA. TENTE NOVAMENTE!");
+            msg("ALTERNATIVA INVALIDA. TENTE NOVAMENTE!"); // Apresenta uma POP-UP informativa na tela do usuario.
             goto iniciar; // Direciona o usuario para o menu inicial
         }
     return 0; // Retorna erros se houverem
@@ -1973,8 +1980,8 @@ int gerarOS(){
         if(temp != 0){ // Se o numero gerado for diferente de nulo d diferente de 0 a estrutura de repetição será interrompida
             num = num * temp; // Num recebera num multiplicado pelo valor contido na variavel temp
         }
-        if(num > 99999999 && num < 9999999999){
-            break;
+        if(num > 99999999 && num < 9999999999){ // verifica se o numero se encontra dentro da condição
+            break; // encerra o looping
         }
     }
     return num; // Retorna o valor final de num.
