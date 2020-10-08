@@ -63,7 +63,6 @@ int main(void){ // Inicio do código principal
     system("mkdir agendamentos\\concluidos\\ & attrib +h agendamentos"); // Cria a pasta de agendamentos e agendamentos concluidos
     system("mkdir ti-sistemas\\tratados\\ & attrib +h ti-sistemas"); // Cria a pasta de ti e sistemas
     system("mkdir relatorios\\ & attrib +h relatorios"); // Cria a pasta de relatorios
-    system("mkdir valores\\ & attrib +h valores"); // Cria a pasta onde serão armazenados os lucros diarios
 
     moduser: // ponto de salto para modificar o usuario / trocar login
         system("mode 30,6 && color 07"); // Seta o tamanho do terminal para 30 colunas e 6 linhas e a cor do terminal para o padrão
@@ -82,7 +81,7 @@ int main(void){ // Inicio do código principal
         //Variaveis globais de login
         bool admin = false, moderador = false, trocar_senha_padrao = false; // declaracao de variavel do tipo booleano
         char identificacao_menu[7] = "", caminhologin[65] = "system-moderadores\\logins\\", caminhosenha[75] = "system-moderadores\\logins\\"; // Declaração de variavel global
-        char verificarsenhapadrao[65] = "system-moderadores\\logins\\", filial[30] = "";
+        char verificarsenhapadrao[65] = "system-moderadores\\logins\\", filial[3] = "";
         int cc; // Declaração de variavel contadora do tipo inteiro
 
         for(cc = 0; cc < 3; cc++){ // Entrará em um loop infinito até que uma das opções de login sejam atendidas.
@@ -117,7 +116,7 @@ int main(void){ // Inicio do código principal
             if(strcmp(senha, "1234") == 0 && (strcmp(login, "ADMIN") == 0 || strcmp(login, "admin") == 0)){ // Compara se o as informações digitadas são válidas, caso seja o usuario é reconhecido como admin
                 admin = true; // Atribuição de valor booleano verdadeiro a variavel admin
                 strcat(identificacao_menu, login); // Concatena o login para mostar no menu inicial
-                strcat(filial, "CLINICA_DE_TRATAMENTO_GERAL");
+                strcat(filial, "CT");
                 break; // Encerra o looping
             }else if(validarAdmin(auxlog, auxsen) == true){ // Verifica se o usuario é um usuario válido para liberar acesso ao uso da ferramenta
                 moderador = true; // Atribuição de valor booleano verdadeiro a variavel usuario
@@ -128,34 +127,8 @@ int main(void){ // Inicio do código principal
                 strcat(verificarsenhapadrao, senha);
                 strcat(verificarsenhapadrao, "\\");
                 strcat(verificarsenhapadrao, "true.txt");
-                system("mode 122, 15");
-                printf("\n   PARA PROSSEGUIR INFORME A FILIAL QUE DESEJA LOGAR!\n");
-                lform(); // Linha formatada
-                printf("\n   [(CT) CLINICA DE TRATAMENTO GERAL] - [(CO) CLINICA ORTOPEDICA] - [(CP) CLINICA PEDIATRICA]\n");
-                lform(); // Linha formatada
-                char temp[3] = ""; // Declaração de variavel inteira temporaria para verificações
-                for(cc = 0; cc < 3; cc++){
-                    printf("\n   RESPOSTA -> ");
-                    scanf("%s", &temp);
-                    lb(); // Limpa o buffer do teclado.
-                    //Condicional de validação da entrada de dados
-                    if(strcmp(temp, "CT") == 0 || strcmp(temp, "ct") == 0){
-                        strcat(filial, "CLINICA_DE_TRATAMENTO_GERAL"); // Concatena a informação na variavel filial
-                        break; // encerra o looping do for.
-                    }else if(strcmp(temp, "CO") == 0 || strcmp(temp, "co") == 0){
-                        strcat(filial, "CLINICA_ORTOPEDICA"); // Concatena a informação na variavel filial
-                        break; // encerra o looping do for.
-                    }else if(strcmp(temp, "CP") == 0 || strcmp(temp, "cp") == 0){
-                        strcat(filial, "CLINICA_PEDIATRICA"); // Concatena a informação na variavel filial
-                        break; // encerra o looping do for.
-                    }else{
-                        msg("ALTERNATIVA NAO RECONHECIDA, TENTE UTILIZAR CO - CT OU CP"); // Apresenta uma POP-UP informativa para o usuario.
-                    }
-                    if(cc == 2){
-                        msg("NUMERO DE TENTATIVAS ESGOTADAS. SAINDO DO SISTEMA..."); // Apresenta uma POP-UP informativa para o usuario.
-                        exit(0); // Encerra o sistema.
-                    }
-                }
+                strcat(filial, login);
+                filial[strlen(filial) - 4] = '\0';
                 break; // Encerra o looping de login.
             }else{ // Se nenhum das alternativas anteriores for válida, uma mensagem de erro será exibida para o usuario.
                 msg("USUARIO OU SENHA INVALIDOS. TENTE NOVAMENTE!"); // Apresenta uma POP UP com uma mensagem para o usuario
@@ -336,8 +309,13 @@ int main(void){ // Inicio do código principal
                         scanf("%d", &aux);
                         lb(); // Limpa o buffer do teclado
                         lform(); // Linha formatada
-                        if(aux == 0 || aux == 1 || aux == 2){
-                            break; // Encerra a repetição
+                        // Validação da entrada de dados e inclusão de informação na string sigla
+                        if(aux == 0){
+                            strcat(sigla, "CT");
+                        }else if(aux == 1){
+                            strcat(sigla, "CP");
+                        }else if(aux == 2){
+                            strcat(sigla, "CO");
                         }else{
                             msg("UTILIZE UMA OPCAO VALIDA. TENTE 1, 2 OU 3!"); // Apresenta uma POP-UP informativa na tela do usuario.
                         }
@@ -345,14 +323,6 @@ int main(void){ // Inicio do código principal
                             msg("NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
                             goto iniciar; // Direciona o usuario para o menu iniciar;
                         }
-                    }
-                    // Validação da entrada de dados e inclusão de informação na string sigla
-                    if(aux == 0){
-                        strcat(sigla, "CT");
-                    }else if(aux == 1){
-                        strcat(sigla, "CP");
-                    }else{
-                        strcat(sigla, "CO");
                     }
                     char temp[10] = ""; // Declaração de variavel temporaria
                     aux = criarnumusuario(recebecpf); // a variavel auxiliar recebera o numero de usuario de acordo com o CPF digitado
@@ -511,30 +481,6 @@ int main(void){ // Inicio do código principal
             lb(); // Limpa o buffer do teclado
             lform(); // Linha formatada
             for(contador = 0; contador < 3; contador++){ // inicia um looping com 3 tentativas para acertividade do que for solicitado.
-                printf("\n   POSSUI PLANO DE SAUDE(CONVENIO MEDICO)? [0 - NÃO / 1 - SIM]......: ");
-                scanf("%d", &aux);
-                lb(); // Limpa o buffer do teclado
-                lform(); // Linha formatada
-                if(aux == 1){
-                    printf("\n   IDENTIFICACAO - CARTAO CONVENIO..................................: ");
-                    scanf("%[^\n]", &numconvenio);
-                    strupr(numconvenio); // Muda as letras para a condição UPPER(Maiuscula)
-                    lb(); // Limpa o buffer do teclado
-                    lform(); // Linha formatada
-                    break; // encera o looping for em andamento.
-                }else if(aux == 0){
-                    strcat(numconvenio, "N/A");
-                    break; // encera o looping for em andamento.
-                }else{
-                    printf("\n   ALTERNATVA INVALIDA. TENTE NOVAMENTE!\n");
-                    lform(); // Linha formatada
-                }
-                if(contador == 2){
-                    msg("NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
-                    goto iniciar; // Direciona o usuario para o menu iniciar;
-                }
-            }
-            for(contador = 0; contador < 3; contador++){ // inicia um looping com 3 tentativas para acertividade do que for solicitado.
                 // Validar um sexo padrão.
                 printf("\n   INFORME O SEXO DO PACIENTE [0 - MASCULINO / 1 - FEMININO]........: ");
                 scanf("%d", &aux);
@@ -586,6 +532,30 @@ int main(void){ // Inicio do código principal
                     goto iniciar; // Direciona o usuario para o menu iniciar;
                 }
             }
+            for(contador = 0; contador < 3; contador++){ // inicia um looping com 3 tentativas para acertividade do que for solicitado.
+                printf("\n   POSSUI PLANO DE SAUDE(CONVENIO MEDICO)? [0 - NÃO / 1 - SIM]......: ");
+                scanf("%d", &aux);
+                lb(); // Limpa o buffer do teclado
+                lform(); // Linha formatada
+                if(aux == 1){
+                    printf("\n   IDENTIFICACAO - CARTAO CONVENIO..................................: ");
+                    scanf("%[^\n]", &numconvenio);
+                    strupr(numconvenio); // Muda as letras para a condição UPPER(Maiuscula)
+                    lb(); // Limpa o buffer do teclado
+                    lform(); // Linha formatada
+                    break; // encera o looping for em andamento.
+                }else if(aux == 0){
+                    strcat(numconvenio, "N/A");
+                    break; // encera o looping for em andamento.
+                }else{
+                    printf("\n   ALTERNATVA INVALIDA. TENTE NOVAMENTE!\n");
+                    lform(); // Linha formatada
+                }
+                if(contador == 2){
+                    msg("NUMERO DE TENTATIVAS ESGOTADAS. SOLICITACAO CANCELADA PELO SISTEMA!"); // Apresenta uma POP-UP informativa na tela do usuario.
+                    goto iniciar; // Direciona o usuario para o menu iniciar;
+                }
+            }
             printf("\n   DIGITE O ENDERECO DE LOCALIZACAO DO PACIENTE.....................: ");
             scanf("%[^\n]", &endereco);
             strupr(endereco); // Muda as letras para a condição UPPER(Maiuscula)
@@ -620,11 +590,12 @@ int main(void){ // Inicio do código principal
             }
             strcat(criapastapaciente, cpf);// CRIANDO CAMINHO DA PASTA COM INFORMACOES DO PACIENTE
             system(criapastapaciente); // CRIA A PASTA COM AS INFORMACOES DO PACIENTE;
-            if(strcmp(numconvenio, "N/A") == 1){ // Se O cliente possuir um convênio médico, este será guardado no "banco de dados"
+            if(strcmp(numconvenio, "N/A") == 0){
+                printf("");
+            }else{
                 char temporario[60] = "pacientes\\"; // Concatena a pasta de destino para acrescentar as informações ao bloco de texto
                 strcat(temporario, cpf); // Concaten o CPF do cliente
-                strcat(temporario, "\\true"); // Concatena o separador de diretorios
-                strcat(temporario, ext); // Concatena a extensão .txt
+                strcat(temporario, "\\true.txt"); // Concatena o separador de diretorios
                 file = fopen(temporario, "a"); // abre o arquivo de texto em modo de escrita(cria o arquivo)
                 fclose(file); // Fecha o arquivo de texto.
             }
@@ -643,13 +614,25 @@ int main(void){ // Inicio do código principal
             msg("PACIENTE CADASTRADO COM SUCESSO!"); // Apresenta uma POP UP com uma mensagem para o usuario
             goto iniciar; // Direciona o usuario para tela de inicio
         }else if(strcmp(resp, "A3") == 0 || strcmp(resp, "a3") == 0){
-            char sdia[3] = "", smes[3] = "", sano[5] = "", shora[3] = "", smin[3] = "", ssec[3] = "", cam[35] = "valores\\";
+            char sdia[3] = "", smes[3] = "", sano[5] = "", shora[3] = "", smin[3] = "", ssec[3] = "", cam[35] = "relatorios\\";
             char verificaconv[35] = "pacientes\\", verificapaciente[45] = "pacientes\\", svalorconsulta[10] = "", procedimento[30] = "";
             int idia, imes, iano, ihora, imin, isec;
             float valorconsulta;
             if(admin == false && moderador == false){
                 msg("VOCE NAO POSSUI PRIVILEGIOS PARA EXECUTAR ESSA FUNCAO!"); // Apresenta uma popup na tela do usuario
                 goto iniciar; // Direciona o usuario para a tela inicial
+            }
+            strcat(cam, "relatorio.xls"); // Acrescenta a informação de exntesão do arquivo .xls na varaivel do caminho
+            file = fopen(cam, "r"); // abre o arquivo do tipo .xls em modo de leitura
+            if(file == NULL){ // verifica se o arquivo é nulo (se não existe)
+                fclose(file); // fecha o arquivo se houver abertura
+                file = fopen(cam, "a"); // Abreo arquivo do tipo .xls em modo de edição
+                //Acrescentando informações no arquivo
+                fputs("MAIOR VENDA DIA\tRESPONSAVEL MAIOR VENDA\tFILIAL RESPONSAVEL\tTOTAL VENDAS - CO\tTOTAL VENDAS - CT\tTOTAL VENDAS - CP\tTOTAL VENDAS - GERAL\n", file);
+                fputs("=SEERRO(MÁXIMO(A5:A1048576);\"\")\t=SEERRO(PROCV($A$2;$A$5:$D$1048576;3;0);\"\")\t=SEERRO(ESQUERDA($B$2;2);\"\")\t=SEERRO(SOMASE($E$5:$E$1048576;\"CO\";$A$5:$A$1048576);\"\")\t", file);
+                fputs("=SEERRO(SOMASE($E$5:$E$1048576;\"CT\";$A$5:$A$1048576);\"\")\t=SEERRO(SOMASE($E$5:$E$1048576;\"CP\";$A$5:$A$1048576);\"\")\t=SEERRO(SOMA($D$2:$F$2);\"\")\n", file);
+                fputs("\n\nENTRADA DE VALOR - GERAL\tPROCEDIMENTO REALIZADO\tRESPONSAVEL DA VENDA\tHORARIO DA VENDA\tFILIAL\n", file);
+                fclose(file); //fecha o arquivo que foi aberto
             }
             limpatela(); // Limpa a tela
             printf("\n ************************************************************************************************************************");
@@ -864,35 +847,22 @@ int main(void){ // Inicio do código principal
                     fputs(OS, file);
                     fputs("\n  ------------------------------------------------------------------------------------------------------------------", file);
                     fclose(file); // Fecha o arquivo de texto
-                    strcat(cam, filial); // Concatena o nome da filial na variavel cam(caminho de valores)
-                    strcat(cam, ".xls"); // Acrescenta a informação de exntesão do arquivo .xls na varaivel do caminho
-
-                    file = fopen(cam, "r"); // abre o arquivo do tipo .xls em modo de leitura
-                    if(file == NULL){ // verifica se o arquivo é nulo (se não existe)
-                        fclose(file); // fecha o arquivo se houver abertura
-                        file = fopen(cam, "a"); // Abreo arquivo do tipo .xls em modo de edição
-                        //Acrescentando informações no arquivo
-                        fputs("Entrada de valor#", file);
-                        fputs("Procedimento realizado#", file);
-                        fputs("Responsavel da Venda#", file);
-                        fputs("Horario da Venda#", file);
-                        fputs("\n", file);
-                        fclose(file); //fecha o arquivo que foi aberto
-                    }
                     file = fopen(cam, "r"); // Inicia uma nova instancia do arquivo em modo de leitura
                     if(file != NULL){ // verifica se o aarquivo existe
                         fclose(file); // fecha o arquivo em modo de leitura
                         file = fopen(cam, "a"); // abre o arquivo em modo de edição
                         //Acrescentando informações no arquivo
                         fputs(svalorconsulta, file);
-                        fputs("#", file);
+                        fputs("\t", file);
                         fputs(procedimento, file);
-                        fputs("#", file);
+                        fputs("\t", file);
                         fputs(identificacao_menu, file);
-                        fputs("#", file);
+                        fputs("\t", file);
                         fclose(file); // fecha o arquivo em aberto
                         incluirdatahora(cam); // acrescenta informações de hora da função
                         file = fopen(cam, "a"); // abre o arquivo em modo de edição
+                        fputs("\t", file);
+                        fputs(filial, file);
                         fputs("\n", file); // inclui um salto de linha no arquivo
                         fclose(file); // fecha o arquivo
                     }
@@ -1436,13 +1406,14 @@ int main(void){ // Inicio do código principal
                 }
             }
         }else if(strcmp(resp, "AD") == 0 || strcmp(resp, "ad") == 0){
-            char temp[50] = "", localname[30] = "";
+            char temp[50] = "copy /y relatorios\\relatorio.xls ", localname[30] = "";
             if (admin == false && moderador == false){ // O usuario só poderá criar um novo cadastro de funcionário se houver permissão de administrador.
                 msg("VOCE NAO POSSUI PRIVILEGIOS SUFICIENTES PARA EXECUTAR ESTA FUNCAO."); // Apresenta uma POP UP com uma mensagem para o usuario
                 goto iniciar; // Direcisona o usuario para tela inicial.
 			}
+			limpatela(); // Limpa a tela do usuario.
 			printf("\n ************************************************************************************************************************");
-            printf("\n *                                     GERAR RELATORIO DE DESEMPENHO DIARIO - EXCEL                                     *");
+            printf("\n *                                 GERAR RELATORIO DE DESEMPENHO EM TEMPO REAL - EXCEL                                  *");
             printf("\n ************************************************************************************************************************\n\n");
 			printf("\n   DESEJA ENVIAR AS INFORMACOES PARA UMA PLANILHA ELETRONICA? APOS O ENVIO O ITEM SERA DELETADO DO BANCO DE DADOS!");
 			lform(); // Linha formatada
@@ -1455,15 +1426,12 @@ int main(void){ // Inicio do código principal
                 }else if(aux == 1){
                     GetEnvironmentVariable("userprofile",localname,sizeof(localname)); // Armazena o caminho absoluto do usuario atual da maquina e o guarda na variavel localname
                     // Concatena as informações
-                    strcat(temp, "xcopy valores\\");
-                    strcat(temp, filial);
-                    strcat(temp, ".xls ");
                     strcat(temp, localname);
-                    strcat(temp, "\\Desktop\\");
-                    strcat(temp, filial);
-                    strcat(temp, ".xls");
+                    strcat(temp, "\\Desktop\\relatorio.xls");
                     system(temp);
-                    msg("CERTO! UMA PLANILHA FOI CRIADA NA AREA DE TRABALHO LOCAL.");
+                    system("erase /q relatorios\\relatorio.xls");
+                    limpatela(); // Limpa a tela do usuario.
+                    msg("CERTO! UMA PLANILHA FOI CRIADA NA AREA DE TRABALHO LOCAL, BASTA CONFIGURAR AS FORMULAS PARA OBTER OUTROS RESULTADOS.");
                     goto iniciar; // Direciona o usuario para o menu iniciar
                 }else{
                     msg("ALTERNATIVA INVALIDA. TENTE 0 OU 1!");
