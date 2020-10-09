@@ -628,9 +628,11 @@ int main(void){ // Inicio do código principal
                 fclose(file); // fecha o arquivo se houver abertura
                 file = fopen(cam, "a"); // Abreo arquivo do tipo .xls em modo de edição
                 //Acrescentando informações no arquivo
-                fputs("MAIOR VENDA DIA\tRESPONSAVEL MAIOR VENDA\tFILIAL RESPONSAVEL\tTOTAL VENDAS - CO\tTOTAL VENDAS - CT\tTOTAL VENDAS - CP\tTOTAL VENDAS - GERAL\n", file);
+                fputs("MAIOR VENDA DIA\tRESPONSAVEL MAIOR VENDA\tFILIAL RESPONSAVEL\tTOTAL VENDAS - CO\tTOTAL VENDAS - CT\tTOTAL VENDAS - CP\tTOTAL VENDAS - GERAL\t", file);
+                fputs("PERCT VENDAS CO\tPERCT VENDAS CT\tPERCT VENDAS CP\n", file);
                 fputs("=SEERRO(MÁXIMO(A5:A1048576);\"\")\t=SEERRO(PROCV($A$2;$A$5:$D$1048576;3;0);\"\")\t=SEERRO(ESQUERDA($B$2;2);\"\")\t=SEERRO(SOMASE($E$5:$E$1048576;\"CO\";$A$5:$A$1048576);\"\")\t", file);
-                fputs("=SEERRO(SOMASE($E$5:$E$1048576;\"CT\";$A$5:$A$1048576);\"\")\t=SEERRO(SOMASE($E$5:$E$1048576;\"CP\";$A$5:$A$1048576);\"\")\t=SEERRO(SOMA($D$2:$F$2);\"\")\n", file);
+                fputs("=SEERRO(SOMASE($E$5:$E$1048576;\"CT\";$A$5:$A$1048576);\"\")\t=SEERRO(SOMASE($E$5:$E$1048576;\"CP\";$A$5:$A$1048576);\"\")\t=SEERRO(SOMA($D$2:$F$2);\"\")\t", file);
+                fputs("=SEERRO($D$2/$G$2;\"\")\t=SEERRO($E$2/$G$2;\"\")\t=SEERRO($F$2/$G$2;\"\")\n", file);
                 fputs("\n\nENTRADA DE VALOR - GERAL\tPROCEDIMENTO REALIZADO\tRESPONSAVEL DA VENDA\tHORARIO DA VENDA\tFILIAL\n", file);
                 fclose(file); //fecha o arquivo que foi aberto
             }
