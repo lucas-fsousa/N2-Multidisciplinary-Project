@@ -773,10 +773,10 @@ int main(void){ // Inicio do código principal
             lform(); // Linha formatada
             printf("\n       VALOR TOTAL A SER PAGO......................: R$%.2f", valorconsulta);
             lform(); // Linha formatada
-            printf("\n\n   AS INFORMACOES ESTAO CORRETAS? [0 - CANCELAR / 1 - CONCLUIR]: ");
-            scanf("%d", &confirma);
-            lform(); // Linha formatada
             for(contador = 0; contador < 3; contador++){ // inicia um looping com 3 tentativas para acertividade do que for solicitado.
+                printf("\n\n   AS INFORMACOES ESTAO CORRETAS? [0 - CANCELAR / 1 - CONCLUIR]: ");
+                scanf("%d", &confirma);
+                lform(); // Linha formatada
                 if(confirma == 0){
                     msg("PEDIDO CANCELADO PELO USUARIO!"); // Apresenta uma POP UP com uma mensagem para o usuario
                     goto iniciar; // Direciona o usuario para a tela inicial
@@ -1054,6 +1054,7 @@ int main(void){ // Inicio do código principal
                     continue; // Continua o tratamento sem interrupção
                 }else{
                     msg("ALTERNATIVA INVALIDA. SOLICITACAO CANCELADA PELO SISTEMA!");
+                    goto iniciar; // Direciona o usuario para o menu iniciar.
                 }
             }
         }else if(strcmp(resp, "A8") == 0 || strcmp(resp, "a8") == 0){
