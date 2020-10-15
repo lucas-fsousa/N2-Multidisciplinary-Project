@@ -1466,76 +1466,66 @@ int main(void){ // Inicio do código principal
             printf("\n ************************************************************************************************************************");
             printf("\n *                                   ASSISTENCIA AO USUARIO - ALTERAR SENHA DE LOGIN                                    *");
             printf("\n ************************************************************************************************************************\n\n");
-            contador = 1;
-            while(contador != 0){ // inicia um looping infinito, pois não será aplicada a variavel contadora.
-                // Tratamento de entrada de dados
-                printf("\n   DIGITE O USER LOGIN: ");
-                scanf("%s", &logtemp);
-                strcpy(loginn, logtemp);
-                lb(); // Limpa o buffer do teclado
-                lform(); // Apresenta uma mensagem na tela do usuario
-                printf("\n   PARA CONTINUAR DIGITE A SENHA DE USUARIO ATUAL: ");
-                lersenha(senhaa);
-                lb(); // Limpa o buffer do teclado
-                lform(); // Apresenta uma mensagem na tela do usuario
-                //CONCATENAÇÂO DE STRINGS
-                strcat(auxsenha, caminhosenha); // Adiciona o caminho da pasta de senha para a variavel auxiliar de senha
-                strcat(auxsenha, loginn); // Adiciona a senha na variavel auxiliar da senha para criar um novo diretório
-                strcat(auxsenha, "\\"); // Acrescenta a barra correspondente a separação de diretórios na variavel auxliar da senha
-                strcat(auxsenha, senhaa);  // Adiciona a senha na variavel auxiliar da senha para criar um novo arquivo de senha
-                strcat(auxsenha, "\\"); // Acrescenta a barra correspondente a separação de diretórios na variavel auxliar da senha
-                strcat(auxsenha, senhaa);  // Adiciona a senha na variavel auxiliar da senha para criar um novo arquivo de senha
-                strcat(auxsenha, ".txt"); // Adiciona a extensão .txt
-                strcat(auxlogin, caminhologin); // Adiciona o caminho de login na variavel auxiliar do login
-                strcat(auxlogin, loginn); // Adiciona o login digitado na variavel auxiliar do login
-                strcat(auxlogin, "\\"); // Adiciona o separador de diretorios do windows
-                strcat(auxlogin, loginn); // ADiciona o login digitado na variavel auxiliar do login
-                strcat(auxlogin, ".txt"); // inclui a extensão .txt na variavel auxiliar do login
+            // Tratamento de entrada de dados
+            printf("\n   DIGITE O USER LOGIN: ");
+            scanf("%s", &logtemp);
+            strcpy(loginn, logtemp);
+            lb(); // Limpa o buffer do teclado
+            lform(); // Apresenta uma mensagem na tela do usuario
+            printf("\n   PARA CONTINUAR DIGITE A SENHA DE USUARIO ATUAL: ");
+            lersenha(senhaa);
+            lb(); // Limpa o buffer do teclado
+            lform(); // Apresenta uma mensagem na tela do usuario
+            //CONCATENAÇÂO DE STRINGS
+            strcat(auxsenha, caminhosenha); // Adiciona o caminho da pasta de senha para a variavel auxiliar de senha
+            strcat(auxsenha, loginn); // Adiciona a senha na variavel auxiliar da senha para criar um novo diretório
+            strcat(auxsenha, "\\"); // Acrescenta a barra correspondente a separação de diretórios na variavel auxliar da senha
+            strcat(auxsenha, senhaa);  // Adiciona a senha na variavel auxiliar da senha para criar um novo arquivo de senha
+            strcat(auxsenha, "\\"); // Acrescenta a barra correspondente a separação de diretórios na variavel auxliar da senha
+            strcat(auxsenha, senhaa);  // Adiciona a senha na variavel auxiliar da senha para criar um novo arquivo de senha
+            strcat(auxsenha, ".txt"); // Adiciona a extensão .txt
+            strcat(auxlogin, caminhologin); // Adiciona o caminho de login na variavel auxiliar do login
+            strcat(auxlogin, loginn); // Adiciona o login digitado na variavel auxiliar do login
+            strcat(auxlogin, "\\"); // Adiciona o separador de diretorios do windows
+            strcat(auxlogin, loginn); // ADiciona o login digitado na variavel auxiliar do login
+            strcat(auxlogin, ".txt"); // inclui a extensão .txt na variavel auxiliar do login
 
-                if(validarAdmin(auxlogin, auxsenha) == true){ // faz a validação do admin para confirmar cadastro exsistente
-                    printf("\n   DIGITE A NOVA SENHA COM ATE 8 CARACTERES: ");
-                    lersenha(novasenha);
-                    lb(); // Limpa o buffer do teclado
-                    lform(); // Apresenta uma mensagem na tela do usuario
-                    printf("\n   CONFIRME A NOVA SENHA: ");
-                    lersenha(novasenha1);
-                    lform(); // Apresenta uma mensagem na tela do usuario
-                    if(strcmp(novasenha, novasenha1) == 0){
-                        //CONCATENACAO DE STRINGS
-                        strcat(criarcaminhonovasenha, "mkdir system-moderadores\\logins\\"); // Concatena o comando de criação de novas pastas e o caminho da pasta de login na variavel caminho da senha nova
-                        strcat(criarcaminhonovasenha, loginn); // Concatena o login digitado na variavel novasenha
-                        strcat(criarcaminhonovasenha, "\\"); // Concatena o separador de diretorios do Windows na variavel novasenha
-                        strcat(criarcaminhonovasenha, novasenha); // Acrescenta a nova senha do usuario na variavel criarcaminho nova senha
-                        system(criarcaminhonovasenha); // Cria a pasta de arquiivo com a nova senha
-                        strcat(auxnovasenha, "system-moderadores\\logins\\"); // concatena o caminho do login na variavel auxiliar da nova senha
-                        strcat(auxnovasenha, loginn); // concatena o login digitado pelo usuario na variavel auxiliar novasenha
-                        strcat(auxnovasenha, "\\"); // Concatena o separador de diretorios do windows na variavel auxiliar da nova senha
-                        strcat(auxnovasenha, novasenha); // Concatena a novasenha na variavel auxiliar da nova senha
-                        strcat(auxnovasenha, "\\"); // Concatena o separador de diretorios do windows na variavel auxiliar da nova senha
-                        strcat(auxnovasenha, novasenha); // Concatena a novasenha na variavel auxiliar da nova senha
-                        strcat(auxnovasenha, ext); // concatena a extensao .txt na variavel auxiliar nova senha
-                        // TRATAMENTO DE ARQUIVO
-                        trocasenha = fopen(auxnovasenha, "w"); // faz a abertura do arquivo em modo de escrita para criação da nova senha
-                        fclose(trocasenha); // fecha o arquivo de texto nova senha
-                        remove(auxsenha); // Exclui a senha antiga
-                        remove(verificarsenhapadrao); // Remove o verificador da senha padrao
-                        msg("SENHA ALTERADA COM SUCESSO!"); // Apresenta uma mensagem na tela do usuario
-                        goto iniciar; // Direciona o usuario para a tela inicial.
-                    }else{
-                        msg("A SENHA DIGITADA NAO CONFERE COM A CONFIRMACAO. PROCESSO CANCELADO PELO SISTEMA!");
-                        goto iniciar; // DIreciona o usuario para a tela inicial
-                    }
+            if(validarAdmin(auxlogin, auxsenha) == true){ // faz a validação do admin para confirmar cadastro exsistente
+                printf("\n   DIGITE A NOVA SENHA COM ATE 8 CARACTERES: ");
+                lersenha(novasenha);
+                lb(); // Limpa o buffer do teclado
+                lform(); // Apresenta uma mensagem na tela do usuario
+                printf("\n   CONFIRME A NOVA SENHA: ");
+                lersenha(novasenha1);
+                lform(); // Apresenta uma mensagem na tela do usuario
+                if(strcmp(novasenha, novasenha1) == 0){
+                    //CONCATENACAO DE STRINGS
+                    strcat(criarcaminhonovasenha, "mkdir system-moderadores\\logins\\"); // Concatena o comando de criação de novas pastas e o caminho da pasta de login na variavel caminho da senha nova
+                    strcat(criarcaminhonovasenha, loginn); // Concatena o login digitado na variavel novasenha
+                    strcat(criarcaminhonovasenha, "\\"); // Concatena o separador de diretorios do Windows na variavel novasenha
+                    strcat(criarcaminhonovasenha, novasenha); // Acrescenta a nova senha do usuario na variavel criarcaminho nova senha
+                    system(criarcaminhonovasenha); // Cria a pasta de arquiivo com a nova senha
+                    strcat(auxnovasenha, "system-moderadores\\logins\\"); // concatena o caminho do login na variavel auxiliar da nova senha
+                    strcat(auxnovasenha, loginn); // concatena o login digitado pelo usuario na variavel auxiliar novasenha
+                    strcat(auxnovasenha, "\\"); // Concatena o separador de diretorios do windows na variavel auxiliar da nova senha
+                    strcat(auxnovasenha, novasenha); // Concatena a novasenha na variavel auxiliar da nova senha
+                    strcat(auxnovasenha, "\\"); // Concatena o separador de diretorios do windows na variavel auxiliar da nova senha
+                    strcat(auxnovasenha, novasenha); // Concatena a novasenha na variavel auxiliar da nova senha
+                    strcat(auxnovasenha, ext); // concatena a extensao .txt na variavel auxiliar nova senha
+                    // TRATAMENTO DE ARQUIVO
+                    trocasenha = fopen(auxnovasenha, "w"); // faz a abertura do arquivo em modo de escrita para criação da nova senha
+                    fclose(trocasenha); // fecha o arquivo de texto nova senha
+                    remove(auxsenha); // Exclui a senha antiga
+                    remove(verificarsenhapadrao); // Remove o verificador da senha padrao
+                    msg("SENHA ALTERADA COM SUCESSO!"); // Apresenta uma mensagem na tela do usuario
+                    goto iniciar; // Direciona o usuario para a tela inicial.
                 }else{
-                    msg("USUARIO OU SENHA NAO CONFERE. PROCEDIMENTO INTERROMPIDO PELO SISTEMA!");
-                    goto iniciar; // Direciona o usuario para a tela inicial
+                    msg("A SENHA DIGITADA NAO CONFERE COM A CONFIRMACAO. PROCESSO CANCELADO PELO SISTEMA!");
+                    goto iniciar; // DIreciona o usuario para a tela inicial
                 }
-                printf("\n   DESEJA CANCELAR A OPERACAO? [0 - NAO / 1 - SIM]: ");
-                scanf("%d", &confirma);
-                lform(); // linha formatada
-                if(confirma == 0){
-                    msg("PROCEDIMENTO CANCELADO PELO USUARIO!"); // Apresenta uma mensagem na tela do usuario
-                    goto iniciar; // Direciona o usuario para o menu iniciar
-                }
+            }else{
+                msg("USUARIO OU SENHA NAO CONFERE. PROCEDIMENTO INTERROMPIDO PELO SISTEMA!");
+                goto iniciar; // Direciona o usuario para a tela inicial
             }
             goto iniciar; // Direciona o usuario para o menu inicial
         }else if(strcmp(resp, "GO") == 0 || strcmp(resp, "go") == 0){
