@@ -207,7 +207,7 @@ int main(void){ // Inicio do código principal
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
         printf("  *                                                                                                                    *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
-        printf("  *     ACESSE O SITE DO CRIADOR EM -> https://lucas-fsousa.github.io/website/ OU DIGITE 'GO' PARA CONHECER O SITE     *\n");
+        printf("  *     ACESSE O SITE DO CRIADOR EM -> https://lucas-fsousa.github.io/website/ OU DIGITE \"GO\" PARA CONHECER O SITE     *\n");
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
         printf("  **********************************************************************************************************************\n\n");
         printf("  RESPOSTA --> ");
@@ -1416,7 +1416,7 @@ int main(void){ // Inicio do código principal
 			}
 			limpatela(); // Limpa a tela do usuario.
 			printf("\n ************************************************************************************************************************");
-            printf("\n *                                 GERAR RELATORIO DE DESEMPENHO EM TEMPO REAL - EXCEL                                  *");
+            printf("\n *                                     GERAR RELATORIO DE DESEMPENHO DIARIO - EXCEL                                     *");
             printf("\n ************************************************************************************************************************\n\n");
 			printf("\n   DESEJA ENVIAR AS INFORMACOES PARA UMA PLANILHA ELETRONICA? APOS O ENVIO O ITEM SERA DELETADO DO BANCO DE DADOS!");
 			lform(); // Linha formatada
@@ -1615,7 +1615,6 @@ int main(void){ // Inicio do código principal
         }
     return 0; // Retorna erros se houverem
 }
-
 
 
 // |============================================================================================================================| //
