@@ -85,7 +85,7 @@ int main(void){ // Inicio do código principal
         int cc; // Declaração de variavel contadora do tipo inteiro
 
         for(cc = 0; cc < 3; cc++){ // Entrará em um loop infinito até que uma das opções de login sejam atendidas.
-            char login[7] ,log[7] = "", auxlog[60] = "", auxsen[60] = "", senha[9] = ""; // Declaração de variavel local
+            char login[7] = "" ,log[7] = "", auxlog[60] = "", auxsen[60] = "", senha[9] = ""; // Declaração de variavel local
 
             printf("\n    LOGIN -> "); // Informa ao usuario para digitar o login
             scanf("%s", &log); // Leitura da string login temporaria
@@ -127,6 +127,11 @@ int main(void){ // Inicio do código principal
                 strcat(verificarsenhapadrao, senha);
                 strcat(verificarsenhapadrao, "\\");
                 strcat(verificarsenhapadrao, "true.txt");
+                FILE *file;
+                file = fopen(verificarsenhapadrao, "r");
+                if(file != NULL){
+                    trocar_senha_padrao = true;
+                }
                 strcat(filial, login);
                 filial[strlen(filial) - 4] = '\0';
                 break; // Encerra o looping de login.
@@ -155,16 +160,6 @@ int main(void){ // Inicio do código principal
         char *eptr; //Declaracao de variavel ponteiro tipo char
         long long recebecpf, recebetel; //Declaracao de variavel long long(inteiro)
         system("mode 122,62 & title CENTRAL ADMINSTRATIVA"); // Modulariza o tamanho da tela para 122 colunas por 62 linhas.
-        //Verifica se o usuario já realizou a troca da senha padrao
-        file = fopen(verificarsenhapadrao, "r");
-        if((admin == false && moderador == true) && file != NULL){
-            trocar_senha_padrao = true;
-            fclose(file);
-            msg("A CENTRAL DE SEGURANCA DA INFORMACAO ADVERTE. PARA A SUA SEGURANCA SERA NECESSARIO REALIZAR A TROCA DA SENHA PADRAO UTILIZANDO O COMANDO B0!");
-        }else{
-            fclose(file);
-            trocar_senha_padrao = false;
-        }
         // MENU INICIAL QUE APARECERA PARA O USUARIO APOS A EXECUCAO DO SOFWARE
         printf("\n                                                 ***********************                            HOJE É [%d/%d/%d]\n", dataloc->tm_mday, dataloc->tm_mon+1, dataloc->tm_year+1900);
         printf("  _______________________________________________*                     *________________________________________________\n");
@@ -211,6 +206,10 @@ int main(void){ // Inicio do código principal
         printf("  * ------------------------------------------------------------------------------------------------------------------ *\n");
         printf("  **********************************************************************************************************************\n\n");
         printf("  RESPOSTA --> ");
+        //Verifica se o usuario já realizou a troca da senha padrao
+        if(trocar_senha_padrao == true){
+            msg("A CENTRAL DE SEGURANCA DA INFORMACAO ADVERTE. PARA A SUA SEGURANCA SERA NECESSARIO REALIZAR A TROCA DA SENHA PADRAO UTILIZANDO O COMANDO B0!");
+        }
         scanf("%s", &resp);
         lb(); // Limpa o buffer do teclado
 
@@ -312,10 +311,13 @@ int main(void){ // Inicio do código principal
                         // Validação da entrada de dados e inclusão de informação na string sigla
                         if(aux == 0){
                             strcat(sigla, "CT");
+                            break;
                         }else if(aux == 1){
                             strcat(sigla, "CP");
+                            break;
                         }else if(aux == 2){
                             strcat(sigla, "CO");
+                            break;
                         }else{
                             msg("UTILIZE UMA OPCAO VALIDA. TENTE 1, 2 OU 3!"); // Apresenta uma POP-UP informativa na tela do usuario.
                         }
@@ -1517,7 +1519,7 @@ int main(void){ // Inicio do código principal
                     fclose(trocasenha); // fecha o arquivo de texto nova senha
                     remove(auxsenha); // Exclui a senha antiga
                     remove(verificarsenhapadrao); // Remove o verificador da senha padrao
-                    msg("SENHA ALTERADA COM SUCESSO!"); // Apresenta uma mensagem na tela do usuario
+                    msg("SENHA ALTERADA COM SUCESSO! FAVOR REALIZAR LOGOFF PARA ATUALIZAR A SENHA NO SISTEMA."); // Apresenta uma mensagem na tela do usuario
                     goto iniciar; // Direciona o usuario para a tela inicial.
                 }else{
                     msg("A SENHA DIGITADA NAO CONFERE COM A CONFIRMACAO. PROCESSO CANCELADO PELO SISTEMA!");
